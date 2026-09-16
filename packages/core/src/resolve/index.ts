@@ -1,0 +1,476 @@
+import type {
+  ComponentNode, ConnectionNode, EndpointNode, GridNode, GroupStmt, HintStmt, SyntaxTree,
+} from "../ast/index.js";
+import { diagnostic, withSuggestion, type Diagnostic, type ParseResult } from "../diagnostics/index.js";
+import {
+  CATEGORIES, SIGNAL_GROUPS, THEMES, isOneOf,
+  type Category, type Direction, type Importance, type LayoutMode, type Shape, type Side,
+  type SignalKind, type Size, type Span,
+} from "../types.js";
+import { resolveDefines, type Library, type TemplateDef } from "./library.js";
+import { declarePin, signalKind, type PinDraft } from "./pins.js";
+
+export type ComponentId = string;
+export type GroupId = string;
+export type PinAddress = `${ComponentId}.${string}`;
+
+export interface ArchitectureModel {
+  title: string;
+  /** Name, Auflösung erst im Layout. */
+  theme: string;
+  direction: Direction;
+  layoutMode: LayoutMode;
+  grid?: GridSpec;
+  /** Einfügereihenfolge = Deklarationsreihenfolge. */
+  components: Map<ComponentId, Component>;
+  connections: Connection[];
+  /** Wurzel des Gruppenbaums; Zonen sind direkte Kinder, falls vorhanden. */
+  root: Group;
+  /** Alle Zonen und Systeme nach ID. */
+  groups: Map<GroupId, Group>;
+}
+
+export interface Component {
+  id: ComponentId;
+  /** "block", wenn keiner angegeben. */
+  template: string;
+  shape: Shape;
+  icon?: string;
+  label: string;
+  category: Category;
+  size: Size;
+  importance: Importance;
+  /** Reihenfolge = Darstellungsreihenfolge. */
+  pins: Pin[];
+  hints: { row?: number; column?: number };
+  meta: Record<string, string>;
+  /** Z. B. ["processing", "ecu"]. */
+  groupPath: GroupId[];
+  origin: Span;
+}
+
+export interface Pin {
+  name: string;
+  label: string;
+  kind: SignalKind;
+  side: Side;
+  sideSource: "explicit" | "template" | "inferred";
+  origin: Span;
+}
+
+export interface Endpoint {
+  component: ComponentId;
+  /** Fehlt → Anschluss am Komponentenkörper. */
+  pin?: string;
+}
+
+export interface Connection {
+  /** Stabil: "<source>-><target>#<n>". */
+  id: string;
+  source: Endpoint;
+  target: Endpoint;
+  direction: "forward" | "bidirectional" | "none";
+  kind: SignalKind;
+  kindSource: "explicit" | "inferred";
+  label?: string;
+  origin: Span;
+}
+
+export interface Group {
+  id: GroupId;
+  type: "root" | "zone" | "system";
+  label?: string;
+  children: (GroupId | ComponentId)[];
+  origin: Span;
+}
+
+export interface GridSpec {
+  /** null = ".". */
+  rows: (ComponentId | null)[][];
+  origin: Span;
+}
+
+const DEFAULT_THEME = "automotive-light";
+const BLOCK: TemplateDef = { name: "block", category: "generic", size: "medium", pins: [], origin: { start: 0, end: 0, line: 1, column: 1 } };
+
+/** Löst Templates auf, prüft IDs und Pins, leitet Seiten und Typen ab. */
+export function resolve(tree: SyntaxTree, library: Library): ParseResult<ArchitectureModel> {
+  const diagnostics: Diagnostic[] = [];
+  const arch = tree.architecture;
+
+  // ── Templates ────────────────────────────────────────────────
+
+  for (const define of tree.defines) {
+    if (library.templates.has(define.name.name)) {
+      diagnostics.push(diagnostic("W203", `Lokales Template \`${define.name.name}\` überschreibt das Bibliotheks-Template`, define.name.span));
+    }
+  }
+  const templates = new Map(library.templates);
+  for (const [name, def] of resolveDefines(tree.defines, library.templates, library.icons, diagnostics)) {
+    templates.set(name, def);
+  }
+
+  const model: ArchitectureModel = {
+    title: arch?.title.value ?? "",
+    theme: DEFAULT_THEME,
+    direction: "LR",
+    layoutMode: "strict",
+    components: new Map(),
+    connections: [],
+    root: { id: "root", type: "root", children: [], origin: arch?.span ?? tree.span },
+    groups: new Map(),
+  };
+
+  if (arch === undefined) {
+    diagnostics.push(diagnostic("E001", "Erwartet `architecture`, gefunden Dateiende", { start: tree.span.end, end: tree.span.end, line: 1, column: 1 }));
+    return { value: model, diagnostics };
+  }
+
+  // ── Dokumenteinstellungen ────────────────────────────────────
+
+  let gridNode: GridNode | undefined;
+  for (const stmt of arch.body) {
+    switch (stmt.kind) {
+      case "Theme":
+        if (THEMES.includes(stmt.name.name)) model.theme = stmt.name.name;
+        else diagnostics.push(withSuggestion("E109", `Unbekanntes Theme \`${stmt.name.name}\``, stmt.name.name, stmt.name.span, THEMES));
+        break;
+      case "Direction":
+        model.direction = stmt.value;
+        break;
+      case "Layout":
+        for (const item of stmt.body) {
+          if (item.kind === "Mode") model.layoutMode = item.value;
+          else gridNode = item;
+        }
+        break;
+    }
+  }
+
+  // ── Gruppenbaum und Komponenten ──────────────────────────────
+
+  const hasZones = arch.body.some((s) => s.kind === "Zone");
+  const usedIds = new Map<string, Span>();
+  const zoneOf = new Map<ComponentId, number>();
+  const hintSpans = new Map<ComponentId, Partial<Record<"row" | "column", Span>>>();
+  let zoneIndex = -1;
+
+  const claimId = (id: string, span: Span, what: string): boolean => {
+    if (usedIds.has(id)) {
+      diagnostics.push(diagnostic("E101", `${what}-ID \`${id}\` ist bereits vergeben`, span));
+      return false;
+    }
+    usedIds.set(id, span);
+    return true;
+  };
+
+  const addComponent = (node: ComponentNode, group: Group, path: GroupId[], inZone: boolean) => {
+    const id = node.id.name;
+    if (!claimId(id, node.id.span, "Komponenten")) return;
+    if (hasZones && !inZone) {
+      diagnostics.push(diagnostic("E106", `Komponente \`${id}\` liegt außerhalb einer Zone, obwohl das Dokument Zonen verwendet`, node.id.span));
+    }
+    const component = resolveComponent(node, path);
+    model.components.set(id, component);
+    group.children.push(id);
+    if (inZone) zoneOf.set(id, zoneIndex);
+  };
+
+  const resolveComponent = (node: ComponentNode, groupPath: GroupId[]): Component => {
+    const templateName = node.template?.name ?? "block";
+    let template = templates.get(templateName) ?? (templateName === "block" ? BLOCK : undefined);
+    if (template === undefined) {
+      diagnostics.push(withSuggestion("E104", `Unbekanntes Template \`${templateName}\``, templateName, node.template!.span, templates.keys()));
+      template = templates.get("block") ?? BLOCK;
+    }
+
+    const component: Component = {
+      id: node.id.name,
+      template: template.name,
+      shape: template.shape ?? "rounded",
+      ...(template.icon && { icon: template.icon }),
+      label: template.label ?? node.id.name,
+      category: template.category ?? "generic",
+      size: template.size ?? "medium",
+      importance: "secondary",
+      pins: [],
+      hints: {},
+      meta: {},
+      groupPath,
+      origin: node.span,
+    };
+
+    const pins: PinDraft[] = template.pins.map((p) => ({
+      ...p,
+      ...(p.side && { sideSource: "template" as const }),
+      origin: node.id.span,
+      declaredHere: false,
+    }));
+    const hints: Partial<Record<"row" | "column", Span>> = {};
+
+    for (const stmt of node.body ?? []) {
+      switch (stmt.kind) {
+        case "Label":
+          component.label = stmt.value.value;
+          break;
+        case "Size":
+          component.size = stmt.value;
+          break;
+        case "Importance":
+          component.importance = stmt.value;
+          break;
+        case "Category":
+          if (isOneOf(CATEGORIES, stmt.value.name)) component.category = stmt.value.name;
+          else diagnostics.push(withSuggestion("E109", `Unbekannte Kategorie \`${stmt.value.name}\``, stmt.value.name, stmt.value.span, CATEGORIES));
+          break;
+        case "Pin":
+          declarePin(pins, stmt, undefined, "explicit", diagnostics);
+          break;
+        case "SideBlock":
+          for (const pin of stmt.pins) declarePin(pins, pin, stmt.side, "explicit", diagnostics);
+          break;
+        case "Hint":
+          applyHint(component, stmt, hints);
+          break;
+        case "Meta":
+          for (const entry of stmt.entries) component.meta[entry.key.name] = entry.value.value;
+          break;
+      }
+    }
+
+    component.pins = pins.map((p) => ({
+      name: p.name,
+      label: p.label ?? p.name,
+      kind: p.kind,
+      side: p.side ?? "left",
+      sideSource: p.side ? p.sideSource ?? "explicit" : "inferred",
+      origin: p.origin,
+    }));
+    hintSpans.set(component.id, hints);
+    return component;
+  };
+
+  const applyHint = (component: Component, stmt: HintStmt, spans: Partial<Record<"row" | "column", Span>>) => {
+    if (model.layoutMode === "strict") {
+      diagnostics.push(diagnostic("W202", `\`hint ${stmt.axis}\` wird in \`mode strict\` ignoriert — \`layout { mode assisted }\` setzen`, stmt.span));
+      return;
+    }
+    component.hints[stmt.axis] = stmt.value;
+    spans[stmt.axis] = stmt.span;
+  };
+
+  const walkGroup = (body: readonly GroupStmt[], group: Group, path: GroupId[], inZone: boolean) => {
+    for (const stmt of body) {
+      switch (stmt.kind) {
+        case "Label":
+          group.label = stmt.value.value;
+          break;
+        case "System": {
+          if (!claimId(stmt.id.name, stmt.id.span, "System")) break;
+          const system: Group = { id: stmt.id.name, type: "system", children: [], origin: stmt.span };
+          model.groups.set(system.id, system);
+          group.children.push(system.id);
+          walkGroup(stmt.body, system, [...path, system.id], inZone);
+          break;
+        }
+        case "Component":
+          addComponent(stmt, group, path, inZone);
+          break;
+      }
+    }
+  };
+
+  const connectionNodes: ConnectionNode[] = [];
+  for (const stmt of arch.body) {
+    switch (stmt.kind) {
+      case "Zone": {
+        zoneIndex++;
+        if (!claimId(stmt.id.name, stmt.id.span, "Zonen")) break;
+        const zone: Group = { id: stmt.id.name, type: "zone", children: [], origin: stmt.span };
+        model.groups.set(zone.id, zone);
+        model.root.children.push(zone.id);
+        walkGroup(stmt.body, zone, [zone.id], true);
+        break;
+      }
+      case "System":
+        walkGroup([stmt], model.root, [], false);
+        break;
+      case "Component":
+        addComponent(stmt, model.root, [], false);
+        break;
+      case "Connection":
+        connectionNodes.push(stmt);
+        break;
+    }
+  }
+
+  // ── Verbindungen ─────────────────────────────────────────────
+
+  const incoming = new Map<PinAddress, number>();
+  const outgoing = new Map<PinAddress, number>();
+  const connected = new Set<PinAddress>();
+  const connectionCount = new Map<string, number>();
+
+  const resolveEndpoint = (node: EndpointNode): { endpoint: Endpoint; pin?: Pin } | undefined => {
+    const componentId = node.component.name;
+    const component = model.components.get(componentId);
+    if (component === undefined) {
+      diagnostics.push(withSuggestion("E102", `Unbekannte Komponente \`${componentId}\``, componentId, node.component.span, model.components.keys()));
+      return undefined;
+    }
+    if (node.pin === undefined) return { endpoint: { component: componentId } };
+    const pin = component.pins.find((p) => p.name === node.pin!.name);
+    if (pin === undefined) {
+      diagnostics.push(withSuggestion(
+        "E103",
+        `Komponente \`${componentId}\` hat keinen Pin \`${node.pin.name}\``,
+        node.pin.name,
+        node.pin.span,
+        component.pins.map((p) => p.name),
+      ));
+      return undefined;
+    }
+    return { endpoint: { component: componentId, pin: pin.name }, pin };
+  };
+
+  const address = (e: Endpoint) => (e.pin === undefined ? e.component : `${e.component}.${e.pin}`);
+
+  for (const node of connectionNodes) {
+    const from = resolveEndpoint(node.from);
+    const to = resolveEndpoint(node.to);
+    if (from === undefined || to === undefined) continue;
+
+    const [source, target] = node.arrow === "<-" ? [to, from] : [from, to];
+    const direction = node.arrow === "<->" ? "bidirectional" : node.arrow === "--" ? "none" : "forward";
+
+    let label: string | undefined;
+    let explicitKind: SignalKind | undefined;
+    let invalidKind = false;
+    for (const stmt of node.body ?? []) {
+      if (stmt.kind === "Label") {
+        label = stmt.value.value;
+      } else {
+        const before = diagnostics.length;
+        const kind = signalKind(stmt.value.name, stmt.value.span, diagnostics);
+        if (diagnostics.length === before) explicitKind = kind;
+        else invalidKind = true;
+      }
+    }
+
+    let kind: SignalKind;
+    if (explicitKind) {
+      kind = explicitKind;
+    } else if (source.pin && target.pin) {
+      kind = source.pin.kind;
+      if (SIGNAL_GROUPS[source.pin.kind] !== SIGNAL_GROUPS[target.pin.kind] && !invalidKind) {
+        diagnostics.push(diagnostic(
+          "W201",
+          `Verbindung zwischen unverträglichen Signalarten \`${source.pin.kind}\` und \`${target.pin.kind}\` — \`type\` explizit setzen, falls gewollt`,
+          node.span,
+        ));
+      }
+    } else {
+      kind = source.pin?.kind ?? target.pin?.kind ?? "signal";
+    }
+
+    const key = `${address(source.endpoint)}->${address(target.endpoint)}`;
+    const n = (connectionCount.get(key) ?? 0) + 1;
+    connectionCount.set(key, n);
+
+    model.connections.push({
+      id: `${key}#${n}`,
+      source: source.endpoint,
+      target: target.endpoint,
+      direction,
+      kind,
+      kindSource: explicitKind ? "explicit" : "inferred",
+      ...(label !== undefined && { label }),
+      origin: node.span,
+    });
+
+    for (const [end, counter] of [[source.endpoint, outgoing], [target.endpoint, incoming]] as const) {
+      if (end.pin === undefined) continue;
+      const pinAddress = address(end) as PinAddress;
+      connected.add(pinAddress);
+      if (direction === "forward") counter.set(pinAddress, (counter.get(pinAddress) ?? 0) + 1);
+    }
+  }
+
+  // ── Pin-Seiten ableiten, unverbundene Pins melden ────────────
+
+  for (const component of model.components.values()) {
+    for (const pin of component.pins) {
+      const pinAddress: PinAddress = `${component.id}.${pin.name}`;
+      if (pin.sideSource === "inferred") {
+        const inCount = incoming.get(pinAddress) ?? 0;
+        const outCount = outgoing.get(pinAddress) ?? 0;
+        const towardsEnd = outCount > inCount;
+        pin.side = model.direction === "LR" ? (towardsEnd ? "right" : "left") : (towardsEnd ? "bottom" : "top");
+      }
+      if (!connected.has(pinAddress)) {
+        diagnostics.push(diagnostic("I301", `Pin \`${pinAddress}\` ist nicht verbunden`, pin.origin));
+      }
+    }
+  }
+
+  // ── Grid ─────────────────────────────────────────────────────
+
+  const position = new Map<ComponentId, { value: number; span: Span }>();
+  const mainAxis = model.direction === "LR" ? "column" : "row";
+
+  if (gridNode) {
+    const seen = new Set<ComponentId>();
+    const rows = gridNode.rows.map((row, rowIndex) =>
+      row.cells.map((cell, columnIndex) => {
+        if (cell.id === undefined) return null;
+        const id = cell.id.name;
+        if (!model.components.has(id)) {
+          diagnostics.push(withSuggestion("E102", `Unbekannte Komponente \`${id}\` im Grid`, id, cell.id.span, model.components.keys()));
+          return null;
+        }
+        if (seen.has(id)) {
+          diagnostics.push(diagnostic("E107", `Komponente \`${id}\` steht mehrfach im Grid`, cell.id.span));
+          return null;
+        }
+        seen.add(id);
+        position.set(id, { value: (mainAxis === "column" ? columnIndex : rowIndex) + 1, span: cell.span });
+        return id;
+      }),
+    );
+    const width = rows[0]?.length ?? 0;
+    gridNode.rows.forEach((row, rowIndex) => {
+      if (row.cells.length !== width) {
+        diagnostics.push(diagnostic("E107", `Grid-Zeile ${rowIndex + 1} hat ${row.cells.length} Zellen, erwartet ${width}`, row.span));
+      }
+    });
+    model.grid = { rows, origin: gridNode.span };
+  }
+
+  for (const component of model.components.values()) {
+    const value = component.hints[mainAxis];
+    const span = hintSpans.get(component.id)?.[mainAxis];
+    if (value !== undefined && span !== undefined) position.set(component.id, { value, span });
+  }
+
+  // ── Zonen-Zusammenhang ───────────────────────────────────────
+
+  if (hasZones) {
+    const placed = [...position.entries()].filter(([id]) => zoneOf.has(id));
+    const axisName = mainAxis === "column" ? "Spalte" : "Zeile";
+    const zoneIds = arch.body.filter((s) => s.kind === "Zone").map((z) => z.id.name);
+    for (const [id, pos] of placed) {
+      const zone = zoneOf.get(id)!;
+      // Je Paar genau eine Meldung, am Element der späteren Zone.
+      const conflict = placed.find(([otherId, other]) => zoneOf.get(otherId)! < zone && other.value >= pos.value);
+      if (conflict === undefined) continue;
+      const [otherId, other] = conflict;
+      diagnostics.push(diagnostic(
+        "E108",
+        `\`${id}\` (Zone \`${zoneIds[zone]}\`, ${axisName} ${pos.value}) liegt nicht hinter \`${otherId}\` (Zone \`${zoneIds[zoneOf.get(otherId)!]}\`, ${axisName} ${other.value}) — Zonen müssen zusammenhängend in Deklarationsreihenfolge bleiben`,
+        pos.span,
+      ));
+    }
+  }
+
+  return { value: model, diagnostics };
+}

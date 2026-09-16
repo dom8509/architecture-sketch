@@ -4,8 +4,14 @@
 > Pins als First-Class-Elemente, orthogonale Verbindungen, Corporate Styles und
 > reproduzierbare SVG-/PNG-Ausgabe.
 
-**Status:** Konzeptphase. Dieses Repository enthält noch keinen Code, sondern das
-Konzept, auf dessen Basis implementiert wird.
+**Status:** In Entwicklung. Meilenstein M1 (Sprache: Lexer, Parser, Resolver,
+Diagnosen) ist in [`packages/core`](packages/core) umgesetzt; Layout und Rendering folgen.
+
+```sh
+npm install
+npm run typecheck
+npm test
+```
 
 ## Positionierung
 

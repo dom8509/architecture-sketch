@@ -309,10 +309,10 @@ Codes sind stabil und dokumentiert, damit CI-Filter und Tests darauf aufbauen k�
 | Code | Stufe | Auslöser |
 |------|-------|----------|
 | `E001` | Fehler | Syntaxfehler (erwartetes Token, gefundenes Token) |
-| `E101` | Fehler | doppelte Komponenten-ID |
+| `E101` | Fehler | doppelte ID (Komponente, Zone, System) oder doppelt definiertes Template |
 | `E102` | Fehler | unbekannte Komponente in Verbindung, Grid oder Hint |
 | `E103` | Fehler | unbekannter Pin — mit Vorschlag per Levenshtein („meintest du `CAN_TX`?“) |
-| `E104` | Fehler | unbekanntes Template |
+| `E104` | Fehler | unbekanntes Template oder zyklisches `extends` |
 | `E105` | Fehler | doppelter Pin-Name bzw. Neudeklaration mit anderer Art |
 | `E106` | Fehler | Komponente außerhalb einer Zone, obwohl Zonen verwendet werden |
 | `E107` | Fehler | Komponente mehrfach im Grid oder Grid-Zeilen unterschiedlich breit |
