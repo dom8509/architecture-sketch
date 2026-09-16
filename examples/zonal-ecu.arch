@@ -1,0 +1,46 @@
+// Zonal ECU — Fensterheber mit Stromrückmeldung
+
+architecture "Zonal ECU" {
+    theme automotive-light
+    direction LR
+
+    zone supply {
+        label "Power"
+        component kl30: power_source {
+            label "KL30"
+        }
+        component psu: power_supply {
+            label "Power Supply"
+        }
+    }
+
+    zone processing {
+        label "Processing"
+        component mcu: microcontroller {
+            label "S32K344"
+            importance primary
+            pin power VDD
+            pin can CAN0_TX
+            pin can CAN0_RX
+            pin spi SPI0
+            pin pwm HB_PWM
+            pin analog HB_IS
+        }
+    }
+
+    zone output {
+        label "Actuation"
+        component hb: half_bridge {
+            label "TLE9201"
+        }
+        component motor: motor {
+            label "Window Motor"
+        }
+    }
+
+    kl30 -> psu.VIN       { label "12 V"  type power }
+    psu.VOUT -> mcu.VDD   { label "3.3 V" }
+    mcu.HB_PWM -> hb.IN   { label "PWM" }
+    hb.IS -> mcu.HB_IS    { label "Current Feedback" }
+    hb.OUT -> motor       { label "PWM 12 V" }
+}

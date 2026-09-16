@@ -1,0 +1,94 @@
+# 07 — Repository-Struktur
+
+## Zielstruktur
+
+```
+architecture-sketch/
+├─ docs/                      Konzept (dieses Verzeichnis)
+├─ library/
+│  └─ automotive.archlib      Standard-Templates, in der DSL selbst geschrieben
+├─ examples/                  Beispielarchitekturen, zugleich Golden-File-Eingaben
+│
+├─ packages/
+│  ├─ core/                   @sysarch/core
+│  │  ├─ lexer/
+│  │  ├─ parser/              fehlertoleranter Recursive-Descent-Parser
+│  │  ├─ ast/                 verlustfreier Syntaxbaum
+│  │  ├─ resolve/             Templates, Pins, Typableitung → Semantic Model
+│  │  ├─ diagnostics/         Codes, Meldungen, Vorschläge
+│  │  ├─ format/              kanonischer Formatter
+│  │  └─ edit/                EditCommand → TextEdit[]
+│  │
+│  ├─ themes/                 @sysarch/themes — Design-Tokens + Font-Metriken
+│  │
+│  ├─ layout/                 @sysarch/layout
+│  │  ├─ rank.ts
+│  │  ├─ zones.ts
+│  │  ├─ order.ts
+│  │  ├─ size.ts
+│  │  ├─ place.ts
+│  │  ├─ route.ts
+│  │  └─ labels.ts
+│  │
+│  ├─ render-svg/             @sysarch/render-svg — SceneGraph → SVG-String
+│  ├─ export-png/             @sysarch/export-png — Browser-Rasterisierung
+│  ├─ export-reactflow/       @sysarch/export-reactflow — JSON, ohne React-Abhängigkeit
+│  └─ editor/                 @sysarch/editor — framework-freier Editor (DOM + CodeMirror 6)
+│
+├─ apps/
+│  ├─ web/                    Vite, statische Seite
+│  ├─ obsidian/               Obsidian-Plugin (esbuild)
+│  └─ cli/                    Node-CLI
+│
+└─ tests/
+   └─ golden/                 erwartete SceneGraph-JSON und SVGs zu examples/
+```
+
+## Abhängigkeitsregeln
+
+```
+core  ←  layout  ←  render-svg  ←  export-png
+  ↑        ↑            ↑
+themes ────┘            │
+  ↑                     │
+export-reactflow ───────┘ (nur Typen aus core/layout)
+
+editor  → core, layout, themes, render-svg, export-*  (+ CodeMirror 6)
+apps/*  → beliebige packages
+```
+
+| Paket | Laufzeit-Abhängigkeiten | Umgebung |
+|-------|-------------------------|----------|
+| `core`, `themes`, `layout`, `render-svg`, `export-reactflow` | **keine** | überall (kein DOM, kein Node-API) |
+| `export-png` | keine | Browser (DOM, Canvas) |
+| `editor` | CodeMirror 6 | Browser |
+| `apps/web` | — | Browser |
+| `apps/obsidian` | `obsidian` (API-Typen) | Obsidian |
+| `apps/cli` | `@resvg/resvg-js` | Node |
+
+Verboten im gesamten Repo: Mermaid, Graphviz, Dagre, ELK.js, Konva, Fabric.js,
+JointJS, GoJS, React Flow als Laufzeitabhängigkeit.
+
+Die Regeln werden per Lint geprüft (Import-Beschränkungen je Paket), nicht nur per
+Konvention.
+
+## Tooling
+
+| Bereich | Wahl | Begründung |
+|---------|------|------------|
+| Sprache | TypeScript, `strict`, ES2022-Module | Obsidian-Plugins sind TypeScript |
+| Paketverwaltung | npm Workspaces | kein zusätzliches Werkzeug nötig |
+| Build | TypeScript Project References; esbuild für Obsidian/CLI; Vite für Web | schnell, wenig Konfiguration |
+| Tests | Vitest | Snapshot-/Golden-File-Tests eingebaut |
+| Lint/Format | oxlint + Prettier (nur TS, nicht DSL) | schnell |
+| Laufzeit | Node ≥ 22 LTS | |
+| CI | GitHub Actions: `check`, `test`, Golden-File-Diff, Build aller Apps | |
+| Release | Obsidian-Plugin über GitHub Release (`main.js`, `manifest.json`, `styles.css`) | Obsidian-Community-Format |
+
+## Konventionen
+
+- Öffentliche API je Paket ausschließlich über `src/index.ts`.
+- Reine Funktionen im Core; keine Klassen mit veränderlichem Zustand außerhalb von `editor`.
+- Keine `Map`/`Set`-Iteration ohne definierte Reihenfolge in Layout und Rendering.
+- Jede neue Diagnose bekommt Code, Dokumentation in `02-dsl.md` und einen Test.
+- Jede Layout-Änderung aktualisiert die Golden Files im selben Commit.

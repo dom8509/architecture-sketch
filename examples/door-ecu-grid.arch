@@ -1,0 +1,43 @@
+// Door ECU — Beispiel für deklarative Layout-Overrides ohne Zonen
+
+architecture "Door ECU" {
+    theme presentation
+    direction LR
+
+    layout {
+        mode assisted
+        grid {
+            kl30 | ldo | mcu    | driver | .
+            .    | .   | wdg    | .      | .
+        }
+    }
+
+    component kl30: battery { label "KL30" }
+    component ldo: ldo { label "3.3 V LDO" }
+
+    system door_ecu {
+        label "Door ECU"
+        component mcu: microcontroller {
+            label "S32K3"
+            pin power VDD
+            pin pwm PWM
+            pin digital WD_KICK
+            pin digital RESET_N
+        }
+        component wdg: watchdog
+        component driver: half_bridge { label "Door Motor Driver" }
+    }
+
+    component motor: motor {
+        label "Window Motor"
+        hint row 1
+        hint column 5
+    }
+
+    kl30 -> ldo.VIN          { type power }
+    ldo.VOUT -> mcu.VDD      { label "3.3 V" }
+    mcu.PWM -> driver.IN     { label "PWM" }
+    mcu.WD_KICK -> wdg.WDI
+    wdg.RESET -> mcu.RESET_N
+    driver.OUT -> motor      { label "12 V PWM" }
+}

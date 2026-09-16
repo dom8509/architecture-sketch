@@ -1,0 +1,207 @@
+// Standardbibliothek v0.1 — wird vor jedem Dokument geladen.
+// Templates legen Label, Kategorie, Größe und Pins fest, nie Geometrie.
+
+// ── Generisch ────────────────────────────────────────────────
+
+define block {
+    category generic
+    size medium
+}
+
+define external_ecu {
+    label "External ECU"
+    category external
+    size medium
+}
+
+define software_component {
+    label "SW Component"
+    category software
+    size small
+}
+
+define connector {
+    label "Connector"
+    category external
+    size small
+}
+
+// ── Versorgung ───────────────────────────────────────────────
+
+define power_source {
+    label "Power Source"
+    category power
+    size small
+}
+
+define battery extends power_source {
+    label "Battery"
+}
+
+define fuse {
+    label "Fuse"
+    category power
+    size small
+    left  { pin power IN }
+    right { pin power OUT }
+}
+
+define relay {
+    label "Relay"
+    category power
+    size small
+    left   { pin power IN   pin digital COIL }
+    right  { pin power OUT }
+}
+
+define power_supply {
+    label "Power Supply"
+    category power
+    size medium
+    left   { pin power VIN   pin digital EN }
+    right  { pin power VOUT }
+    bottom { pin ground GND }
+}
+
+define ldo extends power_supply {
+    label "LDO"
+}
+
+define buck_converter extends power_supply {
+    label "Buck Converter"
+}
+
+define boost_converter extends power_supply {
+    label "Boost Converter"
+}
+
+define ground {
+    label "GND"
+    category power
+    size small
+    top { pin ground GND }
+}
+
+// ── Rechnen & Speicher ───────────────────────────────────────
+
+define microcontroller {
+    label "MCU"
+    category controller
+    size large
+}
+
+define soc {
+    label "SoC"
+    category controller
+    size large
+}
+
+define memory {
+    label "Memory"
+    category controller
+    size small
+    left { pin spi SPI }
+}
+
+define eeprom extends memory {
+    label "EEPROM"
+}
+
+define flash extends memory {
+    label "Flash"
+}
+
+define watchdog {
+    label "Watchdog"
+    category controller
+    size small
+    left  { pin digital WDI }
+    right { pin digital RESET }
+}
+
+define oscillator {
+    label "Oscillator"
+    category controller
+    size small
+    right { pin signal CLK }
+}
+
+// ── Kommunikation ────────────────────────────────────────────
+
+define can_transceiver {
+    label "CAN Transceiver"
+    category communication
+    size medium
+    left  { pin digital TXD   pin digital RXD   pin digital STB }
+    right { pin can CANH   pin can CANL }
+}
+
+define lin_transceiver {
+    label "LIN Transceiver"
+    category communication
+    size medium
+    left  { pin digital TXD   pin digital RXD }
+    right { pin lin LIN }
+}
+
+define ethernet_phy {
+    label "Ethernet PHY"
+    category communication
+    size medium
+    left  { pin bus MII }
+    right { pin ethernet MDI }
+}
+
+define switch {
+    label "Switch"
+    category communication
+    size medium
+}
+
+define bus {
+    label "Bus"
+    category communication
+    size small
+}
+
+// ── Leistungsstufen & Aktorik ────────────────────────────────
+
+define half_bridge {
+    label "Half Bridge"
+    category power
+    size medium
+    left   { pin power VS   pin digital IN }
+    right  { pin power OUT }
+    bottom { pin analog IS   pin ground GND }
+}
+
+define full_bridge {
+    label "Full Bridge"
+    category power
+    size medium
+    left   { pin power VS   pin digital IN1   pin digital IN2 }
+    right  { pin power OUT1   pin power OUT2 }
+    bottom { pin analog IS   pin ground GND }
+}
+
+define actuator {
+    label "Actuator"
+    category actuator
+    size small
+}
+
+define load extends actuator {
+    label "Load"
+}
+
+define motor extends actuator {
+    label "Motor"
+}
+
+// ── Sensorik ─────────────────────────────────────────────────
+
+define sensor {
+    label "Sensor"
+    category sensor
+    size small
+}
