@@ -9,3 +9,7 @@ coverage
 !.vscode/extensions.json
 .playwright-mcp
 .vite
+
+# generiert von scripts/build-icons.ts
+packages/core/src/library/generated.ts
+*.tsbuildinfo

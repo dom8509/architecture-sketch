@@ -1,0 +1,545 @@
+import type {
+  ArchitectureNode, CategoryStmt, ComponentNode, ComponentStmt, ConnectionNode, DefineNode,
+  DefineStmt, DirectionStmt, EndpointNode, GridCell, GridNode, GridRow, GroupStmt, HintStmt,
+  Ident, IconStmt, ImportanceStmt, LabelStmt, LayoutStmt, MetaBlock, MetaEntry, ModeStmt,
+  PinStmt, ShapeStmt, SideBlock, SizeStmt, Statement, StringLit, SyntaxNode, SyntaxTree,
+  SystemNode, ThemeStmt, Trivia, TypeStmt, ZoneNode,
+} from "../ast/index.js";
+import { diagnostic, withSuggestion, type Diagnostic, type ParseResult } from "../diagnostics/index.js";
+import { lex, type Token, type TokenType } from "../lexer/index.js";
+import {
+  DIRECTIONS, IMPORTANCES, LAYOUT_MODES, SIDES, SIZES,
+  type Arrow, type Direction, type Importance, type LayoutMode, type Side, type Size, type Span,
+} from "../types.js";
+
+/** Konstrukte späterer Versionen (02-dsl.md §4.7) mit der Version, ab der sie kommen. */
+const RESERVED: Readonly<Record<string, string>> = {
+  use: "v0.2",
+  view: "v0.2",
+  show: "v0.2",
+  interface: "v0.3",
+  rule: "v0.3",
+};
+
+const ARROWS: readonly TokenType[] = ["->", "<-", "<->", "--"];
+
+const ARCH_KEYWORDS = ["theme", "direction", "layout", "zone", "system", "component"];
+const GROUP_KEYWORDS = ["label", "system", "component"];
+const COMPONENT_KEYWORDS = ["label", "size", "importance", "category", "pin", ...SIDES, "hint", "meta"];
+const DEFINE_KEYWORDS = ["label", "size", "category", "shape", "icon", "pin", ...SIDES];
+const CONNECTION_KEYWORDS = ["label", "type"];
+const LAYOUT_KEYWORDS = ["mode", "grid"];
+
+/** Wird nach dem Melden eines Syntaxfehlers geworfen und auf Anweisungsebene gefangen. */
+const BAIL = Symbol("bail");
+
+/**
+ * Fehlertoleranter Recursive-Descent-Parser. Liefert immer einen Syntaxbaum; nach einem
+ * Fehler synchronisiert er auf die nächste `}` bzw. das nächste Anweisungs-Schlüsselwort.
+ */
+export function parse(source: string): ParseResult<SyntaxTree> {
+  const lexed = lex(source);
+  const tokens = lexed.tokens;
+  const diagnostics: Diagnostic[] = [...lexed.diagnostics];
+  let i = 0;
+  let lastErrorAt = -1;
+
+  // ── Token-Zugriff ────────────────────────────────────────────
+
+  const peek = (k = 0): Token => tokens[Math.min(i + k, tokens.length - 1)]!;
+  const previous = (): Token => tokens[Math.max(i - 1, 0)]!;
+  const next = (): Token => {
+    const t = peek();
+    if (t.type !== "eof") i++;
+    return t;
+  };
+  const at = (type: TokenType, k = 0) => peek(k).type === type;
+  const atWord = (word: string, k = 0) => peek(k).type === "ident" && peek(k).text === word;
+
+  const describe = (t: Token): string => {
+    switch (t.type) {
+      case "eof": return "Dateiende";
+      case "ident": return `\`${t.text}\``;
+      case "string": return `String ${t.text}`;
+      case "int": return `Zahl ${t.text}`;
+      case "invalid": return `unerwartetes Zeichen \`${t.text}\``;
+      default: return `\`${t.text}\``;
+    }
+  };
+
+  const report = (d: Diagnostic) => {
+    // Nur ein Syntaxfehler je Position, damit Folgefehler nicht kaskadieren.
+    if (d.span.start === lastErrorAt) return;
+    lastErrorAt = d.span.start;
+    diagnostics.push(d);
+  };
+
+  const fail = (expected: string, t: Token = peek()): never => {
+    report(diagnostic("E001", `Erwartet ${expected}, gefunden ${describe(t)}`, t.span));
+    throw BAIL;
+  };
+
+  const expect = (type: TokenType, expected: string): Token => (at(type) ? next() : fail(expected));
+
+  const expectWord = <T extends string>(words: readonly T[]): T => {
+    const t = peek();
+    if (t.type === "ident" && (words as readonly string[]).includes(t.text)) {
+      next();
+      return t.text as T;
+    }
+    const expected = words.map((w) => `\`${w}\``).join(" | ");
+    if (t.type === "ident") {
+      report(withSuggestion("E001", `Erwartet ${expected}, gefunden ${describe(t)}`, t.text, t.span, words));
+      throw BAIL;
+    }
+    return fail(expected);
+  };
+
+  // ── Knoten ───────────────────────────────────────────────────
+
+  const spanFrom = (start: Token): Span => ({
+    start: start.span.start,
+    end: Math.max(previous().span.end, start.span.end),
+    line: start.span.line,
+    column: start.span.column,
+  });
+
+  const node = <N extends SyntaxNode>(start: Token, fields: Omit<N, "span" | "leadingTrivia">): N =>
+    ({ ...fields, span: spanFrom(start), leadingTrivia: start.leadingTrivia }) as N;
+
+  const ident = (): Ident => {
+    const t = expect("ident", "Bezeichner");
+    return { kind: "Ident", name: t.text, span: t.span, leadingTrivia: [] };
+  };
+
+  /**
+   * Bezeichner innerhalb einer angefangenen Anweisung. Steht auf einer neuen Zeile ein
+   * Schlüsselwort, beginnt dort vermutlich die nächste Anweisung — die aktuelle ist unfertig.
+   */
+  const operand = (keywords: readonly string[]): Ident => {
+    const t = peek();
+    if (t.type === "ident" && t.newlineBefore && keywords.includes(t.text)) fail("Bezeichner");
+    return ident();
+  };
+
+  const string = (): StringLit => {
+    const t = expect("string", "String");
+    return { kind: "String", value: t.value, span: t.span, leadingTrivia: [] };
+  };
+
+  // ── Blöcke und Fehlerbehandlung ──────────────────────────────
+
+  const skipBalanced = () => {
+    let depth = 0;
+    do {
+      const t = next();
+      if (t.type === "{") depth++;
+      else if (t.type === "}") depth--;
+    } while (depth > 0 && !at("eof"));
+  };
+
+  /** Überspringt bis vor die nächste `}` oder den Beginn der nächsten Anweisung. */
+  const recover = (statementStart: number, keywords: readonly string[]) => {
+    while (!at("eof") && !at("}")) {
+      const t = peek();
+      if (i > statementStart && t.type === "ident" && (t.newlineBefore || keywords.includes(t.text))) return;
+      if (t.type === "{") skipBalanced();
+      else next();
+    }
+  };
+
+  /**
+   * Liest `{ item* }` (die öffnende Klammer ist bereits gelesen). Fehler in einem Element
+   * verwerfen nur dieses Element. Fehlt die schließende Klammer, bleibt der Block erhalten.
+   */
+  const block = <T>(
+    parseItem: () => T | undefined,
+    keywords: readonly string[],
+  ): { items: T[]; closingTrivia: Trivia[] } => {
+    const items: T[] = [];
+    while (!at("}") && !at("eof")) {
+      const statementStart = i;
+      try {
+        const item = parseItem();
+        if (item !== undefined) items.push(item);
+      } catch (e) {
+        if (e !== BAIL) throw e;
+        recover(statementStart, keywords);
+      }
+    }
+    const closingTrivia = peek().leadingTrivia;
+    if (at("}")) next();
+    else report(diagnostic("E001", "Erwartet `}`, gefunden Dateiende", peek().span));
+    return { items, closingTrivia };
+  };
+
+  const withClosing = <N extends SyntaxNode>(n: N, closingTrivia: Trivia[]): N => {
+    if (closingTrivia.length > 0) n.closingTrivia = closingTrivia;
+    return n;
+  };
+
+  const isReserved = (): boolean => {
+    const t = peek();
+    if (t.type !== "ident" || !Object.hasOwn(RESERVED, t.text)) return false;
+    const following = peek(1).type;
+    return following !== "." && following !== ":" && !ARROWS.includes(following);
+  };
+
+  /** Meldet ein reserviertes Konstrukt und überspringt es bis Zeilenende bzw. Blockende. */
+  const skipReserved = (): undefined => {
+    const t = next();
+    report(diagnostic("E110", `\`${t.text}\` ist erst ab ${RESERVED[t.text]} verfügbar`, t.span));
+    while (!at("eof") && !at("}") && !peek().newlineBefore) {
+      if (at("{")) skipBalanced();
+      else next();
+    }
+    return undefined;
+  };
+
+  const unknownStatement = (keywords: readonly string[], context: string): never => {
+    const t = peek();
+    if (t.type !== "ident") return fail(`eine Anweisung in ${context}`);
+    report(withSuggestion("E001", `Unbekannte Anweisung \`${t.text}\` in ${context}`, t.text, t.span, keywords));
+    throw BAIL;
+  };
+
+  // ── Gemeinsame Anweisungen ───────────────────────────────────
+
+  const label = (): LabelStmt => {
+    const start = next();
+    return node<LabelStmt>(start, { kind: "Label", value: string() });
+  };
+
+  const size = (): SizeStmt => {
+    const start = next();
+    return node<SizeStmt>(start, { kind: "Size", value: expectWord<Size>(SIZES) });
+  };
+
+  const category = (): CategoryStmt => {
+    const start = next();
+    return node<CategoryStmt>(start, { kind: "Category", value: ident() });
+  };
+
+  const pin = (): PinStmt => {
+    if (!atWord("pin")) return unknownStatement(["pin"], "einem Seitenblock");
+    const start = next();
+    const signal = operand(COMPONENT_KEYWORDS);
+    const name = operand(COMPONENT_KEYWORDS);
+    const pinLabel = at("string") ? string() : undefined;
+    return node<PinStmt>(start, { kind: "Pin", signal, name, ...(pinLabel && { label: pinLabel }) });
+  };
+
+  const sideBlock = (): SideBlock => {
+    const start = next();
+    const side = start.text as Side;
+    expect("{", "`{`");
+    const { items, closingTrivia } = block(pin, ["pin"]);
+    return withClosing(node<SideBlock>(start, { kind: "SideBlock", side, pins: items }), closingTrivia);
+  };
+
+  // ── Komponenten ──────────────────────────────────────────────
+
+  const hint = (): HintStmt => {
+    const start = next();
+    const axis = expectWord(["row", "column"] as const);
+    const value = expect("int", "eine Zahl ≥ 1");
+    const n = Number(value.text);
+    if (n < 1) {
+      report(diagnostic("E001", `Erwartet eine Zahl ≥ 1, gefunden ${value.text}`, value.span));
+    }
+    return node<HintStmt>(start, { kind: "Hint", axis, value: Math.max(1, n) });
+  };
+
+  const meta = (): MetaBlock => {
+    const start = next();
+    expect("{", "`{`");
+    const entry = (): MetaEntry => {
+      const keyToken = peek();
+      const key = ident();
+      return node<MetaEntry>(keyToken, { kind: "MetaEntry", key, value: string() });
+    };
+    const { items, closingTrivia } = block(entry, []);
+    return withClosing(node<MetaBlock>(start, { kind: "Meta", entries: items }), closingTrivia);
+  };
+
+  const componentStmt = (): ComponentStmt | undefined => {
+    if (isReserved()) return skipReserved();
+    const t = peek();
+    if (t.type === "ident") {
+      switch (t.text) {
+        case "label": return label();
+        case "size": return size();
+        case "importance": {
+          const start = next();
+          return node<ImportanceStmt>(start, { kind: "Importance", value: expectWord<Importance>(IMPORTANCES) });
+        }
+        case "category": return category();
+        case "pin": return pin();
+        case "left": case "right": case "top": case "bottom": return sideBlock();
+        case "hint": return hint();
+        case "meta": return meta();
+      }
+    }
+    return unknownStatement(COMPONENT_KEYWORDS, "einer Komponente");
+  };
+
+  const component = (): ComponentNode => {
+    const start = next();
+    const statementKeywords = [...ARCH_KEYWORDS, ...GROUP_KEYWORDS];
+    const id = operand(statementKeywords);
+    let template: Ident | undefined;
+    if (at(":")) {
+      next();
+      template = operand(statementKeywords);
+    }
+    const n = node<ComponentNode>(start, { kind: "Component", id, ...(template && { template }) });
+    if (!at("{")) return n;
+    next();
+    const { items, closingTrivia } = block(componentStmt, COMPONENT_KEYWORDS);
+    return withClosing(node<ComponentNode>(start, { ...n, body: items }), closingTrivia);
+  };
+
+  // ── Zonen und Systeme ────────────────────────────────────────
+
+  const groupStmt = (context: string) => (): GroupStmt | undefined => {
+    if (isReserved()) return skipReserved();
+    if (atWord("label")) return label();
+    if (atWord("system")) return system();
+    if (atWord("component")) return component();
+    if (atWord("zone")) {
+      report(diagnostic("E001", "Zonen sind nur auf oberster Ebene der Architektur erlaubt", peek().span));
+      throw BAIL;
+    }
+    return unknownStatement(GROUP_KEYWORDS, context);
+  };
+
+  const system = (): SystemNode => {
+    const start = next();
+    const id = ident();
+    expect("{", "`{`");
+    const { items, closingTrivia } = block(groupStmt("einem System"), GROUP_KEYWORDS);
+    return withClosing(node<SystemNode>(start, { kind: "System", id, body: items }), closingTrivia);
+  };
+
+  const zone = (): ZoneNode => {
+    const start = next();
+    const id = ident();
+    expect("{", "`{`");
+    const { items, closingTrivia } = block(groupStmt("einer Zone"), GROUP_KEYWORDS);
+    return withClosing(node<ZoneNode>(start, { kind: "Zone", id, body: items }), closingTrivia);
+  };
+
+  // ── Verbindungen ─────────────────────────────────────────────
+
+  const endpoint = (): EndpointNode => {
+    const start = peek();
+    const componentId = ident();
+    let pinId: Ident | undefined;
+    if (at(".")) {
+      next();
+      pinId = ident();
+    }
+    const n = node<EndpointNode>(start, { kind: "Endpoint", component: componentId, ...(pinId && { pin: pinId }) });
+    n.leadingTrivia = [];
+    return n;
+  };
+
+  const connection = (): ConnectionNode => {
+    const start = peek();
+    const from = endpoint();
+    if (!ARROWS.includes(peek().type)) fail("`->`, `<-`, `<->` oder `--`");
+    const arrow = next().type as Arrow;
+    const to = endpoint();
+    const n = node<ConnectionNode>(start, { kind: "Connection", from, arrow, to });
+    if (!at("{")) return n;
+    next();
+    const connectionStmt = (): LabelStmt | TypeStmt => {
+      if (atWord("label")) return label();
+      if (atWord("type")) {
+        const typeStart = next();
+        return node<TypeStmt>(typeStart, { kind: "Type", value: ident() });
+      }
+      return unknownStatement(CONNECTION_KEYWORDS, "einer Verbindung");
+    };
+    const { items, closingTrivia } = block(connectionStmt, CONNECTION_KEYWORDS);
+    return withClosing(node<ConnectionNode>(start, { ...n, body: items }), closingTrivia);
+  };
+
+  // ── Layout ───────────────────────────────────────────────────
+
+  const grid = (): GridNode => {
+    const start = next();
+    expect("{", "`{`");
+    const rows: GridRow[] = [];
+    const skipLine = () => {
+      while (!at("eof") && !at("}") && !peek().newlineBefore) next();
+    };
+    while (!at("}") && !at("eof")) {
+      const rowStart = peek();
+      const cells: GridCell[] = [];
+      try {
+        for (;;) {
+          const t = peek();
+          if (t.type === ".") {
+            next();
+            cells.push({ kind: "GridCell", span: t.span, leadingTrivia: [] });
+          } else if (t.type === "ident") {
+            const id = ident();
+            cells.push({ kind: "GridCell", id, span: t.span, leadingTrivia: [] });
+          } else {
+            fail("Komponenten-ID oder `.`");
+          }
+          if (!at("|") || peek().newlineBefore) break;
+          next();
+          if (at("}") || peek().newlineBefore) fail("Zelle nach `|`");
+        }
+        if (!at("}") && !at("eof") && !peek().newlineBefore) fail("`|` oder Zeilenumbruch");
+      } catch (e) {
+        if (e !== BAIL) throw e;
+        skipLine();
+      }
+      if (cells.length > 0) rows.push(node<GridRow>(rowStart, { kind: "GridRow", cells }));
+    }
+    const closingTrivia = peek().leadingTrivia;
+    expect("}", "`}`");
+    return withClosing(node<GridNode>(start, { kind: "Grid", rows }), closingTrivia);
+  };
+
+  const layout = (): LayoutStmt => {
+    const start = next();
+    expect("{", "`{`");
+    const layoutStmt = (): ModeStmt | GridNode => {
+      if (atWord("mode")) {
+        const modeStart = next();
+        return node<ModeStmt>(modeStart, { kind: "Mode", value: expectWord<LayoutMode>(LAYOUT_MODES) });
+      }
+      if (atWord("grid")) return grid();
+      return unknownStatement(LAYOUT_KEYWORDS, "`layout`");
+    };
+    const { items, closingTrivia } = block(layoutStmt, LAYOUT_KEYWORDS);
+    return withClosing(node<LayoutStmt>(start, { kind: "Layout", body: items }), closingTrivia);
+  };
+
+  // ── Architektur ──────────────────────────────────────────────
+
+  const archStmt = (): Statement | undefined => {
+    const following = peek(1).type;
+    if (at("ident") && (following === "." || ARROWS.includes(following))) return connection();
+    if (isReserved()) return skipReserved();
+    const t = peek();
+    if (t.type === "ident") {
+      switch (t.text) {
+        case "theme": {
+          const start = next();
+          return node<ThemeStmt>(start, { kind: "Theme", name: ident() });
+        }
+        case "direction": {
+          const start = next();
+          return node<DirectionStmt>(start, { kind: "Direction", value: expectWord<Direction>(DIRECTIONS) });
+        }
+        case "layout": return layout();
+        case "zone": return zone();
+        case "system": return system();
+        case "component": return component();
+        case "define":
+          report(diagnostic("E001", "`define` muss vor `architecture` stehen", t.span));
+          throw BAIL;
+      }
+    }
+    return unknownStatement(ARCH_KEYWORDS, "der Architektur");
+  };
+
+  const architecture = (): ArchitectureNode => {
+    const start = next();
+    const title = string();
+    expect("{", "`{`");
+    const { items, closingTrivia } = block(archStmt, ARCH_KEYWORDS);
+    return withClosing(node<ArchitectureNode>(start, { kind: "Architecture", title, body: items }), closingTrivia);
+  };
+
+  // ── Templates ────────────────────────────────────────────────
+
+  const defineStmt = (): DefineStmt | undefined => {
+    if (isReserved()) return skipReserved();
+    const t = peek();
+    if (t.type === "ident") {
+      switch (t.text) {
+        case "label": return label();
+        case "size": return size();
+        case "category": return category();
+        case "shape": {
+          const start = next();
+          return node<ShapeStmt>(start, { kind: "Shape", value: ident() });
+        }
+        case "icon": {
+          const start = next();
+          return node<IconStmt>(start, { kind: "Icon", value: ident() });
+        }
+        case "pin": return pin();
+        case "left": case "right": case "top": case "bottom": return sideBlock();
+        case "importance": case "hint": case "meta":
+          report(diagnostic("E001", `\`${t.text}\` ist nur in einer Komponente erlaubt, nicht in \`define\``, t.span));
+          throw BAIL;
+      }
+    }
+    return unknownStatement(DEFINE_KEYWORDS, "`define`");
+  };
+
+  const define = (): DefineNode => {
+    const start = next();
+    const name = ident();
+    let base: Ident | undefined;
+    if (atWord("extends")) {
+      next();
+      base = ident();
+    }
+    expect("{", "`{`");
+    const { items, closingTrivia } = block(defineStmt, DEFINE_KEYWORDS);
+    return withClosing(
+      node<DefineNode>(start, { kind: "Define", name, ...(base && { extends: base }), body: items }),
+      closingTrivia,
+    );
+  };
+
+  // ── Dokument ─────────────────────────────────────────────────
+
+  const defines: DefineNode[] = [];
+  let arch: ArchitectureNode | undefined;
+
+  while (!at("eof")) {
+    const statementStart = i;
+    try {
+      if (atWord("define")) {
+        const d = define();
+        if (arch) report(diagnostic("E001", "`define` muss vor `architecture` stehen", d.name.span));
+        defines.push(d);
+      } else if (atWord("architecture")) {
+        const t = peek();
+        const a = architecture();
+        if (arch) report(diagnostic("E001", "Ein Dokument enthält genau eine `architecture`", t.span));
+        else arch = a;
+      } else if (isReserved()) {
+        skipReserved();
+      } else if (at("}")) {
+        fail("`define` oder `architecture`");
+      } else {
+        unknownStatement(["define", "architecture"], "der Datei");
+      }
+    } catch (e) {
+      if (e !== BAIL) throw e;
+      if (at("}")) next();
+      else recover(statementStart, ["define", "architecture"]);
+    }
+  }
+
+  const tree: SyntaxTree = {
+    kind: "Document",
+    span: { start: 0, end: source.length, line: 1, column: 1 },
+    leadingTrivia: [],
+    defines,
+    ...(arch && { architecture: arch }),
+  };
+  const trailing = peek().leadingTrivia;
+  if (trailing.length > 0) tree.closingTrivia = trailing;
+  return { value: tree, diagnostics };
+}

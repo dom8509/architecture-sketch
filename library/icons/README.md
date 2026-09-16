@@ -10,4 +10,5 @@ Regeln (werden beim Build geprüft, Verstöße brechen den Build):
 - Strichstärke und Farbe setzt das Theme
 
 Der mitgelieferte Satz ist in [05 Rendering & Export](../../docs/05-rendering-export.md#icons)
-aufgelistet und entsteht in Meilenstein M2.
+aufgelistet. `npm run build:icons` prüft die Dateien und bettet sie zusammen mit
+`automotive.archlib` in `@sysarch/core` ein.
