@@ -22,3 +22,8 @@ alten ausdrücklich ersetzt.
 | D15 | **Editor framework-frei** (DOM + CodeMirror 6) | derselbe Editor in Web-App und Obsidian | React-basierter Editor |
 | D16 | **React-Flow-Export ohne React-Flow-Abhängigkeit**, inkl. gerouteter Punkte | Core bleibt frei; Zielanwendung übernimmt exakte Geometrie | Export via React-Flow-Instanz |
 | D17 | **Formen aus fester Liste, Icons nur aus der Bibliothek** — beides nur im Template, nie pro Instanz; keine Raster-Bilder | Wiedererkennbarkeit ohne Stilbruch; Layout kennt jede Kontur; Export bleibt eigenständig und deterministisch | frei definierbare SVG-Formen, Bild-URLs, Icon pro Instanz |
+| D18 | **Unbekannte Pins sind ein Fehler** (`E103` mit Vorschlag); der Editor bietet den Quick-Fix „Pin anlegen“ als TextEdit | Tippfehler erzeugen keine stillen neuen Pins; der Text bleibt vollständig (D1, D11) | implizites Anlegen im Skizzen-Modus |
+| D19 | **Inter als einzige Schrift in v0.1**; der Font-Metriken-Generator ist schriftunabhängig gebaut | Determinismus mit einem Metriksatz (D6); weitere Schriften pro Theme bleiben ohne Umbau möglich | Corporate-Schrift pro Theme ab v0.1 |
+| D20 | **Themes in v0.1 als TypeScript-Design-Tokens**; eine Theme-DSL folgt erst, wenn Teams eigene Corporate Styles brauchen | hält Sprache und M1/M2 klein | `theme … { }` in `.archlib` ab v0.1 |
+| D21 | **Produkt und Repository heißen `sysarch`** | ein Name überall, umbenannt solange noch nichts auf das alte Repo verweist | Repository-Name `architecture-sketch` bis zum Release |
+| D22 | **Lizenz MIT** | kurz, permissiv, üblich im TypeScript-/Obsidian-Ökosystem | Apache-2.0, MPL-2.0 |

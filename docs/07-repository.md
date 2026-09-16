@@ -3,7 +3,7 @@
 ## Zielstruktur
 
 ```
-architecture-sketch/
+sysarch/
 ├─ docs/                      Konzept (dieses Verzeichnis)
 ├─ library/
 │  ├─ automotive.archlib      Standard-Templates, in der DSL selbst geschrieben

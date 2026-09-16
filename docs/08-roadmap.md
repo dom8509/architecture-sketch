@@ -73,15 +73,10 @@ Jeder Meilenstein ist für sich nutzbar und endet mit grünen Tests.
 
 - VS-Code-Extension (Language Server auf Basis von `core` + Vorschau-Webview)
 - Weitere Exporte: PDF, PPTX-Shapes, draw.io
+- Themes als DSL (`theme … { }`), sobald Teams eigene Corporate Styles brauchen ([D20](entscheidungen.md))
 
 ---
 
 ## Offene Fragen
 
-| Frage | Tendenz |
-|-------|---------|
-| Sollen unbekannte Pins (`mcu.PWM` ohne Deklaration) im Skizzen-Modus automatisch angelegt werden? | v0.1 strikt (`E103` mit Vorschlag); Quick-Fix „Pin anlegen“ im Editor als Komfort |
-| Schrift: Inter fest, oder Corporate-Schrift pro Theme? | Inter fest in v0.1; Font-Metriken-Generator so bauen, dass weitere Schriften möglich sind |
-| Themes auch als DSL (`theme … { }`) statt TypeScript? | erst, wenn Teams eigene Corporate Styles brauchen (v0.2+) |
-| Name des Produkts: `sysarch` bleibt, Repository heißt weiter `architecture-sketch`? | Ja, bis zur ersten öffentlichen Veröffentlichung |
-| Lizenz | offen |
+Derzeit keine. Beantwortete Fragen stehen in den [Entscheidungen](entscheidungen.md) D18–D22.

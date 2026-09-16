@@ -76,3 +76,7 @@ architecture "Door ECU" {
 | [Entscheidungen](docs/entscheidungen.md) | Festgelegte Designentscheidungen mit Begründung |
 
 Beispiele liegen unter [`examples/`](examples/).
+
+## Lizenz
+
+[MIT](LICENSE)
