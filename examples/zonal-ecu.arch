@@ -1,5 +1,11 @@
 // Zonal ECU — Fensterheber mit Stromrückmeldung
 
+// Lokales Template: Form und Icon kommen immer aus einem Template, nie aus der Instanz.
+define window_motor extends motor {
+    label "Window Motor"
+    icon window
+}
+
 architecture "Zonal ECU" {
     theme automotive-light
     direction LR
@@ -33,9 +39,7 @@ architecture "Zonal ECU" {
         component hb: half_bridge {
             label "TLE9201"
         }
-        component motor: motor {
-            label "Window Motor"
-        }
+        component motor: window_motor
     }
 
     kl30 -> psu.VIN       { label "12 V"  type power }

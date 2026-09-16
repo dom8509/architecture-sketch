@@ -1,5 +1,7 @@
 // Standardbibliothek v0.1 — wird vor jedem Dokument geladen.
-// Templates legen Label, Kategorie, Größe und Pins fest, nie Geometrie.
+// Templates legen Label, Kategorie, Größe, Form, Icon und Pins fest, nie Geometrie.
+// Formen: rounded (Standard) | rect | circle | hexagon | cylinder
+// Icons: Dateinamen aus library/icons/
 
 // ── Generisch ────────────────────────────────────────────────
 
@@ -10,18 +12,24 @@ define block {
 
 define external_ecu {
     label "External ECU"
+    shape rect
+    icon ecu
     category external
     size medium
 }
 
 define software_component {
     label "SW Component"
+    shape hexagon
+    icon software
     category software
     size small
 }
 
 define connector {
     label "Connector"
+    shape rect
+    icon connector
     category external
     size small
 }
@@ -30,16 +38,19 @@ define connector {
 
 define power_source {
     label "Power Source"
+    icon power
     category power
     size small
 }
 
 define battery extends power_source {
     label "Battery"
+    icon battery
 }
 
 define fuse {
     label "Fuse"
+    icon fuse
     category power
     size small
     left  { pin power IN }
@@ -48,6 +59,7 @@ define fuse {
 
 define relay {
     label "Relay"
+    icon relay
     category power
     size small
     left   { pin power IN   pin digital COIL }
@@ -56,6 +68,7 @@ define relay {
 
 define power_supply {
     label "Power Supply"
+    icon regulator
     category power
     size medium
     left   { pin power VIN   pin digital EN }
@@ -77,6 +90,8 @@ define boost_converter extends power_supply {
 
 define ground {
     label "GND"
+    shape circle
+    icon ground
     category power
     size small
     top { pin ground GND }
@@ -86,18 +101,22 @@ define ground {
 
 define microcontroller {
     label "MCU"
+    icon chip
     category controller
     size large
 }
 
 define soc {
     label "SoC"
+    icon soc
     category controller
     size large
 }
 
 define memory {
     label "Memory"
+    shape cylinder
+    icon memory
     category controller
     size small
     left { pin spi SPI }
@@ -113,6 +132,7 @@ define flash extends memory {
 
 define watchdog {
     label "Watchdog"
+    icon watchdog
     category controller
     size small
     left  { pin digital WDI }
@@ -121,6 +141,7 @@ define watchdog {
 
 define oscillator {
     label "Oscillator"
+    icon clock
     category controller
     size small
     right { pin signal CLK }
@@ -130,6 +151,7 @@ define oscillator {
 
 define can_transceiver {
     label "CAN Transceiver"
+    icon can
     category communication
     size medium
     left  { pin digital TXD   pin digital RXD   pin digital STB }
@@ -138,6 +160,7 @@ define can_transceiver {
 
 define lin_transceiver {
     label "LIN Transceiver"
+    icon lin
     category communication
     size medium
     left  { pin digital TXD   pin digital RXD }
@@ -146,6 +169,7 @@ define lin_transceiver {
 
 define ethernet_phy {
     label "Ethernet PHY"
+    icon ethernet
     category communication
     size medium
     left  { pin bus MII }
@@ -154,12 +178,15 @@ define ethernet_phy {
 
 define switch {
     label "Switch"
+    icon switch
     category communication
     size medium
 }
 
 define bus {
     label "Bus"
+    shape rect
+    icon bus
     category communication
     size small
 }
@@ -168,6 +195,7 @@ define bus {
 
 define half_bridge {
     label "Half Bridge"
+    icon bridge
     category power
     size medium
     left   { pin power VS   pin digital IN }
@@ -177,6 +205,7 @@ define half_bridge {
 
 define full_bridge {
     label "Full Bridge"
+    icon bridge
     category power
     size medium
     left   { pin power VS   pin digital IN1   pin digital IN2 }
@@ -192,16 +221,21 @@ define actuator {
 
 define load extends actuator {
     label "Load"
+    icon lamp
 }
 
 define motor extends actuator {
     label "Motor"
+    shape circle
+    icon motor
 }
 
 // ── Sensorik ─────────────────────────────────────────────────
 
 define sensor {
     label "Sensor"
+    shape circle
+    icon sensor
     category sensor
     size small
 }

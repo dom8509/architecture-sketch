@@ -7,8 +7,8 @@ Jeder Meilenstein ist für sich nutzbar und endet mit grünen Tests.
 | # | Meilenstein | Ergebnis | Abnahme |
 |---|-------------|----------|---------|
 | M0 | Konzept | dieses Repository | Konzept reviewt |
-| M1 | Sprache | `core`: Lexer, Parser, AST, Resolver, Diagnosen, `library/automotive.archlib` | alle `examples/*.arch` parsen fehlerfrei; jede Diagnose `E…`/`W…` hat einen Test; Parser liefert bei kaputtem Input ein Teil-AST |
-| M2 | Layout & SVG | `themes`, `layout`, `render-svg` | Golden Files für alle Beispiele; Eigenschaftstests aus [04](04-layout.md#testbarkeit) grün |
+| M1 | Sprache | `core`: Lexer, Parser, AST, Resolver, Diagnosen, `library/automotive.archlib`, Icon-Build für `library/icons/` | alle `examples/*.arch` parsen fehlerfrei; jede Diagnose `E…`/`W…` hat einen Test; Parser liefert bei kaputtem Input ein Teil-AST |
+| M2 | Layout & SVG | `themes`, `layout` inkl. fünf Formen, `render-svg` inkl. Icons | Golden Files für alle Beispiele, jede Form und jedes mitgelieferte Icon in mindestens einem Golden File; Eigenschaftstests aus [04](04-layout.md#testbarkeit) grün |
 | M3 | CLI | `apps/cli` mit `render --format svg`, `check`, `fmt` | CI rendert Beispiele; `fmt` ist idempotent |
 | M4 | Web-App | Editor + Live-Vorschau + Diagnosen + SVG-Export | Vorschau-SVG == CLI-SVG (byte-gleich) |
 | M5 | Exporte | PNG (Browser + CLI), React Flow JSON | React-Flow-Export lädt in einer Test-App mit Custom Nodes |
@@ -21,7 +21,7 @@ Jeder Meilenstein ist für sich nutzbar und endet mit grünen Tests.
 - Perfektes automatisches Layout
 - Views / Abstraktionsebenen
 - `use` externer Bibliotheken
-- Icons, eigene Formen je Template
+- Frei gezeichnete Formen, Raster-Bilder oder pro Diagramm eingebettete Grafiken
 - Plausibilitätsprüfungen
 - VS-Code-Extension
 - Kollaboration, Backend, Accounts
@@ -47,7 +47,7 @@ Jeder Meilenstein ist für sich nutzbar und endet mit grünen Tests.
   aus einer Quelle
 - `sysarch render` für Markdown-Dateien mit mehreren Codeblöcken
 - Bus als Sammelschiene (`component can0: bus`), an die mehrere Teilnehmer andocken
-- Icon-Set im Theme pro Template
+- Icons aus projektspezifischen Bibliotheken per `use`
 - Verbindungen innerhalb von `system`-Blöcken
 
 ### v0.3 — Engineering-Semantik

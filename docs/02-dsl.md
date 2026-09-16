@@ -3,7 +3,7 @@
 Die DSL ist bewusst klein. v0.1 kennt genau diese Konstrukte:
 
 `architecture` · `theme` · `direction` · `component` · `pin` · `zone` · `system` ·
-Verbindungen · `layout` · `define`
+Verbindungen · `layout` · `define` (inkl. `shape` und `icon`)
 
 Alles andere (Views, `use`, Metadaten-Vererbung, Plausibilitätsregeln) ist für spätere
 Versionen reserviert — siehe [Roadmap](08-roadmap.md).
@@ -121,7 +121,9 @@ grid_row      = cell { "|" cell } ;
 cell          = IDENT | "." ;
 
 define        = "define" IDENT [ "extends" IDENT ] "{" { def_stmt } "}" ;
-def_stmt      = label | size | category | pin | side_block ;
+def_stmt      = label | size | category | shape | icon | pin | side_block ;
+shape         = "shape" ( "rect" | "rounded" | "circle" | "hexagon" | "cylinder" ) ;
+icon          = "icon" IDENT ;                          (* "none" entfernt ein geerbtes Icon *)
 ```
 
 ---
@@ -135,7 +137,10 @@ component <id>[: <template>] { … }
 ```
 
 - `id` ist im gesamten Dokument eindeutig — auch über Zonen und Systeme hinweg.
-- Ohne Template ist der Typ `block` (neutrales Rechteck, Kategorie `generic`).
+- Ohne Template ist der Typ `block` (abgerundetes Rechteck, Kategorie `generic`, kein Icon).
+- **Form und Icon** kommen ausschließlich aus dem Template (siehe 4.6). Eine Instanz kann
+  sie nicht setzen; wer für eine Komponente eine andere Darstellung will, leitet ein
+  lokales Template ab (`define window_motor extends motor { icon window }`).
 - **Label-Vorrang:** Instanz-`label` › Template-`label` › `id`.
 - `size` und `importance` sind die **einzigen** Größen-/Gewichtungsstellschrauben.
   Das Theme übersetzt sie in Mindestbreite, Rahmenstärke und Schriftschnitt.
@@ -249,8 +254,42 @@ define half_bridge {
 }
 ```
 
-- Templates beschreiben Vorgaben für Label, Kategorie, Größe und Pins — **keine Geometrie**.
+- Templates beschreiben Vorgaben für Label, Kategorie, Größe, Form, Icon und Pins —
+  **keine Geometrie**.
 - `extends` erbt Pins und Vorgaben; Pins werden angehängt, Vorgaben überschrieben.
+
+#### Formen
+
+`shape` wählt aus einer **festen Liste**. Jede Form hat eine definierte Kontur, an der
+Pins andocken, und einen Innenbereich für Label und Icon
+(Details in [04 Layout](04-layout.md#formen-und-pins)).
+
+| Form | Darstellung | typische Verwendung |
+|------|-------------|---------------------|
+| `rounded` | Rechteck mit Theme-Radius (Standard) | Steuergeräte, Controller, Treiber |
+| `rect` | Rechteck ohne Radius | externe Systeme, Stecker |
+| `circle` | Kreis (quadratische Hülle) | Motoren, Sensoren, Masse |
+| `hexagon` | Sechseck, Spitzen links/rechts | Software-Komponenten, Gateways |
+| `cylinder` | Zylinder | Speicher, Datenablagen |
+
+#### Icons
+
+`icon <name>` referenziert ein Icon aus der **Icon-Bibliothek** (`library/icons/`).
+Icons sind einfarbige Symbole, das Theme färbt sie in der Textfarbe der Kategorie.
+Das Diagramm kann keine Bilddateien, URLs oder eigene Grafiken einbinden
+(siehe [05 Rendering](05-rendering-export.md#icons)).
+
+```sysarch
+define motor extends actuator {
+    label "Motor"
+    shape circle
+    icon motor
+}
+
+define window_motor extends motor {
+    icon window
+}
+```
 - Die mitgelieferte Bibliothek ([`library/automotive.archlib`](../library/automotive.archlib))
   ist selbst in dieser Syntax geschrieben und wird vor jedem Dokument geladen.
 - Dokument-lokale `define`s stehen vor `architecture` und überschreiben Bibliotheksnamen
@@ -280,6 +319,7 @@ Codes sind stabil und dokumentiert, damit CI-Filter und Tests darauf aufbauen k�
 | `E108` | Fehler | Grid/Hint verletzt Zonen-Zusammenhang |
 | `E109` | Fehler | unbekannte Signalart, Kategorie oder unbekanntes Theme |
 | `E110` | Fehler | reserviertes Konstrukt aus späterer Version |
+| `E111` | Fehler | unbekannte Form oder unbekanntes Icon — mit Vorschlag per Levenshtein |
 | `W201` | Warnung | Verbindung zwischen Pins unverträglicher Gruppen (z. B. `power` → `can`) |
 | `W202` | Warnung | `hint` in `mode strict` |
 | `W203` | Warnung | lokales `define` überschreibt Bibliotheks-Template |

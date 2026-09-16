@@ -63,21 +63,58 @@ Pfeilspitzen folgen `direction`: `forward` → am Ziel, `bidirectional` → beid
 
 ## Komponentendarstellung
 
-Der Renderer kennt nur **Primitive**: Rechteck (mit Radius), Pfad, Text, Marker
-(Pfeil, Masse, Pin, Knotenpunkt). Es gibt in v0.1 keine domänenspezifischen Formen —
-eine `half_bridge` ist ein Rechteck mit Kategorie `power` und Pins. Icons pro Template
-sind ein Kandidat für v0.2, dann als festes Icon-Set im Theme, nicht frei wählbar.
+Der Renderer kennt nur **Primitive**: Form (fünf feste Formen), Pfad, Text, Marker
+(Pfeil, Masse, Pin, Knotenpunkt) und Icon. Die Darstellung einer Komponente ergibt sich
+vollständig aus ihrem Template: Form, Icon, Kategorie (Farbe), Label und Pins.
 
 ```
-┌──────────────────────┐
-│      Half Bridge 1   │   ← Label, Schnitt nach importance
-│                      │
-● VS              OUT  ●   ← Pin-Marker auf dem Rand, Pin-Label innen
+┌──────────────────────┐            ╭───────╮
+│  ⚡ Half Bridge 1     │          ●─┤   ⟳   │     ← circle: Stummel von der
+│                      │            │ Motor │        Kontur zur Hüllkante
+● VS              OUT  ●            ╰───────╯
 ● IN                   │
-│                      │
 └────────●────●────────┘
          IS   GND
 ```
+
+### Formen
+
+`rounded` · `rect` · `circle` · `hexagon` · `cylinder` — Geometrie und Pin-Andockung in
+[04 Layout](04-layout.md#formen-und-pins). Eine Form ist ein reiner Pfad; Füllung,
+Rahmen und Rahmenstärke kommen weiter aus Kategorie und `importance`.
+
+### Icons
+
+**Quelle:** `library/icons/<name>.svg` — ein Icon pro Datei, Dateiname = Icon-Name.
+
+**Regeln für Icon-Dateien** (geprüft beim Build, Verstöße brechen den Build):
+
+- `viewBox="0 0 24 24"`, einfarbig, keine festen Farben (werden entfernt)
+- erlaubte Elemente: `path`, `circle`, `rect`, `line`, `polyline`, `polygon`, `g`
+- verboten: `image`, `text`, `use` mit externen Referenzen, `style`, `script`,
+  Filter, Verläufe, Masken
+- alles wird zur Build-Zeit in reine Pfaddaten (`IconDef`) umgewandelt
+
+Dadurch kann ein Icon das Erscheinungsbild nicht sprengen: Es übernimmt Farbe und
+Strichstärke aus dem Theme, hat eine vom Theme bestimmte Größe
+(`icon.size[size]`) und funktioniert in hell, dunkel und `technical` gleichermaßen.
+
+**Mitgelieferter Satz v0.1** (eigene Zeichnungen, gleiche Strichstärke und Raster):
+
+| Bereich | Icons |
+|---------|-------|
+| Versorgung | `battery`, `power`, `regulator`, `fuse`, `relay`, `ground` |
+| Rechnen & Speicher | `chip`, `soc`, `memory`, `watchdog`, `clock` |
+| Kommunikation | `can`, `lin`, `ethernet`, `switch`, `bus`, `connector` |
+| Leistung & Aktorik | `bridge`, `motor`, `window`, `valve`, `lamp`, `heater` |
+| Sensorik | `sensor`, `temperature`, `current`, `position` |
+| Sonstiges | `ecu`, `software`, `cloud`, `vehicle` |
+
+**Eigene Icons eines Teams:** SVG in `library/icons/` ablegen und bauen. Ab v0.2 können
+sie mit `use` aus projektspezifischen Bibliotheken kommen.
+
+**Keine Bilder:** Raster-Bilder (PNG/JPG), URLs und pro Diagramm eingebettete Grafiken
+sind ausgeschlossen (Entscheidung D17).
 
 ---
 
@@ -85,6 +122,10 @@ sind ein Kandidat für v0.2, dann als festes Icon-Set im Theme, nicht frei wähl
 
 - Ein eigenständiges SVG 1.1 ohne externe Referenzen.
 - `viewBox` in Scene-Graph-Einheiten, `width`/`height` in px.
+- Formen als `<path>` bzw. `<rect>`, Stummel als eigene `<path>`-Elemente.
+- Jedes verwendete Icon genau einmal als `<symbol id="sa-icon-<name>">` in `<defs>`,
+  Verwendung per `<use href="#sa-icon-<name>">` mit `color` der Kategorie. Nicht verwendete
+  Icons werden nicht eingebettet.
 - Stabile Klassen und `data-ref`-Attribute (`data-ref="pin:mcu.CAN_TX"`) für
   Hit-Testing in der Vorschau und für Nachbearbeitung.
 - Deterministische Ausgabe: feste Attributreihenfolge, Zahlen auf zwei Nachkommastellen
@@ -147,6 +188,8 @@ braucht **keine** React-Flow-Abhängigkeit — er erzeugt nur JSON.
         "label": "RH850",
         "category": "controller",
         "importance": "primary",
+        "shape": "rounded",
+        "icon": { "name": "chip", "viewBox": "0 0 24 24", "elements": [{ "d": "M7 7h10v10H7z", "mode": "stroke" }] },
         "pins": [
           { "id": "VDD", "label": "VDD", "kind": "power", "side": "left", "offset": 48 },
           { "id": "HB1_PWM", "label": "HB1_PWM", "kind": "pwm", "side": "right", "offset": 48 }
@@ -174,6 +217,9 @@ braucht **keine** React-Flow-Abhängigkeit — er erzeugt nur JSON.
 ```
 
 - Körperanschlüsse erhalten virtuelle Handles `__body_<side>`.
+- `data.icon` enthält die vollständigen Pfaddaten, damit die Zielanwendung das Icon ohne
+  Zugriff auf die sysarch-Bibliothek darstellen kann. `data.shape` und `offset` der Pins
+  beziehen sich auf die Hülle.
 - `data.points` enthält die geroutete Geometrie, damit eine Custom-Edge den Pfad exakt
   übernehmen kann statt neu zu routen.
 - Zusätzlich wird ein Referenzpaket `@sysarch/reactflow-nodes` (später) die passenden

@@ -72,6 +72,8 @@ type SignalKind =
 
 type SignalGroup = "supply" | "single" | "bus" | "diagnostic";
 
+type Shape = "rounded" | "rect" | "circle" | "hexagon" | "cylinder";
+
 type Category =
   | "power" | "controller" | "communication" | "sensor"
   | "actuator" | "software" | "external" | "generic";
@@ -163,6 +165,8 @@ type PinAddress = `${ComponentId}.${string}`;
 interface Component {
   id: ComponentId;
   template: string;                      // "block", wenn keiner angegeben
+  shape: Shape;                          // aus Template, Standard "rounded"
+  icon?: string;                         // Name aus der Icon-Bibliothek
   label: string;
   category: Category;
   size: Size;
@@ -215,11 +219,30 @@ interface GridSpec {
 }
 ```
 
+### Bibliothek
+
+```ts
+interface Library {
+  templates: Map<string, TemplateDef>;   // aus *.archlib
+  icons: Map<string, IconDef>;           // aus library/icons/*.svg, zur Build-Zeit erzeugt
+}
+
+/** Bereinigtes, einfarbiges Symbol im 24×24-Raster. */
+interface IconDef {
+  name: string;
+  viewBox: "0 0 24 24";
+  /** Nur Pfaddaten; gezeichnet mit currentColor als Strich oder Fläche. */
+  elements: { d: string; mode: "stroke" | "fill" }[];
+}
+```
+
 ### Invarianten (nach `resolve`, auch bei vorhandenen Fehlern)
 
 - Jede `ComponentId` in `connections`, `grid` und `Group.children` existiert.
   Verbindungen mit ungültigen Endpunkten werden verworfen, nicht halb übernommen.
 - Jeder `Pin` hat eine konkrete `side`.
+- Jedes `icon` existiert in `Library.icons`; unbekannte Icons werden mit `E111` gemeldet
+  und entfernt, die Komponente wird ohne Icon gerendert.
 - Jede Komponente ist genau einmal im Gruppenbaum enthalten.
 - Connection-IDs sind deterministisch und ändern sich nicht, wenn unabhängige Zeilen
   hinzukommen.
@@ -260,6 +283,7 @@ interface Theme {
     minHeight: Record<Size, number>;
   };
   categories: Record<Category, { fill: string; border: string; text: string }>;
+  icon: { size: Record<Size, number>; gap: number; strokeWidth: number };
   lines: Record<SignalGroup, LineStyle>;
   zone: { fill: string; border: string };
   system: { border: string; dash?: number[] };
@@ -289,11 +313,11 @@ interface SceneGraph {
   width: number;
   height: number;
   background: string;
-  /** Zeichenreihenfolge: Zonen → Systeme → Verbindungen → Komponenten → Pins → Labels. */
+  /** Zeichenreihenfolge: Zonen → Systeme → Verbindungen → Komponenten → Icons → Pins → Labels. */
   items: SceneItem[];
 }
 
-type SceneItem = SceneRect | ScenePath | SceneText | SceneMarker;
+type SceneItem = SceneRect | SceneShape | ScenePath | SceneText | SceneMarker | SceneIcon;
 
 interface SceneBase {
   /** Rückverweis für Hit-Testing und Quellsprung, z. B. "component:mcu", "pin:mcu.CAN_TX". */
@@ -307,6 +331,22 @@ interface SceneRect extends SceneBase {
   radius: number;
   fill: string; stroke: string; strokeWidth: number;
   dash?: number[];
+}
+
+/** Komponentenkörper; x/y/width/height ist die Hülle, die Kontur ergibt sich aus `shape`. */
+interface SceneShape extends SceneBase {
+  type: "shape";
+  shape: Shape;
+  x: number; y: number; width: number; height: number;
+  radius: number;                        // nur für "rounded"
+  fill: string; stroke: string; strokeWidth: number;
+}
+
+interface SceneIcon extends SceneBase {
+  type: "icon";
+  name: string;                          // Verweis auf Library.icons, im SVG als <symbol>
+  x: number; y: number; size: number;
+  color: string;
 }
 
 interface ScenePath extends SceneBase {

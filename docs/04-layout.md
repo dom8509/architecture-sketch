@@ -87,13 +87,46 @@ Rang 0 … 1     │ Rang 2          │ Rang 3 … 4
 - Textbreiten kommen aus **eingebetteten Font-Metriken** (Advance-Widths + Kerning-Paare
   der Theme-Schrift als generierte Tabelle), nicht aus `canvas.measureText`. Nur so ist die
   Geometrie in Browser, Obsidian und Node identisch.
-- Komponentenbreite = max(`minWidth[size]`, Labelbreite + Padding, breiteste Pin-Label-
-  Kombination links + rechts + Mindestabstand).
+- Komponentenbreite = max(`minWidth[size]`, Icon + Abstand + Labelbreite + Padding,
+  breiteste Pin-Label-Kombination links + rechts + Mindestabstand).
 - Komponentenhöhe = max(`minHeight[size]`, Label + Padding, Pins pro Seite × `pinPitch`).
 - Alle Größen werden **auf das Grid aufgerundet** (Standard 16 px).
 - Pins sitzen auf Grid-Punkten, gleichmäßig um die Seitenmitte verteilt.
+- Die Größenberechnung erfolgt für den **Innenbereich** der Form (siehe unten); die Hülle
+  wird daraus zurückgerechnet.
 - Labels, die breiter als die dreifache `minWidth` wären, werden an Wortgrenzen
   umbrochen; kein Abschneiden, keine Schriftverkleinerung.
+
+### Formen und Pins
+
+Jede Form liefert drei Funktionen, die Layout und Renderer gemeinsam nutzen:
+
+```ts
+interface ShapeGeometry {
+  /** Innenbereich für Icon + Label, relativ zur Hülle. */
+  inner(hull: Rect): Rect;
+  /** Kleinste Hülle, deren Innenbereich `content` aufnimmt. */
+  hullFor(content: Size, pinsPerSide: Record<Side, number>): Size;
+  /** Punkt auf der Kontur für einen Pin an Seite `side` und Querkoordinate `t`. */
+  contour(hull: Rect, side: Side, t: number): Point;
+}
+```
+
+| Form | Innenbereich | Hülle | Pins |
+|------|--------------|-------|------|
+| `rounded`, `rect` | Hülle minus Padding | frei | auf dem Rand |
+| `circle` | einbeschriebenes Quadrat (≈ 0,71 × Durchmesser) | quadratisch | Schnittpunkt der Pin-Geraden mit dem Kreis |
+| `hexagon` | Mittelrechteck zwischen den Spitzen | frei, Spitzen = ¼ Höhe | links/rechts auf den Schrägen, oben/unten auf den Kanten |
+| `cylinder` | Rumpf zwischen den Ellipsen | frei, Ellipsenhöhe = 1 Grid-Einheit | oben/unten auf der Ellipse, links/rechts auf dem Rand |
+
+- **Pin-Positionen bleiben auf der Hülle.** Liegt die Kontur innerhalb der Hülle (Kreis,
+  Sechseck), zeichnet der Renderer einen kurzen Anschlussstummel von der Kontur bis zur
+  Hüllkante. Routing und Kanalzuteilung sehen dadurch für alle Formen gleich aus und
+  müssen keine Sonderfälle kennen.
+- Bei `circle` mit mehr als drei Pins pro Seite wird der Durchmesser vergrößert, bis die
+  Stummel höchstens eine halbe Hüllbreite lang sind.
+- Icon und Label werden im Innenbereich zentriert: Icon links vom Label, bei `size small`
+  und `circle` Icon über dem Label.
 
 ## 6. Koordinaten
 
@@ -158,6 +191,7 @@ mcu ●─────────┐
 - **Golden Files:** `examples/*.arch` → Scene-Graph-JSON und SVG werden eingecheckt;
   jede Layoutänderung ist im Review als Diff sichtbar.
 - **Eigenschaftstests:** keine überlappenden Komponenten, alle Pfade orthogonal, alle
-  Koordinaten auf dem Grid, Pfade schneiden keine fremden Komponenten.
+  Koordinaten auf dem Grid, Pfade schneiden keine fremden Komponenten, Label und Icon
+  liegen vollständig im Innenbereich ihrer Form.
 - **Stabilitätstest:** Unverbundene Komponente am Dateiende hinzufügen darf keine
   bestehende Position ändern.

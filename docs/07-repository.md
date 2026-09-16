@@ -6,7 +6,8 @@
 architecture-sketch/
 ├─ docs/                      Konzept (dieses Verzeichnis)
 ├─ library/
-│  └─ automotive.archlib      Standard-Templates, in der DSL selbst geschrieben
+│  ├─ automotive.archlib      Standard-Templates, in der DSL selbst geschrieben
+│  └─ icons/                  einfarbige 24×24-SVGs, zur Build-Zeit zu IconDef bereinigt
 ├─ examples/                  Beispielarchitekturen, zugleich Golden-File-Eingaben
 │
 ├─ packages/
@@ -25,6 +26,7 @@ architecture-sketch/
 │  │  ├─ rank.ts
 │  │  ├─ zones.ts
 │  │  ├─ order.ts
+│  │  ├─ shapes.ts            Innenbereich, Hülle, Kontur je Form
 │  │  ├─ size.ts
 │  │  ├─ place.ts
 │  │  ├─ route.ts
@@ -92,3 +94,5 @@ Konvention.
 - Keine `Map`/`Set`-Iteration ohne definierte Reihenfolge in Layout und Rendering.
 - Jede neue Diagnose bekommt Code, Dokumentation in `02-dsl.md` und einen Test.
 - Jede Layout-Änderung aktualisiert die Golden Files im selben Commit.
+- Icon-Bereinigung (`scripts/build-icons`) läuft im Build und in der CI; ein ungültiges
+  Icon bricht den Build.

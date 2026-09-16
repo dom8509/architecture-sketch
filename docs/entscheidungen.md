@@ -21,3 +21,4 @@ alten ausdrücklich ersetzt.
 | D14 | **Metadaten nur im `meta { }`-Block** | Tippfehler bei Schlüsselwörtern bleiben Fehler | beliebige Schlüssel direkt in der Komponente |
 | D15 | **Editor framework-frei** (DOM + CodeMirror 6) | derselbe Editor in Web-App und Obsidian | React-basierter Editor |
 | D16 | **React-Flow-Export ohne React-Flow-Abhängigkeit**, inkl. gerouteter Punkte | Core bleibt frei; Zielanwendung übernimmt exakte Geometrie | Export via React-Flow-Instanz |
+| D17 | **Formen aus fester Liste, Icons nur aus der Bibliothek** — beides nur im Template, nie pro Instanz; keine Raster-Bilder | Wiedererkennbarkeit ohne Stilbruch; Layout kennt jede Kontur; Export bleibt eigenständig und deterministisch | frei definierbare SVG-Formen, Bild-URLs, Icon pro Instanz |
