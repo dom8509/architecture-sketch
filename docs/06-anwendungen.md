@@ -28,6 +28,9 @@ Parse-, Layout- oder Render-Logik.
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
+- **Export:** SVG und SVG kopieren (letzter gültiger Stand), PNG in 1×/2×/3× über
+  `@sysarch/export-png`, React-Flow-JSON über `@sysarch/export-reactflow` (nur bei
+  fehlerfreier Quelle, mit dem gewählten Theme).
 - **Live-Vorschau** bei jeder Änderung (debounced 150 ms). Vorschau und Export nutzen
   denselben Aufruf wie die CLI (`renderArchitecture` aus `render-svg`); ein Test prüft für
   alle Beispiele und Themes, dass das SVG byte-gleich ist. Zoom per Mausrad, Pan per
@@ -82,7 +85,7 @@ architecture "Door ECU" {
 ```sh
 sysarch render examples/zonal-ecu.arch --format svg --out build/
 sysarch render examples/*.arch --format png --scale 2 --out build/
-sysarch render examples/zonal-ecu.arch --format reactflow --out build/zonal-ecu.json
+sysarch render examples/zonal-ecu.arch --format reactflow --out build/zonal-ecu.reactflow.json
 sysarch render docs/architektur.md --out build/      # rendert alle sysarch-Codeblöcke (v0.2)
 
 sysarch check  examples/*.arch                        # Exit 1 bei Fehlern
@@ -96,9 +99,11 @@ sysarch fmt    examples/*.arch --check                # nur prüfen (CI)
   Endposition und Vorschlägen). Hinweise (`I…`) erscheinen im Textformat nur mit `--verbose`.
 - Eingaben sind Dateien oder Verzeichnisse (rekursiv nach `.arch`, bei `check`/`fmt` auch
   `.archlib`), damit Aufrufe ohne Shell-Globbing (Windows, npm-Skripte) funktionieren.
-- `render`: ohne `--out` neben die Quelle, `--out <verzeichnis>`, `--out datei.svg` (genau
-  eine Eingabe) oder `--out -` (stdout); `--theme` überschreibt das Theme der Quelle.
-  Dateien mit Fehlern werden nicht gerendert.
+- `render`: ohne `--out` neben die Quelle, `--out <verzeichnis>`, `--out datei.svg|.png|.reactflow.json`
+  (genau eine Eingabe) oder `--out -` (stdout, nicht für PNG); `--theme` überschreibt das
+  Theme der Quelle. Dateien mit Fehlern werden nicht gerendert.
+- `--format svg|png|reactflow` mit den Endungen `.svg`, `.png`, `.reactflow.json`;
+  `--scale 1|2|3` nur für PNG (Standard 2).
 - `fmt -` liest von stdin und schreibt nach stdout (für Editor-Integrationen).
 - Exit-Codes: `0` ok, `1` Diagnosen bzw. Prüfung fehlgeschlagen, `2` Aufruf- oder Dateifehler.
 - Ausgabe ist byte-identisch zur Web-App — geprüft über Golden-File-Tests; die CI vergleicht

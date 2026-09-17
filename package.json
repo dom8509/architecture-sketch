@@ -12,11 +12,12 @@
   "scripts": {
     "build:icons": "tsx scripts/build-icons.ts",
     "build:font": "tsx scripts/build-font.ts",
-    "build": "npm run build:icons && tsc -b apps/cli && npm run build -w @sysarch/web",
+    "build": "npm run build:icons && tsc -b apps/cli && npm run build -w @sysarch/web && npm run build -w @sysarch/reactflow-test",
     "web": "npm run build:icons && npm run dev -w @sysarch/web",
+    "reactflow-test": "npm run build:icons && npm run dev -w @sysarch/reactflow-test",
     "sysarch": "node apps/cli/dist/main.js",
     "render:examples": "tsx scripts/render-examples.ts",
-    "typecheck": "npm run build:icons && tsc -b packages/render-svg && tsc -p packages/core/test && tsc -p packages/themes/test && tsc -p packages/layout/test && tsc -p packages/render-svg/test && tsc -b apps/cli && tsc -p apps/cli/test && tsc -b packages/editor && tsc -p packages/editor/test && tsc -p apps/web",
+    "typecheck": "npm run build:icons && tsc -b packages/render-svg packages/export-reactflow packages/export-png && tsc -p packages/core/test && tsc -p packages/themes/test && tsc -p packages/layout/test && tsc -p packages/render-svg/test && tsc -p packages/export-reactflow/test && tsc -p packages/export-png/test && tsc -b apps/cli && tsc -p apps/cli/test && tsc -b packages/editor && tsc -p packages/editor/test && tsc -p apps/web && tsc -p apps/reactflow-test",
     "test": "npm run build:icons && vitest run"
   },
   "devDependencies": {

@@ -18,11 +18,19 @@ export interface RenderOptions {
 const FALLBACK_FONTS = "'Helvetica Neue', Arial, sans-serif";
 
 /**
- * Semantic Model → SVG über Layout und Renderer; `theme` überschreibt das Theme der Quelle.
- * Einziger Weg von CLI und Editor zum SVG — deshalb sind beide Ausgaben byte-gleich.
+ * Semantic Model → SceneGraph; `theme` überschreibt das Theme der Quelle. Gemeinsamer Schritt
+ * aller Exporte (SVG, PNG, React Flow), damit sie dieselbe Geometrie zeigen.
+ */
+export function architectureScene(model: ArchitectureModel, theme?: string): SceneGraph {
+  return layout(model, getTheme(theme ?? model.theme));
+}
+
+/**
+ * Semantic Model → SVG über Layout und Renderer. Einziger Weg von CLI und Editor zum SVG —
+ * deshalb sind beide Ausgaben byte-gleich.
  */
 export function renderArchitecture(model: ArchitectureModel, theme?: string): string {
-  return renderSvg(layout(model, getTheme(theme ?? model.theme)));
+  return renderSvg(architectureScene(model, theme));
 }
 
 /** SceneGraph → eigenständiges SVG 1.1. Deterministisch: feste Attributreihenfolge, zwei Nachkommastellen. */
@@ -212,7 +220,18 @@ function text(t: SceneText): string {
 
 // ── Schrift ────────────────────────────────────────────────────
 
-function fontFaces(scene: SceneGraph, glyphs: FontGlyphs, metrics: FontMetrics): string {
+export interface FontSubset {
+  family: string;
+  weight: number;
+  /** TrueType-Datei mit genau den Zeichen, die die Szene in diesem Schnitt verwendet. */
+  data: Uint8Array;
+}
+
+/**
+ * Schrift-Subsets je verwendetem Schnitt, nach Gewicht sortiert — dieselben Dateien, die das
+ * SVG per `@font-face` einbettet. Rasterisierer ohne `@font-face`-Unterstützung (resvg) laden sie direkt.
+ */
+export function fontSubsets(scene: SceneGraph, glyphs: FontGlyphs = INTER_GLYPHS, metrics: FontMetrics = INTER_METRICS): FontSubset[] {
   const byWeight = new Map<number, Set<string>>();
   for (const item of scene.items) {
     if (item.type !== "text" || item.style.fontFamily !== glyphs.family) continue;
@@ -222,10 +241,13 @@ function fontFaces(scene: SceneGraph, glyphs: FontGlyphs, metrics: FontMetrics):
   }
   return [...byWeight.keys()]
     .sort((a, b) => a - b)
-    .map((weight) => {
-      const data = buildFontSubset(glyphs, metrics, weight, byWeight.get(weight)!);
-      return `@font-face{font-family:"${glyphs.family}";font-weight:${weight};src:url(data:font/ttf;base64,${base64(data)}) format("truetype")}`;
-    })
+    .map((weight) => ({ family: glyphs.family, weight, data: buildFontSubset(glyphs, metrics, weight, byWeight.get(weight)!) }));
+}
+
+function fontFaces(scene: SceneGraph, glyphs: FontGlyphs, metrics: FontMetrics): string {
+  return fontSubsets(scene, glyphs, metrics)
+    .map(({ family, weight, data }) =>
+      `@font-face{font-family:"${family}";font-weight:${weight};src:url(data:font/ttf;base64,${base64(data)}) format("truetype")}`)
     .join("");
 }
 

@@ -5,7 +5,9 @@ import {
   compile, format, hasErrors, loadLibrary, standardLibrary, THEMES,
   type Diagnostic, type Severity,
 } from "@sysarch/core";
-import { renderArchitecture } from "@sysarch/render-svg";
+import { toReactFlow } from "@sysarch/export-reactflow";
+import { architectureScene, renderSvg } from "@sysarch/render-svg";
+import { renderPng } from "./png.js";
 
 export const VERSION = "0.1.0";
 
@@ -22,14 +24,17 @@ const USAGE = 2;
 const HELP = `sysarch ${VERSION} — Architecture-as-Code für Systemarchitekturen
 
 Aufruf:
-  sysarch render <dateien…> [--out <verzeichnis|datei.svg|->] [--theme <name>] [--format svg]
+  sysarch render <dateien…> [--out <verzeichnis|datei|->] [--theme <name>]
+                 [--format svg|png|reactflow] [--scale 1|2|3]
   sysarch check  <dateien…> [--max-warnings <n>] [--format text|json] [--verbose]
   sysarch fmt    <dateien…> [--check]
 
 Dateien:  .arch-Dateien (render) bzw. .arch/.archlib (check, fmt); Verzeichnisse werden
           rekursiv durchsucht. \`fmt -\` liest von stdin und schreibt nach stdout.
 
-render    Rendert nach SVG. Ohne --out neben die Quelle, mit --out - nach stdout.
+render    Rendert nach SVG (.svg), PNG (.png, Standard --scale 2) oder React-Flow-JSON
+          (.reactflow.json). Ohne --out neben die Quelle, mit --out - nach stdout
+          (nicht für PNG).
 check     Meldet Diagnosen als datei:zeile:spalte: stufe CODE: meldung.
           Exit 1 bei Fehlern oder mehr Warnungen als --max-warnings.
           Hinweise (I…) nur mit --verbose bzw. immer im JSON-Format.
@@ -71,6 +76,9 @@ const isArgError = (e: unknown) =>
 
 // ── render ─────────────────────────────────────────────────────
 
+const EXTENSIONS = { svg: ".svg", png: ".png", reactflow: ".reactflow.json" } as const;
+type OutputFormat = keyof typeof EXTENSIONS;
+
 function render(args: readonly string[], io: Io): number {
   const { values, positionals } = parseArgs({
     args: [...args],
@@ -79,18 +87,27 @@ function render(args: readonly string[], io: Io): number {
       out: { type: "string", short: "o" },
       format: { type: "string", default: "svg" },
       theme: { type: "string" },
+      scale: { type: "string" },
     },
   });
-  if (values.format !== "svg") {
-    const planned = ["png", "reactflow"].includes(values.format) ? " (geplant für M5)" : "";
-    throw new UsageError(`Format \`${values.format}\` wird nicht unterstützt${planned}; verfügbar: svg`);
+  const outputFormat = values.format as OutputFormat;
+  if (!Object.hasOwn(EXTENSIONS, outputFormat)) {
+    throw new UsageError(`Format \`${values.format}\` wird nicht unterstützt; verfügbar: ${Object.keys(EXTENSIONS).join(", ")}`);
+  }
+  let scale = 2;
+  if (values.scale !== undefined) {
+    if (outputFormat !== "png") throw new UsageError("--scale gilt nur für --format png");
+    scale = Number(values.scale);
+    if (![1, 2, 3].includes(scale)) throw new UsageError(`--scale erwartet 1, 2 oder 3, gefunden \`${values.scale}\``);
   }
   if (values.theme !== undefined && !THEMES.includes(values.theme)) {
     throw new UsageError(`Unbekanntes Theme \`${values.theme}\`; verfügbar: ${THEMES.join(", ")}`);
   }
+  const extension = EXTENSIONS[outputFormat];
   const files = expandInputs(positionals, [".arch"]);
   const out = values.out;
-  const singleTarget = out === "-" || out?.endsWith(".svg");
+  if (out === "-" && outputFormat === "png") throw new UsageError("PNG kann nicht nach stdout geschrieben werden; --out <datei.png> angeben");
+  const singleTarget = out === "-" || out?.endsWith(extension);
   if (singleTarget && files.length !== 1) {
     throw new UsageError(`--out ${out} verlangt genau eine Eingabedatei, gefunden ${files.length}`);
   }
@@ -105,16 +122,19 @@ function render(args: readonly string[], io: Io): number {
       failed = true;
       continue;
     }
-    const svg = renderArchitecture(model, values.theme);
+    const scene = architectureScene(model, values.theme);
+    const output = outputFormat === "png" ? renderPng(scene, scale)
+      : outputFormat === "reactflow" ? JSON.stringify(toReactFlow(model, scene), null, 2) + "\n"
+      : renderSvg(scene);
     if (out === "-") {
-      io.stdout(svg);
+      io.stdout(output as string);
       continue;
     }
-    const target = singleTarget ? out! : join(out ?? dirname(file), basename(file, extname(file)) + ".svg");
+    const target = singleTarget ? out! : join(out ?? dirname(file), basename(file, extname(file)) + extension);
     if (written.has(target)) throw new UsageError(`Mehrere Eingaben schreiben nach ${target}`);
     written.add(target);
     mkdirSync(dirname(target), { recursive: true });
-    writeFileSync(target, svg);
+    writeFileSync(target, output);
     io.stderr(`${file} → ${target}\n`);
   }
   return failed ? FAILED : OK;

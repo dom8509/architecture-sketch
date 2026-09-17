@@ -1,5 +1,8 @@
 import { THEMES } from "@sysarch/core";
 import { SysarchEditor } from "@sysarch/editor";
+import { PNG_SCALES, svgToPng, type PngScale } from "@sysarch/export-png";
+import { toReactFlow } from "@sysarch/export-reactflow";
+import { architectureScene } from "@sysarch/render-svg";
 import { download, openFile, saveFile, type FileHandle } from "./files.ts";
 import { decodeSource, encodeSource, sourceFromHash } from "./share.ts";
 import "./style.css";
@@ -118,12 +121,12 @@ const themeSelect = $<HTMLSelectElement>("theme");
 for (const theme of THEMES) themeSelect.add(new Option(theme, theme));
 themeSelect.addEventListener("change", () => editor.setTheme(themeSelect.value || undefined));
 
-const svgName = () => fileName.replace(/\.[^.]*$/, "") + ".svg";
+const exportName = (extension: string) => fileName.replace(/\.[^.]*$/, "") + extension;
 
 $("export-svg").addEventListener("click", () => {
   const svg = editor.svg;
   if (svg === undefined) return toast("Kein gültiges Diagramm zum Exportieren");
-  download(svgName(), svg, "image/svg+xml");
+  download(exportName(".svg"), svg, "image/svg+xml");
 });
 
 $("copy-svg").addEventListener("click", async () => {
@@ -131,6 +134,27 @@ $("copy-svg").addEventListener("click", async () => {
   if (svg === undefined) return toast("Kein gültiges Diagramm zum Kopieren");
   await navigator.clipboard.writeText(svg);
   toast("SVG in die Zwischenablage kopiert");
+});
+
+const scaleSelect = $<HTMLSelectElement>("png-scale");
+for (const scale of PNG_SCALES) scaleSelect.add(new Option(`${scale}×`, String(scale), scale === 2, scale === 2));
+
+$("export-png").addEventListener("click", async () => {
+  const svg = editor.svg;
+  if (svg === undefined) return toast("Kein gültiges Diagramm zum Exportieren");
+  try {
+    const png = await svgToPng(svg, Number(scaleSelect.value) as PngScale);
+    download(exportName(".png"), png, "image/png");
+  } catch {
+    toast("PNG konnte nicht erzeugt werden");
+  }
+});
+
+$("export-reactflow").addEventListener("click", () => {
+  const { model, svg } = editor.current;
+  if (svg === undefined) return toast("Die Quelle enthält Fehler — React Flow braucht ein gültiges Modell");
+  const flow = toReactFlow(model, architectureScene(model, themeSelect.value || undefined));
+  download(exportName(".reactflow.json"), JSON.stringify(flow, null, 2) + "\n", "application/json");
 });
 
 $("share").addEventListener("click", async () => {

@@ -1,0 +1,501 @@
+{
+  "nodes": [
+    {
+      "id": "supply",
+      "type": "group",
+      "position": {
+        "x": 32,
+        "y": 80
+      },
+      "style": {
+        "width": 384,
+        "height": 192
+      },
+      "data": {
+        "label": "Power",
+        "groupType": "zone"
+      }
+    },
+    {
+      "id": "kl30",
+      "type": "power_source",
+      "parentId": "supply",
+      "extent": "parent",
+      "position": {
+        "x": 16,
+        "y": 48
+      },
+      "width": 96,
+      "height": 64,
+      "data": {
+        "label": "KL30",
+        "category": "power",
+        "importance": "secondary",
+        "size": "small",
+        "shape": "rounded",
+        "icon": {
+          "name": "power",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M13 2L4 14L11 14L10 22L20 10L13 10L13 2Z",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [],
+        "meta": {}
+      }
+    },
+    {
+      "id": "psu",
+      "type": "power_supply",
+      "parentId": "supply",
+      "extent": "parent",
+      "position": {
+        "x": 192,
+        "y": 32
+      },
+      "width": 160,
+      "height": 112,
+      "data": {
+        "label": "Power Supply",
+        "category": "power",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "regulator",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M7 12c1.5-3 3-3 4.5 0s3 3 4.5 0",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "VIN",
+            "label": "VIN",
+            "kind": "power",
+            "side": "left",
+            "offset": 48
+          },
+          {
+            "id": "EN",
+            "label": "EN",
+            "kind": "digital",
+            "side": "left",
+            "offset": 64
+          },
+          {
+            "id": "VOUT",
+            "label": "VOUT",
+            "kind": "power",
+            "side": "right",
+            "offset": 64
+          },
+          {
+            "id": "GND",
+            "label": "GND",
+            "kind": "ground",
+            "side": "bottom",
+            "offset": 80
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "processing",
+      "type": "group",
+      "position": {
+        "x": 416,
+        "y": 80
+      },
+      "style": {
+        "width": 304,
+        "height": 192
+      },
+      "data": {
+        "label": "Processing",
+        "groupType": "zone"
+      }
+    },
+    {
+      "id": "mcu",
+      "type": "microcontroller",
+      "parentId": "processing",
+      "extent": "parent",
+      "position": {
+        "x": 48,
+        "y": 32
+      },
+      "width": 208,
+      "height": 144,
+      "data": {
+        "label": "S32K344",
+        "category": "controller",
+        "importance": "primary",
+        "size": "large",
+        "shape": "rounded",
+        "icon": {
+          "name": "chip",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M7 6h10a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1v-10a1 1 0 0 1 1 -1Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "VDD",
+            "label": "VDD",
+            "kind": "power",
+            "side": "left",
+            "offset": 64
+          },
+          {
+            "id": "CAN0_TX",
+            "label": "CAN0_TX",
+            "kind": "can",
+            "side": "left",
+            "offset": 80
+          },
+          {
+            "id": "CAN0_RX",
+            "label": "CAN0_RX",
+            "kind": "can",
+            "side": "left",
+            "offset": 96
+          },
+          {
+            "id": "SPI0",
+            "label": "SPI0",
+            "kind": "spi",
+            "side": "left",
+            "offset": 112
+          },
+          {
+            "id": "HB_PWM",
+            "label": "HB_PWM",
+            "kind": "pwm",
+            "side": "right",
+            "offset": 96
+          },
+          {
+            "id": "HB_IS",
+            "label": "HB_IS",
+            "kind": "analog",
+            "side": "left",
+            "offset": 128
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "output",
+      "type": "group",
+      "position": {
+        "x": 720,
+        "y": 80
+      },
+      "style": {
+        "width": 432,
+        "height": 192
+      },
+      "data": {
+        "label": "Actuation",
+        "groupType": "zone"
+      }
+    },
+    {
+      "id": "hb",
+      "type": "half_bridge",
+      "parentId": "output",
+      "extent": "parent",
+      "position": {
+        "x": 48,
+        "y": 32
+      },
+      "width": 160,
+      "height": 112,
+      "data": {
+        "label": "TLE9201",
+        "category": "power",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "bridge",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M5 3v18M19 3v18",
+              "mode": "stroke"
+            },
+            {
+              "d": "M5 12h14",
+              "mode": "stroke"
+            },
+            {
+              "d": "M10 9l3 3-3 3",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "VS",
+            "label": "VS",
+            "kind": "power",
+            "side": "left",
+            "offset": 48
+          },
+          {
+            "id": "IN",
+            "label": "IN",
+            "kind": "digital",
+            "side": "left",
+            "offset": 64
+          },
+          {
+            "id": "OUT",
+            "label": "OUT",
+            "kind": "power",
+            "side": "right",
+            "offset": 64
+          },
+          {
+            "id": "IS",
+            "label": "IS",
+            "kind": "analog",
+            "side": "bottom",
+            "offset": 64
+          },
+          {
+            "id": "GND",
+            "label": "GND",
+            "kind": "ground",
+            "side": "bottom",
+            "offset": 112
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "motor",
+      "type": "window_motor",
+      "parentId": "output",
+      "extent": "parent",
+      "position": {
+        "x": 320,
+        "y": 48
+      },
+      "width": 96,
+      "height": 96,
+      "data": {
+        "label": "Window Motor",
+        "category": "actuator",
+        "importance": "secondary",
+        "size": "small",
+        "shape": "circle",
+        "icon": {
+          "name": "window",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M4 20V10l6-6h10v16Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M12 16V9",
+              "mode": "stroke"
+            },
+            {
+              "d": "M9.5 11.5 12 9l2.5 2.5",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [],
+        "meta": {}
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "kl30->psu.VIN#1",
+      "source": "kl30",
+      "sourceHandle": "__body_right",
+      "target": "psu",
+      "targetHandle": "VIN",
+      "type": "step",
+      "label": "12 V",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-supply sa-kind-power",
+      "data": {
+        "kind": "power",
+        "direction": "forward",
+        "points": [
+          [
+            144,
+            160
+          ],
+          [
+            224,
+            160
+          ]
+        ]
+      }
+    },
+    {
+      "id": "psu.VOUT->mcu.VDD#1",
+      "source": "psu",
+      "sourceHandle": "VOUT",
+      "target": "mcu",
+      "targetHandle": "VDD",
+      "type": "step",
+      "label": "3.3 V",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-supply sa-kind-power",
+      "data": {
+        "kind": "power",
+        "direction": "forward",
+        "points": [
+          [
+            384,
+            176
+          ],
+          [
+            464,
+            176
+          ]
+        ]
+      }
+    },
+    {
+      "id": "mcu.HB_PWM->hb.IN#1",
+      "source": "mcu",
+      "sourceHandle": "HB_PWM",
+      "target": "hb",
+      "targetHandle": "IN",
+      "type": "step",
+      "label": "PWM",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-pwm",
+      "data": {
+        "kind": "pwm",
+        "direction": "forward",
+        "points": [
+          [
+            672,
+            208
+          ],
+          [
+            752,
+            208
+          ],
+          [
+            752,
+            176
+          ],
+          [
+            768,
+            176
+          ]
+        ]
+      }
+    },
+    {
+      "id": "hb.IS->mcu.HB_IS#1",
+      "source": "hb",
+      "sourceHandle": "IS",
+      "target": "mcu",
+      "targetHandle": "HB_IS",
+      "type": "step",
+      "label": "Current Feedback",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-analog",
+      "data": {
+        "kind": "analog",
+        "direction": "forward",
+        "points": [
+          [
+            832,
+            224
+          ],
+          [
+            832,
+            288
+          ],
+          [
+            448,
+            288
+          ],
+          [
+            448,
+            240
+          ],
+          [
+            464,
+            240
+          ]
+        ]
+      }
+    },
+    {
+      "id": "hb.OUT->motor#1",
+      "source": "hb",
+      "sourceHandle": "OUT",
+      "target": "motor",
+      "targetHandle": "__body_left",
+      "type": "step",
+      "label": "PWM 12 V",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-supply sa-kind-power",
+      "data": {
+        "kind": "power",
+        "direction": "forward",
+        "points": [
+          [
+            928,
+            176
+          ],
+          [
+            1040,
+            176
+          ]
+        ]
+      }
+    }
+  ],
+  "viewport": {
+    "x": 0,
+    "y": 0,
+    "zoom": 1
+  }
+}

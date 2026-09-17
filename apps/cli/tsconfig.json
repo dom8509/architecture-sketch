@@ -10,6 +10,7 @@
     { "path": "../../packages/core" },
     { "path": "../../packages/themes" },
     { "path": "../../packages/layout" },
-    { "path": "../../packages/render-svg" }
+    { "path": "../../packages/render-svg" },
+    { "path": "../../packages/export-reactflow" }
   ]
 }

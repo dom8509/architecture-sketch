@@ -10,6 +10,8 @@ export default defineConfig({
       "@sysarch/themes": src("themes"),
       "@sysarch/layout": src("layout"),
       "@sysarch/render-svg": src("render-svg"),
+      "@sysarch/export-reactflow": src("export-reactflow"),
+      "@sysarch/export-png": src("export-png"),
       "@sysarch/editor": src("editor"),
     },
   },

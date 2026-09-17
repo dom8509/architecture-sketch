@@ -77,8 +77,38 @@ describe("sysarch render", () => {
     expect(sysarch("render", input, "--theme", "neon")).toMatchObject({ code: 2, stderr: expect.stringContaining("Unbekanntes Theme") });
   });
 
-  it("kennt in v0.1 nur SVG", () => {
-    expect(sysarch("render", examples, "--format", "png")).toMatchObject({ code: 2, stderr: expect.stringContaining("geplant für M5") });
+  it("rendert PNG mit Schrift in der gewählten Skalierung", () => {
+    const input = join(examples, "zonal-ecu.arch");
+    const out = tempDir();
+    expect(sysarch("render", input, "--format", "png", "--out", out).code).toBe(0);
+    const png = readFileSync(join(out, "zonal-ecu.png"));
+    expect(png.subarray(1, 4).toString()).toBe("PNG");
+    // IHDR: Breite und Höhe ab Byte 16; Golden-SVG ist 1184×336
+    expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([2368, 672]);
+
+    const single = join(out, "klein.png");
+    expect(sysarch("render", input, "--format", "png", "--scale", "1", "--out", single).code).toBe(0);
+    expect(readFileSync(single).readUInt32BE(16)).toBe(1184);
+    // Text wird mit der eingebetteten Schrift gezeichnet: ohne Titel sähe das Bild anders aus.
+    const untitled = tempFile("a.arch", readFileSync(input, "utf8").replace('"Zonal ECU"', '""'));
+    expect(sysarch("render", untitled, "--format", "png", "--scale", "1", "--out", join(out, "ohne.png")).code).toBe(0);
+    expect(readFileSync(join(out, "ohne.png")).equals(readFileSync(single))).toBe(false);
+  });
+
+  it("rendert React-Flow-JSON byte-gleich zum Golden File", () => {
+    const input = join(examples, "zonal-ecu.arch");
+    const golden = readFileSync(join(root, "tests", "golden", "zonal-ecu.reactflow.json"), "utf8");
+    expect(sysarch("render", input, "--format", "reactflow", "--out", "-")).toMatchObject({ code: 0, stdout: golden });
+    const out = tempDir();
+    expect(sysarch("render", input, "--format", "reactflow", "--out", out).code).toBe(0);
+    expect(readFileSync(join(out, "zonal-ecu.reactflow.json"), "utf8")).toBe(golden);
+  });
+
+  it("prüft Format und Skalierung", () => {
+    expect(sysarch("render", examples, "--format", "pdf")).toMatchObject({ code: 2, stderr: expect.stringContaining("verfügbar: svg, png, reactflow") });
+    expect(sysarch("render", examples, "--format", "png", "--scale", "4")).toMatchObject({ code: 2, stderr: expect.stringContaining("--scale") });
+    expect(sysarch("render", examples, "--scale", "2")).toMatchObject({ code: 2, stderr: expect.stringContaining("nur für --format png") });
+    expect(sysarch("render", join(examples, "zonal-ecu.arch"), "--format", "png", "--out", "-")).toMatchObject({ code: 2, stderr: expect.stringContaining("stdout") });
   });
 
   it("rendert bei Fehlern nicht und meldet sie im Compiler-Format", () => {
