@@ -66,19 +66,31 @@ architecture "Door ECU" {
 ```
 ````
 
-- Rendering über `registerMarkdownCodeBlockProcessor("sysarch", …)` als inline SVG.
+- Rendering über `registerMarkdownCodeBlockProcessor("sysarch", …)` als inline SVG
+  (mit Präfix je Diagramm, [D23](entscheidungen.md)); die Breite passt sich der Notiz an.
 - **Theme:** Setzt der Codeblock kein `theme`, folgt das Diagramm dem Obsidian-Modus
-  (`automotive-light` / `automotive-dark`). Ein explizites `theme` hat Vorrang.
+  (`automotive-light` / `automotive-dark`) und wechselt beim Umschalten mit. Ein explizites
+  `theme` hat Vorrang.
 - **Kontextmenü am Diagramm:**
-  - Quelle bearbeiten (springt in den Codeblock)
-  - Visuellen Editor öffnen (Modal mit Editor, Vorschau, Eigenschaften — schreibt beim
-    Schließen in genau diesen Codeblock zurück, ermittelt über `getSectionInfo`)
-  - PNG exportieren / SVG exportieren (Ablage im Anhangsordner des Vaults)
+  - Quelle bearbeiten (wechselt in den Bearbeitungsmodus, Cursor in den Codeblock)
+  - Im Editor öffnen (Modal mit Editor, Vorschau und Diagnosen — schreibt beim Schließen
+    in genau diesen Codeblock zurück, ermittelt über `getSectionInfo`; hat sich der Block
+    inzwischen geändert, wird nichts überschrieben und die Quelle landet in der
+    Zwischenablage). Eigenschaften und visuelles Editieren folgen mit M7.
+  - SVG exportieren / PNG exportieren / React Flow JSON exportieren — Ablage im
+    Anhangsordner der Notiz bzw. im eingestellten Exportordner; Dateiname aus dem Titel
+    (`"Door ECU"` → `door-ecu.svg`), ein erneuter Export überschreibt die Datei, damit
+    Einbettungen aktuell bleiben
   - SVG kopieren
-  - React Flow JSON exportieren
-- Diagnosen erscheinen unter dem Diagramm, nicht als Modal.
-- Zusätzlich eigener View für `.arch`-Dateien (gleicher Editor wie in der Web-App).
-- Plugin-Einstellungen: Standard-Theme hell/dunkel, PNG-Skalierung, Exportordner.
+- Diagnosen (Fehler, Warnungen) erscheinen unter dem Diagramm, nicht als Modal; ein Klick
+  springt an die Stelle im Codeblock.
+- Eigener View für `.arch`-Dateien (gleicher Editor wie in der Web-App), Exporte im
+  Menü „Weitere Optionen“ der Ansicht.
+- Befehle: „Codeblock einfügen“, „Neue .arch-Datei“.
+- Plugin-Einstellungen: Standard-Theme („Obsidian folgen“ oder ein festes Theme),
+  PNG-Skalierung, Exportordner (leer = Anhangsordner).
+- **Installation:** Release über GitHub (`main.js`, `manifest.json`, `styles.css`), ausgelöst
+  durch einen Tag mit der Plugin-Version (`0.1.0`); lokal `npm run obsidian:install -- <vault>`.
 
 ## CLI
 

@@ -9,16 +9,18 @@ M2 (Layout & SVG: [`packages/themes`](packages/themes), [`packages/layout`](pack
 [`packages/render-svg`](packages/render-svg)), M3 (CLI: [`apps/cli`](apps/cli)), M4
 (Web-App: [`packages/editor`](packages/editor), [`apps/web`](apps/web)) und M5 (Exporte:
 [`packages/export-png`](packages/export-png), [`packages/export-reactflow`](packages/export-reactflow),
-Test-App [`apps/reactflow-test`](apps/reactflow-test)). Obsidian folgt.
+Test-App [`apps/reactflow-test`](apps/reactflow-test)) und M6 (Obsidian-Plugin:
+[`apps/obsidian`](apps/obsidian)).
 
 ```sh
 npm install
 npm run typecheck
 npm test                  # inkl. Golden Files unter tests/golden/
 npx vitest run -u         # Golden Files nach einer gewollten Layoutänderung aktualisieren
-npm run build             # CLI, Web-App und React-Flow-Test-App bauen
+npm run build             # CLI, Web-App, React-Flow-Test-App und Obsidian-Plugin bauen
 npm run web               # Web-App mit Live-Vorschau unter http://localhost:5173
 npm run reactflow-test    # React-Flow-Test-App: lädt Beispiele bzw. exportiertes JSON
+npm run obsidian:install -- ~/Pfad/zum/Vault   # Obsidian-Plugin bauen und in einen Vault kopieren
 
 npm run sysarch -- render examples --out build/examples
 npm run sysarch -- render examples --format png --scale 2 --out build/examples

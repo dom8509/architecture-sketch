@@ -1,0 +1,23 @@
+{
+  "name": "@sysarch/obsidian",
+  "version": "0.1.0",
+  "private": true,
+  "description": "sysarch Obsidian-Plugin: Codeblöcke, Exporte, .arch-Dateien",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "node esbuild.config.mjs",
+    "dev": "node esbuild.config.mjs --watch"
+  },
+  "dependencies": {
+    "@sysarch/core": "0.1.0",
+    "@sysarch/editor": "0.1.0",
+    "@sysarch/export-png": "0.1.0",
+    "@sysarch/export-reactflow": "0.1.0",
+    "@sysarch/render-svg": "0.1.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "obsidian": "^1.13.1"
+  }
+}

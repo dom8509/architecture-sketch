@@ -1,8 +1,13 @@
+import { scopeSvg } from "./scope.js";
+
+let instances = 0;
+
 /** Vorschau: inline SVG mit Zoom (Mausrad) und Pan (Ziehen); Doppelklick passt ein. */
 export class Preview {
   readonly element: HTMLElement;
   private readonly canvas: HTMLElement;
   private svg: string | undefined;
+  private readonly prefix = `sa${++instances}`;
   private scale = 1;
   private x = 0;
   private y = 0;
@@ -58,7 +63,7 @@ export class Preview {
     if (svg === undefined || svg === this.svg) return;
     const first = this.svg === undefined;
     this.svg = svg;
-    this.canvas.innerHTML = svg;
+    this.canvas.innerHTML = scopeSvg(svg, this.prefix);
     if (first || this.fitted) this.fit();
   }
 

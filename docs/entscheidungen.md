@@ -27,3 +27,4 @@ alten ausdrücklich ersetzt.
 | D20 | **Themes in v0.1 als TypeScript-Design-Tokens**; eine Theme-DSL folgt erst, wenn Teams eigene Corporate Styles brauchen | hält Sprache und M1/M2 klein | `theme … { }` in `.archlib` ab v0.1 |
 | D21 | **Produkt und Repository heißen `sysarch`** | ein Name überall, umbenannt solange noch nichts auf das alte Repo verweist | Repository-Name `architecture-sketch` bis zum Release |
 | D22 | **Lizenz MIT** | kurz, permissiv, üblich im TypeScript-/Obsidian-Ökosystem | Apache-2.0, MPL-2.0 |
+| D23 | **Inline-SVG im DOM mit Präfix je Diagramm** (Schriftfamilie, `id`s); Exporte bleiben unverändert | `@font-face` und `id`s sind dokumentweit — mehrere Diagramme in einer Notiz und die Oberflächenschrift von Obsidian bzw. der Web-App dürfen sich nicht gegenseitig überschreiben | `<img>` mit Data-URL (verliert DOM-Zugriff für Auswahl in M7), eindeutige IDs schon im Renderer (bräche Byte-Gleichheit und Golden Files) |

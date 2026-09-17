@@ -1,0 +1,165 @@
+/* sysarch — Farben ausschließlich über Obsidian-Variablen, damit hell/dunkel und Themes passen */
+
+/* ── Codeblock ──────────────────────────────────────────────── */
+
+.sysarch-block {
+  margin: 0.5em 0;
+}
+.sysarch-diagram {
+  overflow-x: auto;
+  text-align: center;
+}
+.sysarch-diagram > svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── Diagnosen ──────────────────────────────────────────────── */
+
+.sysarch-diagnostics {
+  list-style: none;
+  margin: 0.5em 0 0;
+  padding: 0;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-s);
+  font-size: var(--font-ui-small);
+}
+.sysarch-block .sa-diagnostic button,
+.sysarch-workbench .sa-diagnostic button {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  height: auto;
+  padding: 3px 10px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  color: var(--text-normal);
+  text-align: left;
+  justify-content: flex-start;
+  white-space: normal;
+  font-size: inherit;
+  cursor: pointer;
+}
+.sysarch-block .sa-diagnostic button:hover,
+.sysarch-workbench .sa-diagnostic button:hover {
+  background: var(--background-modifier-hover);
+}
+.sysarch-block .sa-diagnostic-position,
+.sysarch-workbench .sa-diagnostic-position {
+  min-width: 6ch;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.sysarch-block .sa-diagnostic-code,
+.sysarch-workbench .sa-diagnostic-code {
+  min-width: 5ch;
+  font-weight: var(--font-semibold);
+}
+.sysarch-block .sa-error .sa-diagnostic-code,
+.sysarch-workbench .sa-error .sa-diagnostic-code { color: var(--text-error); }
+.sysarch-block .sa-warning .sa-diagnostic-code,
+.sysarch-workbench .sa-warning .sa-diagnostic-code { color: var(--color-orange); }
+.sysarch-workbench .sa-info .sa-diagnostic-code { color: var(--color-blue); }
+
+/* ── Editor, Vorschau (.arch-Ansicht und Modal) ─────────────── */
+
+.sysarch-workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  height: 100%;
+  min-height: 0;
+}
+.view-content.sysarch-workbench {
+  padding: 0;
+}
+.sysarch-editor-pane {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border-right: 1px solid var(--background-modifier-border);
+}
+.sysarch-editor-pane .cm-editor {
+  height: 100%;
+  font-family: var(--font-monospace);
+  font-size: var(--font-text-size);
+}
+.sysarch-editor-pane .cm-editor.cm-focused {
+  outline: none;
+}
+.sysarch-preview-pane {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+.sysarch-diagnostics-pane {
+  grid-column: 1 / -1;
+}
+
+.sysarch-workbench .sa-preview {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  background:
+    radial-gradient(circle, var(--background-modifier-border) 1px, transparent 1px) 0 0 / 16px 16px,
+    var(--background-secondary);
+}
+.sysarch-workbench .sa-preview.sa-panning { cursor: grabbing; }
+.sysarch-workbench .sa-preview-canvas { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+.sysarch-workbench .sa-preview-canvas > svg { display: block; box-shadow: var(--shadow-s); }
+.sysarch-workbench .sa-preview.sa-stale .sa-preview-canvas { opacity: 0.55; filter: grayscale(0.6); }
+.sysarch-workbench .sa-preview.sa-stale::after {
+  content: "Fehler im Quelltext — letzter gültiger Stand";
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  padding: 4px 8px;
+  border-radius: var(--radius-s);
+  background: var(--background-modifier-error);
+  color: var(--text-on-accent);
+  font-size: var(--font-ui-smaller);
+}
+
+.sysarch-workbench .sa-diagnostics {
+  max-height: 26vh;
+  overflow: auto;
+  border-top: 1px solid var(--background-modifier-border);
+  font-size: var(--font-ui-small);
+}
+.sysarch-workbench .sa-diagnostics-summary {
+  position: sticky;
+  top: 0;
+  padding: 4px 10px;
+  background: var(--background-primary);
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+.sysarch-workbench .sa-diagnostics ul { list-style: none; margin: 0; padding: 0; }
+
+.sysarch-modal {
+  width: min(1400px, 94vw);
+  height: min(900px, 90vh);
+  max-width: none;
+  max-height: none;
+}
+.sysarch-modal .modal-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.sysarch-modal .sysarch-workbench {
+  flex: 1;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-s);
+}
+
+@media (max-width: 720px) {
+  .sysarch-workbench { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) auto; }
+  .sysarch-editor-pane { border-right: 0; border-bottom: 1px solid var(--background-modifier-border); }
+}

@@ -15,6 +15,13 @@ Das Brainstorming sah einen zusätzlichen Canvas-Renderer für die Vorschau vor.
 Ein zweiter Renderer wäre genau die Quelle für „im Editor sieht es anders aus als im PNG“,
 die vermieden werden soll. Canvas wird nur zum Rasterisieren verwendet.
 
+Beim Einfügen ins DOM benennt `scopeSvg` (`@sysarch/editor`) die eingebettete Schriftfamilie
+und alle `id`s pro Diagramm um (`Inter` → `sa3-Inter`, `sa-icon-chip` → `sa3-icon-chip`).
+`@font-face` und `id` gelten im HTML-Dokument global: Ohne Präfix ersetzte das Schrift-Subset
+eines Diagramms die gleichnamige Oberflächenschrift, und zwei Diagramme auf einer Seite
+verwiesen gegenseitig auf ihre Icon-Symbole. Geometrie und Darstellung bleiben gleich; Exporte
+und `Analysis.svg` nutzen das unveränderte, byte-gleiche SVG ([D23](entscheidungen.md)).
+
 ---
 
 ## Themes
