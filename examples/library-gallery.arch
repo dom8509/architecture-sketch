@@ -1,0 +1,102 @@
+// Bibliotheksgalerie — jede Form, jedes Icon und jedes Standard-Template einmal.
+// Icons ohne eigenes Standard-Template bekommen hier lokale Templates.
+
+define current_sensor extends sensor {
+    label "Current Sensor"
+    icon current
+}
+
+define temperature_sensor extends sensor {
+    label "Temperature Sensor"
+    icon temperature
+}
+
+define position_sensor extends sensor {
+    label "Position Sensor"
+    icon position
+}
+
+define heater extends load {
+    label "Heater"
+    icon heater
+}
+
+define valve extends actuator {
+    label "Valve"
+    icon valve
+}
+
+define window_motor extends motor {
+    label "Window Motor"
+    icon window
+}
+
+define cloud_service {
+    label "Cloud Service"
+    shape rect
+    icon cloud
+    category external
+    size small
+}
+
+define vehicle {
+    label "Vehicle"
+    shape rect
+    icon vehicle
+    category external
+    size medium
+}
+
+architecture "Library Gallery" {
+    theme automotive-light
+    direction LR
+
+    layout {
+        grid {
+            power_source | battery         | fuse            | relay          | power_supply | ground
+            mcu          | soc             | memory          | watchdog       | oscillator   | block
+            can_trx      | lin_trx         | eth_phy         | switch         | bus          | connector
+            half_bridge  | load            | motor           | window_motor   | heater       | valve
+            sensor       | current_sensor  | temp_sensor     | position       | software     | external_ecu
+            cloud        | vehicle         | .               | .              | .            | .
+        }
+    }
+
+    component power_source: power_source
+    component battery: battery
+    component fuse: fuse
+    component relay: relay
+    component power_supply: power_supply
+    component ground: ground
+
+    component mcu: microcontroller
+    component soc: soc
+    component memory: memory
+    component watchdog: watchdog
+    component oscillator: oscillator
+    component block
+
+    component can_trx: can_transceiver
+    component lin_trx: lin_transceiver
+    component eth_phy: ethernet_phy
+    component switch: switch
+    component bus: bus
+    component connector: connector
+
+    component half_bridge: full_bridge
+    component load: load
+    component motor: motor
+    component window_motor: window_motor
+    component heater: heater
+    component valve: valve
+
+    component sensor: sensor
+    component current_sensor: current_sensor
+    component temp_sensor: temperature_sensor
+    component position: position_sensor
+    component software: software_component
+    component external_ecu: external_ecu
+
+    component cloud: cloud_service
+    component vehicle: vehicle
+}

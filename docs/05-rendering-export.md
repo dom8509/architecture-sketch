@@ -34,8 +34,11 @@ Regeln für jedes Theme:
   immer auch über Linienstärke, Strichmuster oder Endmarker. `technical` ist der Test
   dafür: Das Diagramm muss ohne Farbe vollständig lesbar sein.
 - Kontrast Text/Hintergrund mindestens WCAG AA.
-- Schrift: **Inter** (OFL-Lizenz) — Metriken eingebettet, Schrift im SVG-Export per
-  `@font-face` als Subset eingebettet, damit das SVG überall gleich aussieht.
+- Schrift: **Inter** (OFL-Lizenz) in den Schnitten 400, 500 und 600 — Metriken
+  (Advance-Widths, GPOS-Kerning) und TrueType-Konturen werden von `scripts/build-font.ts`
+  erzeugt und eingecheckt. Der SVG-Export bettet je verwendetem Schnitt eine per Aufruf
+  erzeugte TrueType-Datei mit genau den verwendeten Zeichen und deren Kerning-Paaren
+  (`kern`-Tabelle) per `@font-face` ein.
 
 Beispiel `automotive-light` (Auszug):
 
@@ -59,7 +62,9 @@ categories: {
 | Diagnose | `diagnostic` `debug` | normal, gestrichelt | Pfeil |
 
 Pfeilspitzen folgen `direction`: `forward` → am Ziel, `bidirectional` → beidseitig,
-`none` → keine.
+`none` → keine. Endet eine Verbindung an einem Pin, sitzt die Spitze vor dem Pin-Marker,
+damit sie vollständig sichtbar bleibt. An Kreuzungen überspringt die waagerechte Leitung
+die senkrechte mit einer Brücke.
 
 ## Komponentendarstellung
 
@@ -130,7 +135,11 @@ sind ausgeschlossen (Entscheidung D17).
   Hit-Testing in der Vorschau und für Nachbearbeitung.
 - Deterministische Ausgabe: feste Attributreihenfolge, Zahlen auf zwei Nachkommastellen
   gerundet, keine generierten IDs außer aus Modell-IDs abgeleiteten.
-- Optional `<title>`/`<desc>` aus Architekturtitel für Barrierefreiheit.
+- `<title>` aus dem Architekturtitel für Barrierefreiheit.
+- Verbindungslabels liegen auf einem Rechteck in Hintergrundfarbe (Halo), damit auch
+  Wortzwischenräume die Linie verdecken.
+- Doppellinien sind zwei deckungsgleiche Pfade: außen in Linienfarbe, innen ein Drittel
+  so breit in Hintergrundfarbe.
 
 ## PNG-Export
 

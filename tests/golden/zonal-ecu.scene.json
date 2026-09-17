@@ -1,0 +1,1227 @@
+{
+  "width": 1184,
+  "height": 336,
+  "background": "#FFFFFF",
+  "title": "Zonal ECU",
+  "icons": [
+    {
+      "name": "bridge",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M5 3v18M19 3v18",
+          "mode": "stroke"
+        },
+        {
+          "d": "M5 12h14",
+          "mode": "stroke"
+        },
+        {
+          "d": "M10 9l3 3-3 3",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "chip",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M7 6h10a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1v-10a1 1 0 0 1 1 -1Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "power",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M13 2L4 14L11 14L10 22L20 10L13 10L13 2Z",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "regulator",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M7 12c1.5-3 3-3 4.5 0s3 3 4.5 0",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "window",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M4 20V10l6-6h10v16Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M12 16V9",
+          "mode": "stroke"
+        },
+        {
+          "d": "M9.5 11.5 12 9l2.5 2.5",
+          "mode": "stroke"
+        }
+      ]
+    }
+  ],
+  "items": [
+    {
+      "type": "rect",
+      "ref": "zone:supply",
+      "className": "sa-zone",
+      "x": 32,
+      "y": 80,
+      "width": 384,
+      "height": 192,
+      "radius": 0,
+      "fill": "#F6F7F9",
+      "stroke": "#E3E6EB",
+      "strokeWidth": 1
+    },
+    {
+      "type": "rect",
+      "ref": "zone:processing",
+      "className": "sa-zone",
+      "x": 416,
+      "y": 80,
+      "width": 304,
+      "height": 192,
+      "radius": 0,
+      "fill": "#F6F7F9",
+      "stroke": "#E3E6EB",
+      "strokeWidth": 1
+    },
+    {
+      "type": "rect",
+      "ref": "zone:output",
+      "className": "sa-zone",
+      "x": 720,
+      "y": 80,
+      "width": 432,
+      "height": 192,
+      "radius": 0,
+      "fill": "#F6F7F9",
+      "stroke": "#E3E6EB",
+      "strokeWidth": 1
+    },
+    {
+      "type": "path",
+      "ref": "connection:kl30->psu.VIN#1",
+      "className": "sa-connection sa-group-supply sa-kind-power",
+      "points": [
+        {
+          "x": 144,
+          "y": 160
+        },
+        {
+          "x": 224,
+          "y": 160
+        }
+      ],
+      "stroke": "#8A6100",
+      "strokeWidth": 2.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:kl30->psu.VIN#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 220,
+      "y": 160,
+      "angle": 0,
+      "size": 8,
+      "fill": "#8A6100",
+      "stroke": "#8A6100",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:psu.VOUT->mcu.VDD#1",
+      "className": "sa-connection sa-group-supply sa-kind-power",
+      "points": [
+        {
+          "x": 384,
+          "y": 176
+        },
+        {
+          "x": 464,
+          "y": 176
+        }
+      ],
+      "stroke": "#8A6100",
+      "strokeWidth": 2.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:psu.VOUT->mcu.VDD#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 460,
+      "y": 176,
+      "angle": 0,
+      "size": 8,
+      "fill": "#8A6100",
+      "stroke": "#8A6100",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:mcu.HB_PWM->hb.IN#1",
+      "className": "sa-connection sa-group-single sa-kind-pwm",
+      "points": [
+        {
+          "x": 672,
+          "y": 208
+        },
+        {
+          "x": 752,
+          "y": 208
+        },
+        {
+          "x": 752,
+          "y": 176
+        },
+        {
+          "x": 768,
+          "y": 176
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:mcu.HB_PWM->hb.IN#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 764,
+      "y": 176,
+      "angle": 0,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:hb.IS->mcu.HB_IS#1",
+      "className": "sa-connection sa-group-single sa-kind-analog",
+      "points": [
+        {
+          "x": 832,
+          "y": 224
+        },
+        {
+          "x": 832,
+          "y": 288
+        },
+        {
+          "x": 448,
+          "y": 288
+        },
+        {
+          "x": 448,
+          "y": 240
+        },
+        {
+          "x": 464,
+          "y": 240
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:hb.IS->mcu.HB_IS#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 460,
+      "y": 240,
+      "angle": 0,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:hb.OUT->motor#1",
+      "className": "sa-connection sa-group-supply sa-kind-power",
+      "points": [
+        {
+          "x": 928,
+          "y": 176
+        },
+        {
+          "x": 1040,
+          "y": 176
+        }
+      ],
+      "stroke": "#8A6100",
+      "strokeWidth": 2.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:hb.OUT->motor#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 1040,
+      "y": 176,
+      "angle": 0,
+      "size": 8,
+      "fill": "#8A6100",
+      "stroke": "#8A6100",
+      "strokeWidth": 2
+    },
+    {
+      "type": "shape",
+      "ref": "component:kl30",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 48,
+      "y": 128,
+      "width": 96,
+      "height": 64,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:psu",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 224,
+      "y": 112,
+      "width": 160,
+      "height": 112,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:mcu",
+      "className": "sa-component sa-shape-rounded sa-cat-controller sa-importance-primary",
+      "shape": "rounded",
+      "x": 464,
+      "y": 112,
+      "width": 208,
+      "height": 144,
+      "radius": 8,
+      "fill": "#EAF2FF",
+      "stroke": "#316BD6",
+      "strokeWidth": 2
+    },
+    {
+      "type": "shape",
+      "ref": "component:hb",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 768,
+      "y": 112,
+      "width": 160,
+      "height": 112,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:motor",
+      "className": "sa-component sa-shape-circle sa-cat-actuator sa-importance-secondary",
+      "shape": "circle",
+      "x": 1040,
+      "y": 128,
+      "width": 96,
+      "height": 96,
+      "radius": 0,
+      "fill": "#FFEDE5",
+      "stroke": "#D2602A",
+      "strokeWidth": 1
+    },
+    {
+      "type": "icon",
+      "ref": "component:kl30",
+      "className": "sa-icon",
+      "name": "power",
+      "x": 88,
+      "y": 139.875,
+      "size": 16,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:psu",
+      "className": "sa-icon",
+      "name": "regulator",
+      "x": 247.140625,
+      "y": 120,
+      "size": 20,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:mcu",
+      "className": "sa-icon",
+      "name": "chip",
+      "x": 519.9326171875,
+      "y": 120,
+      "size": 24,
+      "color": "#0F2A5C",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:hb",
+      "className": "sa-icon",
+      "name": "bridge",
+      "x": 807.16845703125,
+      "y": 120,
+      "size": 20,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:motor",
+      "className": "sa-icon",
+      "name": "window",
+      "x": 1080,
+      "y": 147.75,
+      "size": 16,
+      "color": "#4A1B06",
+      "strokeWidth": 2
+    },
+    {
+      "type": "marker",
+      "ref": "pin:psu.VIN",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 224,
+      "y": 160,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:psu.EN",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 224,
+      "y": 176,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:psu.VOUT",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 384,
+      "y": 176,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:psu.GND",
+      "className": "sa-pin sa-group-supply sa-kind-ground",
+      "shape": "pin",
+      "x": 304,
+      "y": 224,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:mcu.VDD",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 464,
+      "y": 176,
+      "angle": 180,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:mcu.CAN0_TX",
+      "className": "sa-pin sa-group-bus sa-kind-can",
+      "shape": "pin",
+      "x": 464,
+      "y": 192,
+      "angle": 180,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:mcu.CAN0_RX",
+      "className": "sa-pin sa-group-bus sa-kind-can",
+      "shape": "pin",
+      "x": 464,
+      "y": 208,
+      "angle": 180,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:mcu.SPI0",
+      "className": "sa-pin sa-group-bus sa-kind-spi",
+      "shape": "pin",
+      "x": 464,
+      "y": 224,
+      "angle": 180,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:mcu.HB_PWM",
+      "className": "sa-pin sa-group-single sa-kind-pwm",
+      "shape": "pin",
+      "x": 672,
+      "y": 208,
+      "angle": 0,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:mcu.HB_IS",
+      "className": "sa-pin sa-group-single sa-kind-analog",
+      "shape": "pin",
+      "x": 464,
+      "y": 240,
+      "angle": 180,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb.VS",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 768,
+      "y": 160,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb.IN",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 768,
+      "y": 176,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb.OUT",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 928,
+      "y": 176,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb.IS",
+      "className": "sa-pin sa-group-single sa-kind-analog",
+      "shape": "pin",
+      "x": 832,
+      "y": 224,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb.GND",
+      "className": "sa-pin sa-group-supply sa-kind-ground",
+      "shape": "pin",
+      "x": 880,
+      "y": 224,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "text",
+      "ref": "zone:supply",
+      "className": "sa-label sa-zone-label",
+      "x": 48,
+      "y": 88,
+      "anchor": "start",
+      "baseline": "top",
+      "lines": [
+        "Power"
+      ],
+      "style": {
+        "size": 12,
+        "weight": 600,
+        "color": "#4B5563",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 15,
+      "ascent": 11.865234375,
+      "width": 36.52734375
+    },
+    {
+      "type": "text",
+      "ref": "zone:processing",
+      "className": "sa-label sa-zone-label",
+      "x": 432,
+      "y": 88,
+      "anchor": "start",
+      "baseline": "top",
+      "lines": [
+        "Processing"
+      ],
+      "style": {
+        "size": 12,
+        "weight": 600,
+        "color": "#4B5563",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 15,
+      "ascent": 11.865234375,
+      "width": 64.8046875
+    },
+    {
+      "type": "text",
+      "ref": "zone:output",
+      "className": "sa-label sa-zone-label",
+      "x": 736,
+      "y": 88,
+      "anchor": "start",
+      "baseline": "top",
+      "lines": [
+        "Actuation"
+      ],
+      "style": {
+        "size": 12,
+        "weight": 600,
+        "color": "#4B5563",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 15,
+      "ascent": 11.865234375,
+      "width": 56.0390625
+    },
+    {
+      "type": "text",
+      "ref": "component:kl30",
+      "className": "sa-label sa-component-label",
+      "x": 96,
+      "y": 163.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "KL30"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 32.830078125
+    },
+    {
+      "type": "text",
+      "ref": "component:psu",
+      "className": "sa-label sa-component-label",
+      "x": 318,
+      "y": 121.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Power Supply"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 85.71875
+    },
+    {
+      "type": "text",
+      "ref": "pin:psu.VIN",
+      "className": "sa-label sa-pin-label",
+      "x": 232,
+      "y": 160,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "VIN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 18.8310546875
+    },
+    {
+      "type": "text",
+      "ref": "pin:psu.EN",
+      "className": "sa-label sa-pin-label",
+      "x": 232,
+      "y": 176,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "EN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 14.8994140625
+    },
+    {
+      "type": "text",
+      "ref": "pin:psu.VOUT",
+      "className": "sa-label sa-pin-label",
+      "x": 376,
+      "y": 176,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "VOUT"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 30.916015625
+    },
+    {
+      "type": "text",
+      "ref": "pin:psu.GND",
+      "className": "sa-label sa-pin-label",
+      "x": 304,
+      "y": 216,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 24.43310546875
+    },
+    {
+      "type": "text",
+      "ref": "component:mcu",
+      "className": "sa-label sa-component-label",
+      "x": 584,
+      "y": 123.25,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "S32K344"
+      ],
+      "style": {
+        "size": 14,
+        "weight": 600,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 17.5,
+      "ascent": 13.8427734375,
+      "width": 64.134765625
+    },
+    {
+      "type": "text",
+      "ref": "pin:mcu.VDD",
+      "className": "sa-label sa-pin-label",
+      "x": 472,
+      "y": 176,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "VDD"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 23.46630859375
+    },
+    {
+      "type": "text",
+      "ref": "pin:mcu.CAN0_TX",
+      "className": "sa-label sa-pin-label",
+      "x": 472,
+      "y": 192,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "CAN0_TX"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 49.134765625
+    },
+    {
+      "type": "text",
+      "ref": "pin:mcu.CAN0_RX",
+      "className": "sa-label sa-pin-label",
+      "x": 472,
+      "y": 208,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "CAN0_RX"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 50.10693359375
+    },
+    {
+      "type": "text",
+      "ref": "pin:mcu.SPI0",
+      "className": "sa-label sa-pin-label",
+      "x": 472,
+      "y": 224,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "SPI0"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 23.9765625
+    },
+    {
+      "type": "text",
+      "ref": "pin:mcu.HB_PWM",
+      "className": "sa-label sa-pin-label",
+      "x": 664,
+      "y": 208,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "HB_PWM"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 48.56005859375
+    },
+    {
+      "type": "text",
+      "ref": "pin:mcu.HB_IS",
+      "className": "sa-label sa-pin-label",
+      "x": 472,
+      "y": 240,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "HB_IS"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 30.77099609375
+    },
+    {
+      "type": "text",
+      "ref": "component:hb",
+      "className": "sa-label sa-component-label",
+      "x": 862,
+      "y": 121.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "TLE9201"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 53.6630859375
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb.VS",
+      "className": "sa-label sa-pin-label",
+      "x": 776,
+      "y": 160,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "VS"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 14.64697265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb.IN",
+      "className": "sa-label sa-pin-label",
+      "x": 776,
+      "y": 176,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "IN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 11.24169921875
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb.OUT",
+      "className": "sa-label sa-pin-label",
+      "x": 920,
+      "y": 176,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "OUT"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 23.697265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb.IS",
+      "className": "sa-label sa-pin-label",
+      "x": 832,
+      "y": 216,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "IS"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 10.01171875
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb.GND",
+      "className": "sa-label sa-pin-label",
+      "x": 880,
+      "y": 216,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 24.43310546875
+    },
+    {
+      "type": "text",
+      "ref": "component:motor",
+      "className": "sa-label sa-component-label",
+      "x": 1088,
+      "y": 171.75,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Window",
+        "Motor"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#4A1B06",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 50.58447265625
+    },
+    {
+      "type": "text",
+      "ref": "connection:kl30->psu.VIN#1",
+      "className": "sa-label sa-connection-label",
+      "x": 184,
+      "y": 160,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "12 V"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 22.0751953125
+    },
+    {
+      "type": "text",
+      "ref": "connection:psu.VOUT->mcu.VDD#1",
+      "className": "sa-label sa-connection-label",
+      "x": 424,
+      "y": 176,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "3.3 V"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 27.3388671875
+    },
+    {
+      "type": "text",
+      "ref": "connection:mcu.HB_PWM->hb.IN#1",
+      "className": "sa-label sa-connection-label",
+      "x": 712,
+      "y": 208,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "PWM"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 28.12841796875
+    },
+    {
+      "type": "text",
+      "ref": "connection:hb.IS->mcu.HB_IS#1",
+      "className": "sa-label sa-connection-label",
+      "x": 640,
+      "y": 288,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "Current Feedback"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 94.337890625
+    },
+    {
+      "type": "text",
+      "ref": "connection:hb.OUT->motor#1",
+      "className": "sa-label sa-connection-label",
+      "x": 984,
+      "y": 176,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "PWM 12 V"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 53.13623046875
+    },
+    {
+      "type": "text",
+      "className": "sa-title",
+      "x": 32,
+      "y": 32,
+      "anchor": "start",
+      "baseline": "top",
+      "lines": [
+        "Zonal ECU"
+      ],
+      "style": {
+        "size": 18,
+        "weight": 600,
+        "color": "#111827",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 22.5,
+      "ascent": 17.7978515625,
+      "width": 90.703125
+    }
+  ]
+}

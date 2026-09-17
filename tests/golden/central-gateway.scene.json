@@ -1,0 +1,2783 @@
+{
+  "width": 1968,
+  "height": 1536,
+  "background": "#FFFFFF",
+  "title": "Central Gateway",
+  "icons": [
+    {
+      "name": "battery",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M3.5 7h14a1.5 1.5 0 0 1 1.5 1.5v7a1.5 1.5 0 0 1 -1.5 1.5h-14a1.5 1.5 0 0 1 -1.5 -1.5v-7a1.5 1.5 0 0 1 1.5 -1.5Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M22 10v4",
+          "mode": "stroke"
+        },
+        {
+          "d": "M6 12h4M8 10v4",
+          "mode": "stroke"
+        },
+        {
+          "d": "M13 12h3",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "bus",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M2 9h20M2 15h20",
+          "mode": "stroke"
+        },
+        {
+          "d": "M6 9V4M12 15v5M18 9V4",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "can",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M2 9h20M2 15h20",
+          "mode": "stroke"
+        },
+        {
+          "d": "M7 9v6M17 9v6",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "cloud",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M7 19h10a4 4 0 0 0 .6-7.96A6 6 0 0 0 6.1 12.2 3.5 3.5 0 0 0 7 19Z",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "connector",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M7 5h8a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-8a1 1 0 0 1 -1 -1v-12a1 1 0 0 1 1 -1Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M16 9h5M16 15h5",
+          "mode": "stroke"
+        },
+        {
+          "d": "M2 12h4",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "ecu",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M7 9h5",
+          "mode": "stroke"
+        },
+        {
+          "d": "M7 13h10",
+          "mode": "stroke"
+        },
+        {
+          "d": "M7 16h6",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "ethernet",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M5 3h14a1 1 0 0 1 1 1v11a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1v-11a1 1 0 0 1 1 -1Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M9 16v5h6v-5",
+          "mode": "stroke"
+        },
+        {
+          "d": "M8 7v3M12 7v3M16 7v3",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "fuse",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M6 9h12a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M2 12h20",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "ground",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M12 3v9",
+          "mode": "stroke"
+        },
+        {
+          "d": "M5 12h14",
+          "mode": "stroke"
+        },
+        {
+          "d": "M8 16h8",
+          "mode": "stroke"
+        },
+        {
+          "d": "M11 20h2",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "lin",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M2 12h20",
+          "mode": "stroke"
+        },
+        {
+          "d": "M5 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M15 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0Z",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "memory",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3v12c0 1.7-3.6 3-8 3s-8-1.3-8-3Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M4 6c0 1.7 3.6 3 8 3s8-1.3 8-3",
+          "mode": "stroke"
+        },
+        {
+          "d": "M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "regulator",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M7 12c1.5-3 3-3 4.5 0s3 3 4.5 0",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "soc",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M9 8h6a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-6a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M12 1v3M12 20v3M1 12h3M20 12h3",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "software",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M8 7l-5 5 5 5",
+          "mode": "stroke"
+        },
+        {
+          "d": "M16 7l5 5-5 5",
+          "mode": "stroke"
+        },
+        {
+          "d": "M14 4l-4 16",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "switch",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M4 7h16a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-16a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M6 12h2M11 12h2M16 12h2",
+          "mode": "stroke"
+        }
+      ]
+    }
+  ],
+  "items": [
+    {
+      "type": "rect",
+      "ref": "system:gateway",
+      "className": "sa-system",
+      "x": 336,
+      "y": 384,
+      "width": 1136,
+      "height": 848,
+      "radius": 10,
+      "fill": "none",
+      "stroke": "#8A94A6",
+      "strokeWidth": 1,
+      "dash": [
+        5,
+        3
+      ]
+    },
+    {
+      "type": "rect",
+      "ref": "system:software",
+      "className": "sa-system",
+      "x": 576,
+      "y": 896,
+      "width": 176,
+      "height": 320,
+      "radius": 10,
+      "fill": "none",
+      "stroke": "#8A94A6",
+      "strokeWidth": 1,
+      "dash": [
+        5,
+        3
+      ]
+    },
+    {
+      "type": "path",
+      "ref": "connection:kl30->fuse.IN#1",
+      "className": "sa-connection sa-group-supply sa-kind-power",
+      "points": [
+        {
+          "x": 80,
+          "y": 144
+        },
+        {
+          "x": 80,
+          "y": 192
+        },
+        {
+          "x": 64,
+          "y": 192
+        },
+        {
+          "x": 64,
+          "y": 288
+        },
+        {
+          "x": 80,
+          "y": 288
+        }
+      ],
+      "stroke": "#8A6100",
+      "strokeWidth": 2.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:kl30->fuse.IN#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 76,
+      "y": 288,
+      "angle": 0,
+      "size": 8,
+      "fill": "#8A6100",
+      "stroke": "#8A6100",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:fuse.OUT->pmic.VIN#1",
+      "className": "sa-connection sa-group-supply sa-kind-power",
+      "points": [
+        {
+          "x": 176,
+          "y": 288
+        },
+        {
+          "x": 320,
+          "y": 288
+        },
+        {
+          "x": 320,
+          "y": 464
+        },
+        {
+          "x": 352,
+          "y": 464
+        }
+      ],
+      "stroke": "#8A6100",
+      "strokeWidth": 2.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:fuse.OUT->pmic.VIN#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 348,
+      "y": 464,
+      "angle": 0,
+      "size": 8,
+      "fill": "#8A6100",
+      "stroke": "#8A6100",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:pmic.VOUT->soc.VDD#1",
+      "className": "sa-connection sa-group-supply sa-kind-power",
+      "points": [
+        {
+          "x": 512,
+          "y": 480
+        },
+        {
+          "x": 672,
+          "y": 480
+        },
+        {
+          "x": 672,
+          "y": 640
+        }
+      ],
+      "stroke": "#8A6100",
+      "strokeWidth": 2.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:pmic.VOUT->soc.VDD#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 672,
+      "y": 636,
+      "angle": 90,
+      "size": 8,
+      "fill": "#8A6100",
+      "stroke": "#8A6100",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:pmic.GND->gnd.GND#1",
+      "className": "sa-connection sa-group-supply sa-kind-ground",
+      "points": [
+        {
+          "x": 432,
+          "y": 528
+        },
+        {
+          "x": 432,
+          "y": 624
+        },
+        {
+          "x": 256,
+          "y": 624
+        },
+        {
+          "x": 256,
+          "y": 640
+        }
+      ],
+      "stroke": "#8A6100",
+      "strokeWidth": 2.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:pmic.GND->gnd.GND#1",
+      "className": "sa-marker sa-marker-ground",
+      "shape": "ground",
+      "x": 256,
+      "y": 636,
+      "angle": 90,
+      "size": 12,
+      "fill": "#8A6100",
+      "stroke": "#8A6100",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:soc.QSPI->flash.SPI#1",
+      "className": "sa-connection sa-group-bus sa-kind-spi",
+      "points": [
+        {
+          "x": 768,
+          "y": 752
+        },
+        {
+          "x": 768,
+          "y": 896
+        },
+        {
+          "x": 1344,
+          "y": 896
+        },
+        {
+          "x": 1344,
+          "y": 992
+        },
+        {
+          "x": 1360,
+          "y": 992
+        }
+      ],
+      "stroke": "#1D5FBF",
+      "strokeWidth": 4.5,
+      "double": true,
+      "gap": "#FFFFFF",
+      "hops": [
+        {
+          "x": 960,
+          "y": 896
+        },
+        {
+          "x": 1152,
+          "y": 896
+        }
+      ],
+      "hopRadius": 5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:soc.QSPI->flash.SPI#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 1356,
+      "y": 992,
+      "angle": 0,
+      "size": 8,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:soc->router#1",
+      "className": "sa-connection sa-group-single sa-kind-signal",
+      "points": [
+        {
+          "x": 656,
+          "y": 752
+        },
+        {
+          "x": 656,
+          "y": 928
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:router->uds#1",
+      "className": "sa-connection sa-group-single sa-kind-signal",
+      "points": [
+        {
+          "x": 656,
+          "y": 992
+        },
+        {
+          "x": 656,
+          "y": 1136
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:router->uds#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 656,
+      "y": 1136,
+      "angle": 90,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:router->uds#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 656,
+      "y": 992,
+      "angle": 270,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:soc.ETH0->phy.MII#1",
+      "className": "sa-connection sa-group-bus sa-kind-ethernet",
+      "points": [
+        {
+          "x": 576,
+          "y": 752
+        },
+        {
+          "x": 576,
+          "y": 880
+        },
+        {
+          "x": 736,
+          "y": 880
+        },
+        {
+          "x": 736,
+          "y": 912
+        },
+        {
+          "x": 768,
+          "y": 912
+        },
+        {
+          "x": 768,
+          "y": 976
+        },
+        {
+          "x": 784,
+          "y": 976
+        }
+      ],
+      "stroke": "#1D5FBF",
+      "strokeWidth": 4.5,
+      "double": true,
+      "gap": "#FFFFFF",
+      "hops": [
+        {
+          "x": 656,
+          "y": 880
+        }
+      ],
+      "hopRadius": 5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:soc.ETH0->phy.MII#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 780,
+      "y": 976,
+      "angle": 0,
+      "size": 8,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "marker",
+      "ref": "connection:soc.ETH0->phy.MII#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 576,
+      "y": 756,
+      "angle": 270,
+      "size": 8,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:phy.MDI->backbone#1",
+      "className": "sa-connection sa-group-bus sa-kind-ethernet",
+      "points": [
+        {
+          "x": 944,
+          "y": 976
+        },
+        {
+          "x": 960,
+          "y": 976
+        },
+        {
+          "x": 960,
+          "y": 1120
+        },
+        {
+          "x": 1584,
+          "y": 1120
+        },
+        {
+          "x": 1584,
+          "y": 1136
+        }
+      ],
+      "stroke": "#1D5FBF",
+      "strokeWidth": 4.5,
+      "double": true,
+      "gap": "#FFFFFF"
+    },
+    {
+      "type": "marker",
+      "ref": "connection:phy.MDI->backbone#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 1584,
+      "y": 1136,
+      "angle": 90,
+      "size": 8,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "marker",
+      "ref": "connection:phy.MDI->backbone#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 948,
+      "y": 976,
+      "angle": 180,
+      "size": 8,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:soc.CAN0_TX->can_trx.TXD#1",
+      "className": "sa-connection sa-group-single sa-kind-digital",
+      "points": [
+        {
+          "x": 640,
+          "y": 752
+        },
+        {
+          "x": 640,
+          "y": 864
+        },
+        {
+          "x": 960,
+          "y": 864
+        },
+        {
+          "x": 960,
+          "y": 960
+        },
+        {
+          "x": 976,
+          "y": 960
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5,
+      "hops": [
+        {
+          "x": 656,
+          "y": 864
+        },
+        {
+          "x": 768,
+          "y": 864
+        }
+      ],
+      "hopRadius": 5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:soc.CAN0_TX->can_trx.TXD#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 972,
+      "y": 960,
+      "angle": 0,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:can_trx.CANH->body_can#1",
+      "className": "sa-connection sa-group-bus sa-kind-can",
+      "points": [
+        {
+          "x": 1136,
+          "y": 976
+        },
+        {
+          "x": 1152,
+          "y": 976
+        },
+        {
+          "x": 1152,
+          "y": 1104
+        },
+        {
+          "x": 1760,
+          "y": 1104
+        },
+        {
+          "x": 1760,
+          "y": 1136
+        }
+      ],
+      "stroke": "#1D5FBF",
+      "strokeWidth": 4.5,
+      "double": true,
+      "gap": "#FFFFFF"
+    },
+    {
+      "type": "marker",
+      "ref": "connection:can_trx.CANH->body_can#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 1760,
+      "y": 1136,
+      "angle": 90,
+      "size": 8,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "marker",
+      "ref": "connection:can_trx.CANH->body_can#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 1140,
+      "y": 976,
+      "angle": 180,
+      "size": 8,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:soc.LIN0_TX->lin_trx.TXD#1",
+      "className": "sa-connection sa-group-single sa-kind-digital",
+      "points": [
+        {
+          "x": 704,
+          "y": 752
+        },
+        {
+          "x": 704,
+          "y": 848
+        },
+        {
+          "x": 1152,
+          "y": 848
+        },
+        {
+          "x": 1152,
+          "y": 960
+        },
+        {
+          "x": 1168,
+          "y": 960
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5,
+      "hops": [
+        {
+          "x": 768,
+          "y": 848
+        }
+      ],
+      "hopRadius": 5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:soc.LIN0_TX->lin_trx.TXD#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 1164,
+      "y": 960,
+      "angle": 0,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:lin_trx.LIN->seat_lin#1",
+      "className": "sa-connection sa-group-bus sa-kind-lin",
+      "points": [
+        {
+          "x": 1328,
+          "y": 976
+        },
+        {
+          "x": 1344,
+          "y": 976
+        },
+        {
+          "x": 1344,
+          "y": 1088
+        },
+        {
+          "x": 1888,
+          "y": 1088
+        },
+        {
+          "x": 1888,
+          "y": 1136
+        }
+      ],
+      "stroke": "#1D5FBF",
+      "strokeWidth": 4.5,
+      "double": true,
+      "gap": "#FFFFFF"
+    },
+    {
+      "type": "marker",
+      "ref": "connection:lin_trx.LIN->seat_lin#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 1888,
+      "y": 1136,
+      "angle": 90,
+      "size": 8,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "marker",
+      "ref": "connection:lin_trx.LIN->seat_lin#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 1332,
+      "y": 976,
+      "angle": 180,
+      "size": 8,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:debugger->soc.JTAG#1",
+      "className": "sa-connection sa-group-diagnostic sa-kind-debug",
+      "points": [
+        {
+          "x": 1552,
+          "y": 496
+        },
+        {
+          "x": 1552,
+          "y": 720
+        },
+        {
+          "x": 800,
+          "y": 720
+        }
+      ],
+      "stroke": "#6D28D9",
+      "strokeWidth": 1.5,
+      "dash": [
+        6,
+        4
+      ]
+    },
+    {
+      "type": "marker",
+      "ref": "connection:debugger->soc.JTAG#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 804,
+      "y": 720,
+      "angle": 180,
+      "size": 8,
+      "fill": "#6D28D9",
+      "stroke": "#6D28D9",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:backbone->tcu#1",
+      "className": "sa-connection sa-group-bus sa-kind-ethernet",
+      "points": [
+        {
+          "x": 1584,
+          "y": 1200
+        },
+        {
+          "x": 1584,
+          "y": 1296
+        },
+        {
+          "x": 768,
+          "y": 1296
+        },
+        {
+          "x": 768,
+          "y": 1312
+        }
+      ],
+      "stroke": "#1D5FBF",
+      "strokeWidth": 4.5,
+      "double": true,
+      "gap": "#FFFFFF"
+    },
+    {
+      "type": "marker",
+      "ref": "connection:backbone->tcu#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 768,
+      "y": 1312,
+      "angle": 90,
+      "size": 8,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "marker",
+      "ref": "connection:backbone->tcu#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 1584,
+      "y": 1200,
+      "angle": 270,
+      "size": 8,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:tcu->backend#1",
+      "className": "sa-connection sa-group-diagnostic sa-kind-diagnostic",
+      "points": [
+        {
+          "x": 768,
+          "y": 1376
+        },
+        {
+          "x": 768,
+          "y": 1440
+        }
+      ],
+      "stroke": "#6D28D9",
+      "strokeWidth": 1.5,
+      "dash": [
+        6,
+        4
+      ]
+    },
+    {
+      "type": "marker",
+      "ref": "connection:tcu->backend#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 768,
+      "y": 1440,
+      "angle": 90,
+      "size": 8,
+      "fill": "#6D28D9",
+      "stroke": "#6D28D9",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "shape",
+      "ref": "component:kl30",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 32,
+      "y": 80,
+      "width": 96,
+      "height": 64,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:fuse",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 80,
+      "y": 208,
+      "width": 96,
+      "height": 96,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:pmic",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 352,
+      "y": 416,
+      "width": 160,
+      "height": 112,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:soc",
+      "className": "sa-component sa-shape-rounded sa-cat-controller sa-importance-primary",
+      "shape": "rounded",
+      "x": 528,
+      "y": 640,
+      "width": 272,
+      "height": 112,
+      "radius": 8,
+      "fill": "#EAF2FF",
+      "stroke": "#316BD6",
+      "strokeWidth": 2
+    },
+    {
+      "type": "shape",
+      "ref": "component:flash",
+      "className": "sa-component sa-shape-cylinder sa-cat-controller sa-importance-secondary",
+      "shape": "cylinder",
+      "x": 1360,
+      "y": 912,
+      "width": 96,
+      "height": 112,
+      "radius": 8,
+      "fill": "#EAF2FF",
+      "stroke": "#316BD6",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:router",
+      "className": "sa-component sa-shape-hexagon sa-cat-software sa-importance-secondary",
+      "shape": "hexagon",
+      "x": 592,
+      "y": 928,
+      "width": 144,
+      "height": 64,
+      "radius": 0,
+      "fill": "#E6F6F8",
+      "stroke": "#1F8A9A",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:uds",
+      "className": "sa-component sa-shape-hexagon sa-cat-software sa-importance-secondary",
+      "shape": "hexagon",
+      "x": 592,
+      "y": 1136,
+      "width": 128,
+      "height": 64,
+      "radius": 0,
+      "fill": "#E6F6F8",
+      "stroke": "#1F8A9A",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:phy",
+      "className": "sa-component sa-shape-rounded sa-cat-communication sa-importance-secondary",
+      "shape": "rounded",
+      "x": 784,
+      "y": 928,
+      "width": 160,
+      "height": 80,
+      "radius": 8,
+      "fill": "#E7F7EF",
+      "stroke": "#23875B",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:can_trx",
+      "className": "sa-component sa-shape-rounded sa-cat-communication sa-importance-secondary",
+      "shape": "rounded",
+      "x": 976,
+      "y": 912,
+      "width": 160,
+      "height": 112,
+      "radius": 8,
+      "fill": "#E7F7EF",
+      "stroke": "#23875B",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:lin_trx",
+      "className": "sa-component sa-shape-rounded sa-cat-communication sa-importance-secondary",
+      "shape": "rounded",
+      "x": 1168,
+      "y": 912,
+      "width": 160,
+      "height": 96,
+      "radius": 8,
+      "fill": "#E7F7EF",
+      "stroke": "#23875B",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:gnd",
+      "className": "sa-component sa-shape-circle sa-cat-power sa-importance-secondary",
+      "shape": "circle",
+      "x": 208,
+      "y": 640,
+      "width": 96,
+      "height": 96,
+      "radius": 0,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:debugger",
+      "className": "sa-component sa-shape-rect sa-cat-external sa-importance-secondary",
+      "shape": "rect",
+      "x": 1504,
+      "y": 432,
+      "width": 96,
+      "height": 64,
+      "radius": 0,
+      "fill": "#F1F2F4",
+      "stroke": "#6B7280",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:backbone",
+      "className": "sa-component sa-shape-rounded sa-cat-communication sa-importance-secondary",
+      "shape": "rounded",
+      "x": 1504,
+      "y": 1136,
+      "width": 176,
+      "height": 64,
+      "radius": 8,
+      "fill": "#E7F7EF",
+      "stroke": "#23875B",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:body_can",
+      "className": "sa-component sa-shape-rect sa-cat-communication sa-importance-secondary",
+      "shape": "rect",
+      "x": 1712,
+      "y": 1136,
+      "width": 96,
+      "height": 64,
+      "radius": 0,
+      "fill": "#E7F7EF",
+      "stroke": "#23875B",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:seat_lin",
+      "className": "sa-component sa-shape-rect sa-cat-communication sa-importance-secondary",
+      "shape": "rect",
+      "x": 1840,
+      "y": 1136,
+      "width": 96,
+      "height": 64,
+      "radius": 0,
+      "fill": "#E7F7EF",
+      "stroke": "#23875B",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:tcu",
+      "className": "sa-component sa-shape-rect sa-cat-external sa-importance-secondary",
+      "shape": "rect",
+      "x": 688,
+      "y": 1312,
+      "width": 160,
+      "height": 64,
+      "radius": 0,
+      "fill": "#F1F2F4",
+      "stroke": "#6B7280",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:backend",
+      "className": "sa-component sa-shape-rect sa-cat-external sa-importance-secondary",
+      "shape": "rect",
+      "x": 720,
+      "y": 1440,
+      "width": 96,
+      "height": 64,
+      "radius": 0,
+      "fill": "#F1F2F4",
+      "stroke": "#6B7280",
+      "strokeWidth": 1
+    },
+    {
+      "type": "icon",
+      "ref": "component:kl30",
+      "className": "sa-icon",
+      "name": "battery",
+      "x": 72,
+      "y": 91.875,
+      "size": 16,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:fuse",
+      "className": "sa-icon",
+      "name": "fuse",
+      "x": 120,
+      "y": 216,
+      "size": 16,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:pmic",
+      "className": "sa-icon",
+      "name": "regulator",
+      "x": 401.359619140625,
+      "y": 424,
+      "size": 20,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:soc",
+      "className": "sa-icon",
+      "name": "soc",
+      "x": 629.38916015625,
+      "y": 663.75,
+      "size": 24,
+      "color": "#0F2A5C",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:flash",
+      "className": "sa-icon",
+      "name": "memory",
+      "x": 1400,
+      "y": 932,
+      "size": 16,
+      "color": "#0F2A5C",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:router",
+      "className": "sa-icon",
+      "name": "software",
+      "x": 656,
+      "y": 939.875,
+      "size": 16,
+      "color": "#0A3940",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:uds",
+      "className": "sa-icon",
+      "name": "software",
+      "x": 648,
+      "y": 1147.875,
+      "size": 16,
+      "color": "#0A3940",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:phy",
+      "className": "sa-icon",
+      "name": "ethernet",
+      "x": 797.216064453125,
+      "y": 936,
+      "size": 20,
+      "color": "#0D3B26",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:can_trx",
+      "className": "sa-icon",
+      "name": "can",
+      "x": 989.5048828125,
+      "y": 920,
+      "size": 20,
+      "color": "#0D3B26",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:lin_trx",
+      "className": "sa-icon",
+      "name": "lin",
+      "x": 1185.291259765625,
+      "y": 920,
+      "size": 20,
+      "color": "#0D3B26",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:gnd",
+      "className": "sa-icon",
+      "name": "ground",
+      "x": 248,
+      "y": 675.75,
+      "size": 16,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:debugger",
+      "className": "sa-icon",
+      "name": "connector",
+      "x": 1544,
+      "y": 443.875,
+      "size": 16,
+      "color": "#1F2937",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:backbone",
+      "className": "sa-icon",
+      "name": "switch",
+      "x": 1518.84619140625,
+      "y": 1158,
+      "size": 20,
+      "color": "#0D3B26",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:body_can",
+      "className": "sa-icon",
+      "name": "bus",
+      "x": 1752,
+      "y": 1147.875,
+      "size": 16,
+      "color": "#0D3B26",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:seat_lin",
+      "className": "sa-icon",
+      "name": "bus",
+      "x": 1880,
+      "y": 1147.875,
+      "size": 16,
+      "color": "#0D3B26",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:tcu",
+      "className": "sa-icon",
+      "name": "ecu",
+      "x": 740.374755859375,
+      "y": 1334,
+      "size": 20,
+      "color": "#1F2937",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:backend",
+      "className": "sa-icon",
+      "name": "cloud",
+      "x": 760,
+      "y": 1451.875,
+      "size": 16,
+      "color": "#1F2937",
+      "strokeWidth": 2
+    },
+    {
+      "type": "marker",
+      "ref": "pin:fuse.IN",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 80,
+      "y": 288,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:fuse.OUT",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 176,
+      "y": 288,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:pmic.VIN",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 352,
+      "y": 464,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:pmic.EN",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 352,
+      "y": 480,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:pmic.VOUT",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 512,
+      "y": 480,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:pmic.GND",
+      "className": "sa-pin sa-group-supply sa-kind-ground",
+      "shape": "pin",
+      "x": 432,
+      "y": 528,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:soc.VDD",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 672,
+      "y": 640,
+      "angle": 270,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:soc.ETH0",
+      "className": "sa-pin sa-group-bus sa-kind-ethernet",
+      "shape": "pin",
+      "x": 576,
+      "y": 752,
+      "angle": 90,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:soc.CAN0_TX",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 640,
+      "y": 752,
+      "angle": 90,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:soc.LIN0_TX",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 704,
+      "y": 752,
+      "angle": 90,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:soc.QSPI",
+      "className": "sa-pin sa-group-bus sa-kind-spi",
+      "shape": "pin",
+      "x": 768,
+      "y": 752,
+      "angle": 90,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:soc.JTAG",
+      "className": "sa-pin sa-group-diagnostic sa-kind-debug",
+      "shape": "pin",
+      "x": 800,
+      "y": 720,
+      "angle": 0,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:flash.SPI",
+      "className": "sa-pin sa-group-bus sa-kind-spi",
+      "shape": "pin",
+      "x": 1360,
+      "y": 992,
+      "angle": 180,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:phy.MII",
+      "className": "sa-pin sa-group-bus sa-kind-bus",
+      "shape": "pin",
+      "x": 784,
+      "y": 976,
+      "angle": 180,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:phy.MDI",
+      "className": "sa-pin sa-group-bus sa-kind-ethernet",
+      "shape": "pin",
+      "x": 944,
+      "y": 976,
+      "angle": 0,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:can_trx.TXD",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 976,
+      "y": 960,
+      "angle": 180,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:can_trx.RXD",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 976,
+      "y": 976,
+      "angle": 180,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:can_trx.STB",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 976,
+      "y": 992,
+      "angle": 180,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:can_trx.CANH",
+      "className": "sa-pin sa-group-bus sa-kind-can",
+      "shape": "pin",
+      "x": 1136,
+      "y": 976,
+      "angle": 0,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:can_trx.CANL",
+      "className": "sa-pin sa-group-bus sa-kind-can",
+      "shape": "pin",
+      "x": 1136,
+      "y": 992,
+      "angle": 0,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:lin_trx.TXD",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 1168,
+      "y": 960,
+      "angle": 180,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:lin_trx.RXD",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 1168,
+      "y": 976,
+      "angle": 180,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:lin_trx.LIN",
+      "className": "sa-pin sa-group-bus sa-kind-lin",
+      "shape": "pin",
+      "x": 1328,
+      "y": 976,
+      "angle": 0,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:gnd.GND",
+      "className": "sa-pin sa-group-supply sa-kind-ground",
+      "shape": "pin",
+      "x": 256,
+      "y": 640,
+      "angle": 270,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "text",
+      "ref": "system:gateway",
+      "className": "sa-label sa-system-label",
+      "x": 344,
+      "y": 388,
+      "anchor": "start",
+      "baseline": "top",
+      "lines": [
+        "Central Gateway"
+      ],
+      "style": {
+        "size": 12,
+        "weight": 600,
+        "color": "#4B5563",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 15,
+      "ascent": 11.865234375,
+      "width": 95.935546875
+    },
+    {
+      "type": "text",
+      "ref": "system:software",
+      "className": "sa-label sa-system-label",
+      "x": 584,
+      "y": 900,
+      "anchor": "start",
+      "baseline": "top",
+      "lines": [
+        "Software"
+      ],
+      "style": {
+        "size": 12,
+        "weight": 600,
+        "color": "#4B5563",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 15,
+      "ascent": 11.865234375,
+      "width": 52.3125
+    },
+    {
+      "type": "text",
+      "ref": "component:kl30",
+      "className": "sa-label sa-component-label",
+      "x": 80,
+      "y": 115.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "KL30"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 32.830078125
+    },
+    {
+      "type": "text",
+      "ref": "component:fuse",
+      "className": "sa-label sa-component-label",
+      "x": 128,
+      "y": 240,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "F12"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 21.06787109375
+    },
+    {
+      "type": "text",
+      "ref": "pin:fuse.IN",
+      "className": "sa-label sa-pin-label",
+      "x": 88,
+      "y": 288,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "IN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 11.24169921875
+    },
+    {
+      "type": "text",
+      "ref": "pin:fuse.OUT",
+      "className": "sa-label sa-pin-label",
+      "x": 168,
+      "y": 288,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "OUT"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 23.697265625
+    },
+    {
+      "type": "text",
+      "ref": "component:pmic",
+      "className": "sa-label sa-component-label",
+      "x": 446,
+      "y": 425.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "PMIC"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 33.28076171875
+    },
+    {
+      "type": "text",
+      "ref": "pin:pmic.VIN",
+      "className": "sa-label sa-pin-label",
+      "x": 360,
+      "y": 464,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "VIN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 18.8310546875
+    },
+    {
+      "type": "text",
+      "ref": "pin:pmic.EN",
+      "className": "sa-label sa-pin-label",
+      "x": 360,
+      "y": 480,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "EN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 14.8994140625
+    },
+    {
+      "type": "text",
+      "ref": "pin:pmic.VOUT",
+      "className": "sa-label sa-pin-label",
+      "x": 504,
+      "y": 480,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "VOUT"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 30.916015625
+    },
+    {
+      "type": "text",
+      "ref": "pin:pmic.GND",
+      "className": "sa-label sa-pin-label",
+      "x": 432,
+      "y": 520,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 24.43310546875
+    },
+    {
+      "type": "text",
+      "ref": "component:soc",
+      "className": "sa-label sa-component-label",
+      "x": 680,
+      "y": 667,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "S32G"
+      ],
+      "style": {
+        "size": 14,
+        "weight": 600,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 17.5,
+      "ascent": 13.8427734375,
+      "width": 37.2216796875
+    },
+    {
+      "type": "text",
+      "ref": "pin:soc.VDD",
+      "className": "sa-label sa-pin-label",
+      "x": 672,
+      "y": 648,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "VDD"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 23.46630859375
+    },
+    {
+      "type": "text",
+      "ref": "pin:soc.ETH0",
+      "className": "sa-label sa-pin-label",
+      "x": 576,
+      "y": 744,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "ETH0"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 28.82666015625
+    },
+    {
+      "type": "text",
+      "ref": "pin:soc.CAN0_TX",
+      "className": "sa-label sa-pin-label",
+      "x": 640,
+      "y": 744,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "CAN0_TX"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 49.134765625
+    },
+    {
+      "type": "text",
+      "ref": "pin:soc.LIN0_TX",
+      "className": "sa-label sa-pin-label",
+      "x": 704,
+      "y": 744,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "LIN0_TX"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 42.89892578125
+    },
+    {
+      "type": "text",
+      "ref": "pin:soc.QSPI",
+      "className": "sa-label sa-pin-label",
+      "x": 768,
+      "y": 744,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "QSPI"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 25.4482421875
+    },
+    {
+      "type": "text",
+      "ref": "pin:soc.JTAG",
+      "className": "sa-label sa-pin-label",
+      "x": 792,
+      "y": 720,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "JTAG"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 27.865234375
+    },
+    {
+      "type": "text",
+      "ref": "component:flash",
+      "className": "sa-label sa-component-label",
+      "x": 1408,
+      "y": 956,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "QSPI NOR"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 61.95947265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:flash.SPI",
+      "className": "sa-label sa-pin-label",
+      "x": 1368,
+      "y": 992,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "SPI"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 17.037109375
+    },
+    {
+      "type": "text",
+      "ref": "component:router",
+      "className": "sa-label sa-component-label",
+      "x": 664,
+      "y": 963.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Signal Router"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0A3940",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 82.55126953125
+    },
+    {
+      "type": "text",
+      "ref": "component:uds",
+      "className": "sa-label sa-component-label",
+      "x": 656,
+      "y": 1171.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "UDS Server"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0A3940",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 72.0205078125
+    },
+    {
+      "type": "text",
+      "ref": "component:phy",
+      "className": "sa-label sa-component-label",
+      "x": 878,
+      "y": 937.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "100BASE-T1 PHY"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 105.56787109375
+    },
+    {
+      "type": "text",
+      "ref": "pin:phy.MII",
+      "className": "sa-label sa-pin-label",
+      "x": 792,
+      "y": 976,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "MII"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 15.8447265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:phy.MDI",
+      "className": "sa-label sa-pin-label",
+      "x": 936,
+      "y": 976,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "MDI"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 20.8291015625
+    },
+    {
+      "type": "text",
+      "ref": "component:can_trx",
+      "className": "sa-label sa-component-label",
+      "x": 1070,
+      "y": 921.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "CAN Transceiver"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 104.990234375
+    },
+    {
+      "type": "text",
+      "ref": "pin:can_trx.TXD",
+      "className": "sa-label sa-pin-label",
+      "x": 984,
+      "y": 960,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "TXD"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 22.54248046875
+    },
+    {
+      "type": "text",
+      "ref": "pin:can_trx.RXD",
+      "className": "sa-label sa-pin-label",
+      "x": 984,
+      "y": 976,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "RXD"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 22.52099609375
+    },
+    {
+      "type": "text",
+      "ref": "pin:can_trx.STB",
+      "className": "sa-label sa-pin-label",
+      "x": 984,
+      "y": 992,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "STB"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 21.3017578125
+    },
+    {
+      "type": "text",
+      "ref": "pin:can_trx.CANH",
+      "className": "sa-label sa-pin-label",
+      "x": 1128,
+      "y": 976,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "CANH"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 31.8720703125
+    },
+    {
+      "type": "text",
+      "ref": "pin:can_trx.CANL",
+      "className": "sa-label sa-pin-label",
+      "x": 1128,
+      "y": 992,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "CANL"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 29.9169921875
+    },
+    {
+      "type": "text",
+      "ref": "component:lin_trx",
+      "className": "sa-label sa-component-label",
+      "x": 1262,
+      "y": 921.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "LIN Transceiver"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 97.41748046875
+    },
+    {
+      "type": "text",
+      "ref": "pin:lin_trx.TXD",
+      "className": "sa-label sa-pin-label",
+      "x": 1176,
+      "y": 960,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "TXD"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 22.54248046875
+    },
+    {
+      "type": "text",
+      "ref": "pin:lin_trx.RXD",
+      "className": "sa-label sa-pin-label",
+      "x": 1176,
+      "y": 976,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "RXD"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 22.52099609375
+    },
+    {
+      "type": "text",
+      "ref": "pin:lin_trx.LIN",
+      "className": "sa-label sa-pin-label",
+      "x": 1320,
+      "y": 976,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "LIN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 17.46142578125
+    },
+    {
+      "type": "text",
+      "ref": "component:gnd",
+      "className": "sa-label sa-component-label",
+      "x": 256,
+      "y": 699.75,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 28.9326171875
+    },
+    {
+      "type": "text",
+      "ref": "pin:gnd.GND",
+      "className": "sa-label sa-pin-label",
+      "x": 256,
+      "y": 658.0588745030457,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 24.43310546875
+    },
+    {
+      "type": "text",
+      "ref": "component:debugger",
+      "className": "sa-label sa-component-label",
+      "x": 1552,
+      "y": 467.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "JTAG"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#1F2937",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 33.2998046875
+    },
+    {
+      "type": "text",
+      "ref": "component:backbone",
+      "className": "sa-label sa-component-label",
+      "x": 1606,
+      "y": 1159.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Ethernet Backbone"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 118.3076171875
+    },
+    {
+      "type": "text",
+      "ref": "component:body_can",
+      "className": "sa-label sa-component-label",
+      "x": 1760,
+      "y": 1171.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Body CAN"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 63.755859375
+    },
+    {
+      "type": "text",
+      "ref": "component:seat_lin",
+      "className": "sa-label sa-component-label",
+      "x": 1888,
+      "y": 1171.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Seat LIN"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 52.15869140625
+    },
+    {
+      "type": "text",
+      "ref": "component:tcu",
+      "className": "sa-label sa-component-label",
+      "x": 782,
+      "y": 1335.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "TCU"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#1F2937",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 27.25048828125
+    },
+    {
+      "type": "text",
+      "ref": "component:backend",
+      "className": "sa-label sa-component-label",
+      "x": 768,
+      "y": 1475.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Backend"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#1F2937",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 53.8916015625
+    },
+    {
+      "type": "text",
+      "ref": "connection:fuse.OUT->pmic.VIN#1",
+      "className": "sa-label sa-connection-label",
+      "x": 320,
+      "y": 376,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "12 V"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 22.0751953125
+    },
+    {
+      "type": "text",
+      "ref": "connection:pmic.VOUT->soc.VDD#1",
+      "className": "sa-label sa-connection-label",
+      "x": 592,
+      "y": 480,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "1.8 V"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 25.287109375
+    },
+    {
+      "type": "text",
+      "ref": "connection:router->uds#1",
+      "className": "sa-label sa-connection-label",
+      "x": 656,
+      "y": 1064,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "PDU"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 23.138671875
+    },
+    {
+      "type": "text",
+      "ref": "connection:tcu->backend#1",
+      "className": "sa-label sa-connection-label",
+      "x": 768,
+      "y": 1408,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "OTA"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 22.12890625
+    },
+    {
+      "type": "text",
+      "className": "sa-title",
+      "x": 32,
+      "y": 32,
+      "anchor": "start",
+      "baseline": "top",
+      "lines": [
+        "Central Gateway"
+      ],
+      "style": {
+        "size": 18,
+        "weight": 600,
+        "color": "#111827",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 22.5,
+      "ascent": 17.7978515625,
+      "width": 143.9033203125
+    }
+  ]
+}

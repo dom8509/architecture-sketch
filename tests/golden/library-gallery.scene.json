@@ -1,0 +1,3083 @@
+{
+  "width": 1440,
+  "height": 912,
+  "background": "#FFFFFF",
+  "title": "Library Gallery",
+  "icons": [
+    {
+      "name": "battery",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M3.5 7h14a1.5 1.5 0 0 1 1.5 1.5v7a1.5 1.5 0 0 1 -1.5 1.5h-14a1.5 1.5 0 0 1 -1.5 -1.5v-7a1.5 1.5 0 0 1 1.5 -1.5Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M22 10v4",
+          "mode": "stroke"
+        },
+        {
+          "d": "M6 12h4M8 10v4",
+          "mode": "stroke"
+        },
+        {
+          "d": "M13 12h3",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "bridge",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M5 3v18M19 3v18",
+          "mode": "stroke"
+        },
+        {
+          "d": "M5 12h14",
+          "mode": "stroke"
+        },
+        {
+          "d": "M10 9l3 3-3 3",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "bus",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M2 9h20M2 15h20",
+          "mode": "stroke"
+        },
+        {
+          "d": "M6 9V4M12 15v5M18 9V4",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "can",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M2 9h20M2 15h20",
+          "mode": "stroke"
+        },
+        {
+          "d": "M7 9v6M17 9v6",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "chip",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M7 6h10a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1v-10a1 1 0 0 1 1 -1Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "clock",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M12 7v5l3 2",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "cloud",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M7 19h10a4 4 0 0 0 .6-7.96A6 6 0 0 0 6.1 12.2 3.5 3.5 0 0 0 7 19Z",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "connector",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M7 5h8a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-8a1 1 0 0 1 -1 -1v-12a1 1 0 0 1 1 -1Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M16 9h5M16 15h5",
+          "mode": "stroke"
+        },
+        {
+          "d": "M2 12h4",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "current",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M7 12h10",
+          "mode": "stroke"
+        },
+        {
+          "d": "M13 8l4 4-4 4",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "ecu",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M7 9h5",
+          "mode": "stroke"
+        },
+        {
+          "d": "M7 13h10",
+          "mode": "stroke"
+        },
+        {
+          "d": "M7 16h6",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "ethernet",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M5 3h14a1 1 0 0 1 1 1v11a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1v-11a1 1 0 0 1 1 -1Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M9 16v5h6v-5",
+          "mode": "stroke"
+        },
+        {
+          "d": "M8 7v3M12 7v3M16 7v3",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "fuse",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M6 9h12a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M2 12h20",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "ground",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M12 3v9",
+          "mode": "stroke"
+        },
+        {
+          "d": "M5 12h14",
+          "mode": "stroke"
+        },
+        {
+          "d": "M8 16h8",
+          "mode": "stroke"
+        },
+        {
+          "d": "M11 20h2",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "heater",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M7 3c-2 3 2 5 0 9s2 6 0 9",
+          "mode": "stroke"
+        },
+        {
+          "d": "M12 3c-2 3 2 5 0 9s2 6 0 9",
+          "mode": "stroke"
+        },
+        {
+          "d": "M17 3c-2 3 2 5 0 9s2 6 0 9",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "lamp",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M6 10a6 6 0 1 0 12 0a6 6 0 1 0 -12 0Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M9.5 16v2.5h5V16",
+          "mode": "stroke"
+        },
+        {
+          "d": "M10 21.5h4",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "lin",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M2 12h20",
+          "mode": "stroke"
+        },
+        {
+          "d": "M5 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M15 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0Z",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "memory",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3v12c0 1.7-3.6 3-8 3s-8-1.3-8-3Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M4 6c0 1.7 3.6 3 8 3s8-1.3 8-3",
+          "mode": "stroke"
+        },
+        {
+          "d": "M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "motor",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M8 16V8l4 5 4-5v8",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "position",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M5 12a7 7 0 1 0 14 0a7 7 0 1 0 -14 0Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M12 2v4M12 18v4M2 12h4M18 12h4",
+          "mode": "stroke"
+        },
+        {
+          "d": "M10.5 12a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0Z",
+          "mode": "fill"
+        }
+      ]
+    },
+    {
+      "name": "power",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M13 2L4 14L11 14L10 22L20 10L13 10L13 2Z",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "regulator",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M7 12c1.5-3 3-3 4.5 0s3 3 4.5 0",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "relay",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M7 17h3l5-8",
+          "mode": "stroke"
+        },
+        {
+          "d": "M14 17h3",
+          "mode": "stroke"
+        },
+        {
+          "d": "M7 7h4",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "sensor",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M9 12a3 3 0 1 0 6 0a3 3 0 1 0 -6 0Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M6.3 6.3a8 8 0 0 0 0 11.4",
+          "mode": "stroke"
+        },
+        {
+          "d": "M17.7 6.3a8 8 0 0 1 0 11.4",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "soc",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M9 8h6a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-6a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M12 1v3M12 20v3M1 12h3M20 12h3",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "software",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M8 7l-5 5 5 5",
+          "mode": "stroke"
+        },
+        {
+          "d": "M16 7l5 5-5 5",
+          "mode": "stroke"
+        },
+        {
+          "d": "M14 4l-4 16",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "switch",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M4 7h16a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-16a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M6 12h2M11 12h2M16 12h2",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "temperature",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M14 14.8V4a2 2 0 0 0-4 0v10.8a4 4 0 1 0 4 0Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M12 10v7",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "valve",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M3 7v10l9-5Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M21 7v10l-9-5Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M12 12V5",
+          "mode": "stroke"
+        },
+        {
+          "d": "M9 5h6",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "vehicle",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M3 16v-4l2.5-5h13L21 12v4Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M5 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M15 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M3 12h18",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "watchdog",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M4 13a8 8 0 1 0 16 0a8 8 0 1 0 -16 0Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M12 9v4l2.5 2.5",
+          "mode": "stroke"
+        },
+        {
+          "d": "M9 2h6",
+          "mode": "stroke"
+        },
+        {
+          "d": "M12 2v3",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "window",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M4 20V10l6-6h10v16Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M12 16V9",
+          "mode": "stroke"
+        },
+        {
+          "d": "M9.5 11.5 12 9l2.5 2.5",
+          "mode": "stroke"
+        }
+      ]
+    }
+  ],
+  "items": [
+    {
+      "type": "shape",
+      "ref": "component:power_source",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 80,
+      "y": 96,
+      "width": 112,
+      "height": 64,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:battery",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 352,
+      "y": 96,
+      "width": 96,
+      "height": 64,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:fuse",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 608,
+      "y": 96,
+      "width": 96,
+      "height": 96,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:relay",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 832,
+      "y": 96,
+      "width": 96,
+      "height": 112,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:power_supply",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 1024,
+      "y": 96,
+      "width": 160,
+      "height": 112,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:ground",
+      "className": "sa-component sa-shape-circle sa-cat-power sa-importance-secondary",
+      "shape": "circle",
+      "x": 1280,
+      "y": 96,
+      "width": 96,
+      "height": 96,
+      "radius": 0,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:mcu",
+      "className": "sa-component sa-shape-rounded sa-cat-controller sa-importance-secondary",
+      "shape": "rounded",
+      "x": 32,
+      "y": 240,
+      "width": 208,
+      "height": 96,
+      "radius": 8,
+      "fill": "#EAF2FF",
+      "stroke": "#316BD6",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:soc",
+      "className": "sa-component sa-shape-rounded sa-cat-controller sa-importance-secondary",
+      "shape": "rounded",
+      "x": 304,
+      "y": 240,
+      "width": 208,
+      "height": 96,
+      "radius": 8,
+      "fill": "#EAF2FF",
+      "stroke": "#316BD6",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:memory",
+      "className": "sa-component sa-shape-cylinder sa-cat-controller sa-importance-secondary",
+      "shape": "cylinder",
+      "x": 608,
+      "y": 240,
+      "width": 96,
+      "height": 112,
+      "radius": 8,
+      "fill": "#EAF2FF",
+      "stroke": "#316BD6",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:watchdog",
+      "className": "sa-component sa-shape-rounded sa-cat-controller sa-importance-secondary",
+      "shape": "rounded",
+      "x": 832,
+      "y": 240,
+      "width": 96,
+      "height": 96,
+      "radius": 8,
+      "fill": "#EAF2FF",
+      "stroke": "#316BD6",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:oscillator",
+      "className": "sa-component sa-shape-rounded sa-cat-controller sa-importance-secondary",
+      "shape": "rounded",
+      "x": 1056,
+      "y": 240,
+      "width": 96,
+      "height": 96,
+      "radius": 8,
+      "fill": "#EAF2FF",
+      "stroke": "#316BD6",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:block",
+      "className": "sa-component sa-shape-rounded sa-cat-generic sa-importance-secondary",
+      "shape": "rounded",
+      "x": 1248,
+      "y": 240,
+      "width": 160,
+      "height": 64,
+      "radius": 8,
+      "fill": "#FFFFFF",
+      "stroke": "#8A94A6",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:can_trx",
+      "className": "sa-component sa-shape-rounded sa-cat-communication sa-importance-secondary",
+      "shape": "rounded",
+      "x": 48,
+      "y": 384,
+      "width": 160,
+      "height": 112,
+      "radius": 8,
+      "fill": "#E7F7EF",
+      "stroke": "#23875B",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:lin_trx",
+      "className": "sa-component sa-shape-rounded sa-cat-communication sa-importance-secondary",
+      "shape": "rounded",
+      "x": 320,
+      "y": 384,
+      "width": 160,
+      "height": 96,
+      "radius": 8,
+      "fill": "#E7F7EF",
+      "stroke": "#23875B",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:eth_phy",
+      "className": "sa-component sa-shape-rounded sa-cat-communication sa-importance-secondary",
+      "shape": "rounded",
+      "x": 576,
+      "y": 384,
+      "width": 160,
+      "height": 80,
+      "radius": 8,
+      "fill": "#E7F7EF",
+      "stroke": "#23875B",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:switch",
+      "className": "sa-component sa-shape-rounded sa-cat-communication sa-importance-secondary",
+      "shape": "rounded",
+      "x": 800,
+      "y": 384,
+      "width": 160,
+      "height": 64,
+      "radius": 8,
+      "fill": "#E7F7EF",
+      "stroke": "#23875B",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:bus",
+      "className": "sa-component sa-shape-rect sa-cat-communication sa-importance-secondary",
+      "shape": "rect",
+      "x": 1056,
+      "y": 384,
+      "width": 96,
+      "height": 64,
+      "radius": 0,
+      "fill": "#E7F7EF",
+      "stroke": "#23875B",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:connector",
+      "className": "sa-component sa-shape-rect sa-cat-external sa-importance-secondary",
+      "shape": "rect",
+      "x": 1280,
+      "y": 384,
+      "width": 96,
+      "height": 64,
+      "radius": 0,
+      "fill": "#F1F2F4",
+      "stroke": "#6B7280",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:half_bridge",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 48,
+      "y": 528,
+      "width": 160,
+      "height": 128,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:load",
+      "className": "sa-component sa-shape-rounded sa-cat-actuator sa-importance-secondary",
+      "shape": "rounded",
+      "x": 352,
+      "y": 512,
+      "width": 96,
+      "height": 64,
+      "radius": 8,
+      "fill": "#FFEDE5",
+      "stroke": "#D2602A",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:motor",
+      "className": "sa-component sa-shape-circle sa-cat-actuator sa-importance-secondary",
+      "shape": "circle",
+      "x": 608,
+      "y": 512,
+      "width": 96,
+      "height": 96,
+      "radius": 0,
+      "fill": "#FFEDE5",
+      "stroke": "#D2602A",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:window_motor",
+      "className": "sa-component sa-shape-circle sa-cat-actuator sa-importance-secondary",
+      "shape": "circle",
+      "x": 832,
+      "y": 512,
+      "width": 96,
+      "height": 96,
+      "radius": 0,
+      "fill": "#FFEDE5",
+      "stroke": "#D2602A",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:heater",
+      "className": "sa-component sa-shape-rounded sa-cat-actuator sa-importance-secondary",
+      "shape": "rounded",
+      "x": 1056,
+      "y": 512,
+      "width": 96,
+      "height": 64,
+      "radius": 8,
+      "fill": "#FFEDE5",
+      "stroke": "#D2602A",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:valve",
+      "className": "sa-component sa-shape-rounded sa-cat-actuator sa-importance-secondary",
+      "shape": "rounded",
+      "x": 1280,
+      "y": 512,
+      "width": 96,
+      "height": 64,
+      "radius": 8,
+      "fill": "#FFEDE5",
+      "stroke": "#D2602A",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:sensor",
+      "className": "sa-component sa-shape-circle sa-cat-sensor sa-importance-secondary",
+      "shape": "circle",
+      "x": 80,
+      "y": 688,
+      "width": 96,
+      "height": 96,
+      "radius": 0,
+      "fill": "#F3EDFF",
+      "stroke": "#7B4FD1",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:current_sensor",
+      "className": "sa-component sa-shape-circle sa-cat-sensor sa-importance-secondary",
+      "shape": "circle",
+      "x": 352,
+      "y": 672,
+      "width": 96,
+      "height": 96,
+      "radius": 0,
+      "fill": "#F3EDFF",
+      "stroke": "#7B4FD1",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:temp_sensor",
+      "className": "sa-component sa-shape-circle sa-cat-sensor sa-importance-secondary",
+      "shape": "circle",
+      "x": 592,
+      "y": 672,
+      "width": 128,
+      "height": 128,
+      "radius": 0,
+      "fill": "#F3EDFF",
+      "stroke": "#7B4FD1",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:position",
+      "className": "sa-component sa-shape-circle sa-cat-sensor sa-importance-secondary",
+      "shape": "circle",
+      "x": 832,
+      "y": 672,
+      "width": 96,
+      "height": 96,
+      "radius": 0,
+      "fill": "#F3EDFF",
+      "stroke": "#7B4FD1",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:software",
+      "className": "sa-component sa-shape-hexagon sa-cat-software sa-importance-secondary",
+      "shape": "hexagon",
+      "x": 1024,
+      "y": 672,
+      "width": 160,
+      "height": 64,
+      "radius": 0,
+      "fill": "#E6F6F8",
+      "stroke": "#1F8A9A",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:external_ecu",
+      "className": "sa-component sa-shape-rect sa-cat-external sa-importance-secondary",
+      "shape": "rect",
+      "x": 1248,
+      "y": 672,
+      "width": 160,
+      "height": 64,
+      "radius": 0,
+      "fill": "#F1F2F4",
+      "stroke": "#6B7280",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:cloud",
+      "className": "sa-component sa-shape-rect sa-cat-external sa-importance-secondary",
+      "shape": "rect",
+      "x": 80,
+      "y": 816,
+      "width": 112,
+      "height": 64,
+      "radius": 0,
+      "fill": "#F1F2F4",
+      "stroke": "#6B7280",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:vehicle",
+      "className": "sa-component sa-shape-rect sa-cat-external sa-importance-secondary",
+      "shape": "rect",
+      "x": 320,
+      "y": 800,
+      "width": 160,
+      "height": 64,
+      "radius": 0,
+      "fill": "#F1F2F4",
+      "stroke": "#6B7280",
+      "strokeWidth": 1
+    },
+    {
+      "type": "icon",
+      "ref": "component:power_source",
+      "className": "sa-icon",
+      "name": "power",
+      "x": 128,
+      "y": 107.875,
+      "size": 16,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:battery",
+      "className": "sa-icon",
+      "name": "battery",
+      "x": 392,
+      "y": 107.875,
+      "size": 16,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:fuse",
+      "className": "sa-icon",
+      "name": "fuse",
+      "x": 648,
+      "y": 104,
+      "size": 16,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:relay",
+      "className": "sa-icon",
+      "name": "relay",
+      "x": 872,
+      "y": 104,
+      "size": 16,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:power_supply",
+      "className": "sa-icon",
+      "name": "regulator",
+      "x": 1047.140625,
+      "y": 104,
+      "size": 20,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:ground",
+      "className": "sa-icon",
+      "name": "ground",
+      "x": 1320,
+      "y": 131.75,
+      "size": 16,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:mcu",
+      "className": "sa-icon",
+      "name": "chip",
+      "x": 104.489501953125,
+      "y": 276,
+      "size": 24,
+      "color": "#0F2A5C",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:soc",
+      "className": "sa-icon",
+      "name": "soc",
+      "x": 379.10791015625,
+      "y": 276,
+      "size": 24,
+      "color": "#0F2A5C",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:memory",
+      "className": "sa-icon",
+      "name": "memory",
+      "x": 648,
+      "y": 260,
+      "size": 16,
+      "color": "#0F2A5C",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:watchdog",
+      "className": "sa-icon",
+      "name": "watchdog",
+      "x": 872,
+      "y": 248,
+      "size": 16,
+      "color": "#0F2A5C",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:oscillator",
+      "className": "sa-icon",
+      "name": "clock",
+      "x": 1096,
+      "y": 248,
+      "size": 16,
+      "color": "#0F2A5C",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:can_trx",
+      "className": "sa-icon",
+      "name": "can",
+      "x": 61.5048828125,
+      "y": 392,
+      "size": 20,
+      "color": "#0D3B26",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:lin_trx",
+      "className": "sa-icon",
+      "name": "lin",
+      "x": 337.291259765625,
+      "y": 392,
+      "size": 20,
+      "color": "#0D3B26",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:eth_phy",
+      "className": "sa-icon",
+      "name": "ethernet",
+      "x": 600.32763671875,
+      "y": 392,
+      "size": 20,
+      "color": "#0D3B26",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:switch",
+      "className": "sa-icon",
+      "name": "switch",
+      "x": 844.9638671875,
+      "y": 406,
+      "size": 20,
+      "color": "#0D3B26",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:bus",
+      "className": "sa-icon",
+      "name": "bus",
+      "x": 1096,
+      "y": 395.875,
+      "size": 16,
+      "color": "#0D3B26",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:connector",
+      "className": "sa-icon",
+      "name": "connector",
+      "x": 1320,
+      "y": 395.875,
+      "size": 16,
+      "color": "#1F2937",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:half_bridge",
+      "className": "sa-icon",
+      "name": "bridge",
+      "x": 81.135009765625,
+      "y": 536,
+      "size": 20,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:load",
+      "className": "sa-icon",
+      "name": "lamp",
+      "x": 392,
+      "y": 523.875,
+      "size": 16,
+      "color": "#4A1B06",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:motor",
+      "className": "sa-icon",
+      "name": "motor",
+      "x": 648,
+      "y": 539.875,
+      "size": 16,
+      "color": "#4A1B06",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:window_motor",
+      "className": "sa-icon",
+      "name": "window",
+      "x": 872,
+      "y": 531.75,
+      "size": 16,
+      "color": "#4A1B06",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:heater",
+      "className": "sa-icon",
+      "name": "heater",
+      "x": 1096,
+      "y": 523.875,
+      "size": 16,
+      "color": "#4A1B06",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:valve",
+      "className": "sa-icon",
+      "name": "valve",
+      "x": 1320,
+      "y": 523.875,
+      "size": 16,
+      "color": "#4A1B06",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:sensor",
+      "className": "sa-icon",
+      "name": "sensor",
+      "x": 120,
+      "y": 715.875,
+      "size": 16,
+      "color": "#2E1766",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:current_sensor",
+      "className": "sa-icon",
+      "name": "current",
+      "x": 392,
+      "y": 691.75,
+      "size": 16,
+      "color": "#2E1766",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:temp_sensor",
+      "className": "sa-icon",
+      "name": "temperature",
+      "x": 648,
+      "y": 707.75,
+      "size": 16,
+      "color": "#2E1766",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:position",
+      "className": "sa-icon",
+      "name": "position",
+      "x": 872,
+      "y": 691.75,
+      "size": 16,
+      "color": "#2E1766",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:software",
+      "className": "sa-icon",
+      "name": "software",
+      "x": 1096,
+      "y": 683.875,
+      "size": 16,
+      "color": "#0A3940",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:external_ecu",
+      "className": "sa-icon",
+      "name": "ecu",
+      "x": 1273.3115234375,
+      "y": 694,
+      "size": 20,
+      "color": "#1F2937",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:cloud",
+      "className": "sa-icon",
+      "name": "cloud",
+      "x": 128,
+      "y": 827.875,
+      "size": 16,
+      "color": "#1F2937",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:vehicle",
+      "className": "sa-icon",
+      "name": "vehicle",
+      "x": 363.170654296875,
+      "y": 822,
+      "size": 20,
+      "color": "#1F2937",
+      "strokeWidth": 2
+    },
+    {
+      "type": "marker",
+      "ref": "pin:fuse.IN",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 608,
+      "y": 176,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:fuse.OUT",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 704,
+      "y": 176,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:relay.IN",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 832,
+      "y": 176,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:relay.COIL",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 832,
+      "y": 192,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:relay.OUT",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 928,
+      "y": 176,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:power_supply.VIN",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 1024,
+      "y": 144,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:power_supply.EN",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 1024,
+      "y": 160,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:power_supply.VOUT",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 1184,
+      "y": 160,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:power_supply.GND",
+      "className": "sa-pin sa-group-supply sa-kind-ground",
+      "shape": "pin",
+      "x": 1104,
+      "y": 208,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:ground.GND",
+      "className": "sa-pin sa-group-supply sa-kind-ground",
+      "shape": "pin",
+      "x": 1328,
+      "y": 96,
+      "angle": 270,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:memory.SPI",
+      "className": "sa-pin sa-group-bus sa-kind-spi",
+      "shape": "pin",
+      "x": 608,
+      "y": 320,
+      "angle": 180,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:watchdog.WDI",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 832,
+      "y": 320,
+      "angle": 180,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:watchdog.RESET",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 928,
+      "y": 320,
+      "angle": 0,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:oscillator.CLK",
+      "className": "sa-pin sa-group-single sa-kind-signal",
+      "shape": "pin",
+      "x": 1152,
+      "y": 320,
+      "angle": 0,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:can_trx.TXD",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 48,
+      "y": 432,
+      "angle": 180,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:can_trx.RXD",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 48,
+      "y": 448,
+      "angle": 180,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:can_trx.STB",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 48,
+      "y": 464,
+      "angle": 180,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:can_trx.CANH",
+      "className": "sa-pin sa-group-bus sa-kind-can",
+      "shape": "pin",
+      "x": 208,
+      "y": 448,
+      "angle": 0,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:can_trx.CANL",
+      "className": "sa-pin sa-group-bus sa-kind-can",
+      "shape": "pin",
+      "x": 208,
+      "y": 464,
+      "angle": 0,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:lin_trx.TXD",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 320,
+      "y": 432,
+      "angle": 180,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:lin_trx.RXD",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 320,
+      "y": 448,
+      "angle": 180,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:lin_trx.LIN",
+      "className": "sa-pin sa-group-bus sa-kind-lin",
+      "shape": "pin",
+      "x": 480,
+      "y": 448,
+      "angle": 0,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:eth_phy.MII",
+      "className": "sa-pin sa-group-bus sa-kind-bus",
+      "shape": "pin",
+      "x": 576,
+      "y": 432,
+      "angle": 180,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:eth_phy.MDI",
+      "className": "sa-pin sa-group-bus sa-kind-ethernet",
+      "shape": "pin",
+      "x": 736,
+      "y": 432,
+      "angle": 0,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:half_bridge.VS",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 48,
+      "y": 576,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:half_bridge.IN1",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 48,
+      "y": 592,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:half_bridge.IN2",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 48,
+      "y": 608,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:half_bridge.OUT1",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 208,
+      "y": 592,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:half_bridge.OUT2",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 208,
+      "y": 608,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:half_bridge.IS",
+      "className": "sa-pin sa-group-single sa-kind-analog",
+      "shape": "pin",
+      "x": 112,
+      "y": 656,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:half_bridge.GND",
+      "className": "sa-pin sa-group-supply sa-kind-ground",
+      "shape": "pin",
+      "x": 160,
+      "y": 656,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "text",
+      "ref": "component:power_source",
+      "className": "sa-label sa-component-label",
+      "x": 136,
+      "y": 131.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Power Source"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 86.57568359375
+    },
+    {
+      "type": "text",
+      "ref": "component:battery",
+      "className": "sa-label sa-component-label",
+      "x": 400,
+      "y": 131.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Battery"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 44.94140625
+    },
+    {
+      "type": "text",
+      "ref": "component:fuse",
+      "className": "sa-label sa-component-label",
+      "x": 656,
+      "y": 128,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Fuse"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 29.681640625
+    },
+    {
+      "type": "text",
+      "ref": "pin:fuse.IN",
+      "className": "sa-label sa-pin-label",
+      "x": 616,
+      "y": 176,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "IN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 11.24169921875
+    },
+    {
+      "type": "text",
+      "ref": "pin:fuse.OUT",
+      "className": "sa-label sa-pin-label",
+      "x": 696,
+      "y": 176,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "OUT"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 23.697265625
+    },
+    {
+      "type": "text",
+      "ref": "component:relay",
+      "className": "sa-label sa-component-label",
+      "x": 880,
+      "y": 128,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Relay"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 33.81396484375
+    },
+    {
+      "type": "text",
+      "ref": "pin:relay.IN",
+      "className": "sa-label sa-pin-label",
+      "x": 840,
+      "y": 176,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "IN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 11.24169921875
+    },
+    {
+      "type": "text",
+      "ref": "pin:relay.COIL",
+      "className": "sa-label sa-pin-label",
+      "x": 840,
+      "y": 192,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "COIL"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 25.6201171875
+    },
+    {
+      "type": "text",
+      "ref": "pin:relay.OUT",
+      "className": "sa-label sa-pin-label",
+      "x": 920,
+      "y": 176,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "OUT"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 23.697265625
+    },
+    {
+      "type": "text",
+      "ref": "component:power_supply",
+      "className": "sa-label sa-component-label",
+      "x": 1118,
+      "y": 105.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Power Supply"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 85.71875
+    },
+    {
+      "type": "text",
+      "ref": "pin:power_supply.VIN",
+      "className": "sa-label sa-pin-label",
+      "x": 1032,
+      "y": 144,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "VIN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 18.8310546875
+    },
+    {
+      "type": "text",
+      "ref": "pin:power_supply.EN",
+      "className": "sa-label sa-pin-label",
+      "x": 1032,
+      "y": 160,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "EN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 14.8994140625
+    },
+    {
+      "type": "text",
+      "ref": "pin:power_supply.VOUT",
+      "className": "sa-label sa-pin-label",
+      "x": 1176,
+      "y": 160,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "VOUT"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 30.916015625
+    },
+    {
+      "type": "text",
+      "ref": "pin:power_supply.GND",
+      "className": "sa-label sa-pin-label",
+      "x": 1104,
+      "y": 200,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 24.43310546875
+    },
+    {
+      "type": "text",
+      "ref": "component:ground",
+      "className": "sa-label sa-component-label",
+      "x": 1328,
+      "y": 155.75,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 28.9326171875
+    },
+    {
+      "type": "text",
+      "ref": "pin:ground.GND",
+      "className": "sa-label sa-pin-label",
+      "x": 1328,
+      "y": 114.05887450304571,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 24.43310546875
+    },
+    {
+      "type": "text",
+      "ref": "component:mcu",
+      "className": "sa-label sa-component-label",
+      "x": 152,
+      "y": 279.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "MCU"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 31.02099609375
+    },
+    {
+      "type": "text",
+      "ref": "component:soc",
+      "className": "sa-label sa-component-label",
+      "x": 424,
+      "y": 279.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "SoC"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 25.7841796875
+    },
+    {
+      "type": "text",
+      "ref": "component:memory",
+      "className": "sa-label sa-component-label",
+      "x": 656,
+      "y": 284,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Memory"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 51.6064453125
+    },
+    {
+      "type": "text",
+      "ref": "pin:memory.SPI",
+      "className": "sa-label sa-pin-label",
+      "x": 616,
+      "y": 320,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "SPI"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 17.037109375
+    },
+    {
+      "type": "text",
+      "ref": "component:watchdog",
+      "className": "sa-label sa-component-label",
+      "x": 880,
+      "y": 272,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Watchdog"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 63.29248046875
+    },
+    {
+      "type": "text",
+      "ref": "pin:watchdog.WDI",
+      "className": "sa-label sa-pin-label",
+      "x": 840,
+      "y": 320,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "WDI"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 21.7314453125
+    },
+    {
+      "type": "text",
+      "ref": "pin:watchdog.RESET",
+      "className": "sa-label sa-pin-label",
+      "x": 920,
+      "y": 320,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "RESET"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 34.4609375
+    },
+    {
+      "type": "text",
+      "ref": "component:oscillator",
+      "className": "sa-label sa-component-label",
+      "x": 1104,
+      "y": 272,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Oscillator"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 58.85546875
+    },
+    {
+      "type": "text",
+      "ref": "pin:oscillator.CLK",
+      "className": "sa-label sa-pin-label",
+      "x": 1144,
+      "y": 320,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "CLK"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 21.6455078125
+    },
+    {
+      "type": "text",
+      "ref": "component:block",
+      "className": "sa-label sa-component-label",
+      "x": 1328,
+      "y": 263.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "block"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#1F2937",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 33.9345703125
+    },
+    {
+      "type": "text",
+      "ref": "component:can_trx",
+      "className": "sa-label sa-component-label",
+      "x": 142,
+      "y": 393.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "CAN Transceiver"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 104.990234375
+    },
+    {
+      "type": "text",
+      "ref": "pin:can_trx.TXD",
+      "className": "sa-label sa-pin-label",
+      "x": 56,
+      "y": 432,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "TXD"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 22.54248046875
+    },
+    {
+      "type": "text",
+      "ref": "pin:can_trx.RXD",
+      "className": "sa-label sa-pin-label",
+      "x": 56,
+      "y": 448,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "RXD"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 22.52099609375
+    },
+    {
+      "type": "text",
+      "ref": "pin:can_trx.STB",
+      "className": "sa-label sa-pin-label",
+      "x": 56,
+      "y": 464,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "STB"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 21.3017578125
+    },
+    {
+      "type": "text",
+      "ref": "pin:can_trx.CANH",
+      "className": "sa-label sa-pin-label",
+      "x": 200,
+      "y": 448,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "CANH"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 31.8720703125
+    },
+    {
+      "type": "text",
+      "ref": "pin:can_trx.CANL",
+      "className": "sa-label sa-pin-label",
+      "x": 200,
+      "y": 464,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "CANL"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 29.9169921875
+    },
+    {
+      "type": "text",
+      "ref": "component:lin_trx",
+      "className": "sa-label sa-component-label",
+      "x": 414,
+      "y": 393.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "LIN Transceiver"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 97.41748046875
+    },
+    {
+      "type": "text",
+      "ref": "pin:lin_trx.TXD",
+      "className": "sa-label sa-pin-label",
+      "x": 328,
+      "y": 432,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "TXD"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 22.54248046875
+    },
+    {
+      "type": "text",
+      "ref": "pin:lin_trx.RXD",
+      "className": "sa-label sa-pin-label",
+      "x": 328,
+      "y": 448,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "RXD"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 22.52099609375
+    },
+    {
+      "type": "text",
+      "ref": "pin:lin_trx.LIN",
+      "className": "sa-label sa-pin-label",
+      "x": 472,
+      "y": 448,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "LIN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 17.46142578125
+    },
+    {
+      "type": "text",
+      "ref": "component:eth_phy",
+      "className": "sa-label sa-component-label",
+      "x": 670,
+      "y": 393.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Ethernet PHY"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 83.3447265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:eth_phy.MII",
+      "className": "sa-label sa-pin-label",
+      "x": 584,
+      "y": 432,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "MII"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 15.8447265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:eth_phy.MDI",
+      "className": "sa-label sa-pin-label",
+      "x": 728,
+      "y": 432,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "MDI"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 20.8291015625
+    },
+    {
+      "type": "text",
+      "ref": "component:switch",
+      "className": "sa-label sa-component-label",
+      "x": 894,
+      "y": 407.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Switch"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 42.072265625
+    },
+    {
+      "type": "text",
+      "ref": "component:bus",
+      "className": "sa-label sa-component-label",
+      "x": 1104,
+      "y": 419.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Bus"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 23.359375
+    },
+    {
+      "type": "text",
+      "ref": "component:connector",
+      "className": "sa-label sa-component-label",
+      "x": 1328,
+      "y": 419.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Connector"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#1F2937",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 65.3427734375
+    },
+    {
+      "type": "text",
+      "ref": "component:half_bridge",
+      "className": "sa-label sa-component-label",
+      "x": 142,
+      "y": 537.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Full Bridge"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 65.72998046875
+    },
+    {
+      "type": "text",
+      "ref": "pin:half_bridge.VS",
+      "className": "sa-label sa-pin-label",
+      "x": 56,
+      "y": 576,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "VS"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 14.64697265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:half_bridge.IN1",
+      "className": "sa-label sa-pin-label",
+      "x": 56,
+      "y": 592,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "IN1"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 15.7158203125
+    },
+    {
+      "type": "text",
+      "ref": "pin:half_bridge.IN2",
+      "className": "sa-label sa-pin-label",
+      "x": 56,
+      "y": 608,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "IN2"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 17.9501953125
+    },
+    {
+      "type": "text",
+      "ref": "pin:half_bridge.OUT1",
+      "className": "sa-label sa-pin-label",
+      "x": 200,
+      "y": 592,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "OUT1"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 28.17138671875
+    },
+    {
+      "type": "text",
+      "ref": "pin:half_bridge.OUT2",
+      "className": "sa-label sa-pin-label",
+      "x": 200,
+      "y": 608,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "OUT2"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 30.40576171875
+    },
+    {
+      "type": "text",
+      "ref": "pin:half_bridge.IS",
+      "className": "sa-label sa-pin-label",
+      "x": 112,
+      "y": 648,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "IS"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 10.01171875
+    },
+    {
+      "type": "text",
+      "ref": "pin:half_bridge.GND",
+      "className": "sa-label sa-pin-label",
+      "x": 160,
+      "y": 648,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 24.43310546875
+    },
+    {
+      "type": "text",
+      "ref": "component:load",
+      "className": "sa-label sa-component-label",
+      "x": 400,
+      "y": 547.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Load"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#4A1B06",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 30.748046875
+    },
+    {
+      "type": "text",
+      "ref": "component:motor",
+      "className": "sa-label sa-component-label",
+      "x": 656,
+      "y": 563.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Motor"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#4A1B06",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 36.892578125
+    },
+    {
+      "type": "text",
+      "ref": "component:window_motor",
+      "className": "sa-label sa-component-label",
+      "x": 880,
+      "y": 555.75,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Window",
+        "Motor"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#4A1B06",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 50.58447265625
+    },
+    {
+      "type": "text",
+      "ref": "component:heater",
+      "className": "sa-label sa-component-label",
+      "x": 1104,
+      "y": 547.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Heater"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#4A1B06",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 41.78662109375
+    },
+    {
+      "type": "text",
+      "ref": "component:valve",
+      "className": "sa-label sa-component-label",
+      "x": 1328,
+      "y": 547.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Valve"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#4A1B06",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 34.125
+    },
+    {
+      "type": "text",
+      "ref": "component:sensor",
+      "className": "sa-label sa-component-label",
+      "x": 128,
+      "y": 739.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Sensor"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#2E1766",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 43.7353515625
+    },
+    {
+      "type": "text",
+      "ref": "component:current_sensor",
+      "className": "sa-label sa-component-label",
+      "x": 400,
+      "y": 715.75,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Current",
+        "Sensor"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#2E1766",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 47.20751953125
+    },
+    {
+      "type": "text",
+      "ref": "component:temp_sensor",
+      "className": "sa-label sa-component-label",
+      "x": 656,
+      "y": 731.75,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Temperature",
+        "Sensor"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#2E1766",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 79.33935546875
+    },
+    {
+      "type": "text",
+      "ref": "component:position",
+      "className": "sa-label sa-component-label",
+      "x": 880,
+      "y": 715.75,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Position",
+        "Sensor"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#2E1766",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 49.75927734375
+    },
+    {
+      "type": "text",
+      "ref": "component:software",
+      "className": "sa-label sa-component-label",
+      "x": 1104,
+      "y": 707.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "SW Component"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0A3940",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 97.423828125
+    },
+    {
+      "type": "text",
+      "ref": "component:external_ecu",
+      "className": "sa-label sa-component-label",
+      "x": 1342,
+      "y": 695.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "External ECU"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#1F2937",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 81.376953125
+    },
+    {
+      "type": "text",
+      "ref": "component:cloud",
+      "className": "sa-label sa-component-label",
+      "x": 136,
+      "y": 851.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Cloud Service"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#1F2937",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 87.13427734375
+    },
+    {
+      "type": "text",
+      "ref": "component:vehicle",
+      "className": "sa-label sa-component-label",
+      "x": 414,
+      "y": 823.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Vehicle"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#1F2937",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 45.65869140625
+    },
+    {
+      "type": "text",
+      "className": "sa-title",
+      "x": 32,
+      "y": 32,
+      "anchor": "start",
+      "baseline": "top",
+      "lines": [
+        "Library Gallery"
+      ],
+      "style": {
+        "size": 18,
+        "weight": 600,
+        "color": "#111827",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 22.5,
+      "ascent": 17.7978515625,
+      "width": 127.8896484375
+    }
+  ]
+}
