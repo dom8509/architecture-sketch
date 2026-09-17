@@ -28,11 +28,20 @@ Parse-, Layout- oder Render-Logik.
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Live-Vorschau** bei jeder Änderung (debounced 150 ms). Bei Fehlern bleibt der letzte
+- **Live-Vorschau** bei jeder Änderung (debounced 150 ms). Vorschau und Export nutzen
+  denselben Aufruf wie die CLI (`renderArchitecture` aus `render-svg`); ein Test prüft für
+  alle Beispiele und Themes, dass das SVG byte-gleich ist. Zoom per Mausrad, Pan per
+  Ziehen, Doppelklick passt ein. Bei Fehlern bleibt der letzte
   gültige Stand stehen, Diagnosen erscheinen im Editor und in der Leiste.
+- **Highlighting** über den Lexer aus `core` (keine zweite Grammatik).
 - **Autocomplete** aus dem Semantic Model: Template-Namen nach `:`, Pin-Namen nach
-  `komponente.`, Signalarten nach `pin` und `type`.
-- **Bidirektionale Auswahl:** Cursor in einer Komponente markiert sie in der Vorschau;
+  `komponente.`, Signalarten nach `pin` und `type`, feste Werte nach `theme`, `size` usw.
+- **Quick-Fixes** an Diagnosen: Vorschläge („meintest du …?“) als Ersetzung, bei `E103`
+  zusätzlich „Pin anlegen“ ([D18](entscheidungen.md)) — `codeActions` in `core/edit` erzeugt
+  `TextEdit`s; die Signalart kommt aus `type` der Verbindung, sonst vom Pin der Gegenseite,
+  sonst `signal`. Die Seite leitet der Resolver ab.
+- **Diagnosenleiste:** Fehler und Warnungen; Hinweise (`I…`) wie in der CLI nur auf Wunsch.
+- **Bidirektionale Auswahl** (M7): Cursor in einer Komponente markiert sie in der Vorschau;
   Klick in der Vorschau setzt den Cursor auf die Definition (über `origin`-Spans).
 - **Speichern:** v0.1 lokal (File System Access API bzw. Download/Upload) und
   `localStorage` als Entwurf. Kein Backend.
@@ -108,7 +117,7 @@ Visuelle Änderungen erzeugen **Textänderungen**, keinen eigenen State:
  EditCommand            z. B. { type: "setLabel", component: "mcu", value: "S32K3" }
         │  commandToEdits(tree, command)
         ▼
- TextEdit[]             [{ span: <label-String von mcu>, newText: "\"S32K3\"" }]
+ TextEdit[]             [{ start, end: <label-String von mcu>, newText: "\"S32K3\"" }]
         │  auf Quelltext anwenden
         ▼
  neuer Quelltext  →  parse → resolve → layout → render

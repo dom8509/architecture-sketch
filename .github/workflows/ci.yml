@@ -30,3 +30,7 @@ jobs:
         with:
           name: examples-svg
           path: build/examples
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web
+          path: apps/web/dist

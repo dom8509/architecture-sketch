@@ -1,8 +1,9 @@
-import type { IconDef } from "@sysarch/core";
+import type { ArchitectureModel, IconDef } from "@sysarch/core";
+import { layout } from "@sysarch/layout";
 import type {
   Point, SceneGraph, SceneIcon, SceneItem, SceneMarker, ScenePath, SceneRect, SceneShape, SceneText,
 } from "@sysarch/layout";
-import { INTER_GLYPHS, INTER_METRICS, type FontGlyphs, type FontMetrics } from "@sysarch/themes";
+import { getTheme, INTER_GLYPHS, INTER_METRICS, type FontGlyphs, type FontMetrics } from "@sysarch/themes";
 import { base64, buildFontSubset } from "./font.js";
 
 export { buildFontSubset } from "./font.js";
@@ -15,6 +16,14 @@ export interface RenderOptions {
 }
 
 const FALLBACK_FONTS = "'Helvetica Neue', Arial, sans-serif";
+
+/**
+ * Semantic Model → SVG über Layout und Renderer; `theme` überschreibt das Theme der Quelle.
+ * Einziger Weg von CLI und Editor zum SVG — deshalb sind beide Ausgaben byte-gleich.
+ */
+export function renderArchitecture(model: ArchitectureModel, theme?: string): string {
+  return renderSvg(layout(model, getTheme(theme ?? model.theme)));
+}
 
 /** SceneGraph → eigenständiges SVG 1.1. Deterministisch: feste Attributreihenfolge, zwei Nachkommastellen. */
 export function renderSvg(scene: SceneGraph, options: RenderOptions = {}): string {

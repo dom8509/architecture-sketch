@@ -10,6 +10,7 @@ export default defineConfig({
       "@sysarch/themes": src("themes"),
       "@sysarch/layout": src("layout"),
       "@sysarch/render-svg": src("render-svg"),
+      "@sysarch/editor": src("editor"),
     },
   },
   test: {

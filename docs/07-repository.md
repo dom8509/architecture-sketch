@@ -18,7 +18,7 @@ sysarch/
 │  │  ├─ resolve/             Templates, Pins, Typableitung → Semantic Model
 │  │  ├─ diagnostics/         Codes, Meldungen, Vorschläge
 │  │  ├─ format/              kanonischer Formatter
-│  │  └─ edit/                EditCommand → TextEdit[]
+│  │  └─ edit/                TextEdit, Quick-Fixes; EditCommand → TextEdit[] (M7)
 │  │
 │  ├─ themes/                 @sysarch/themes — Design-Tokens + Font-Metriken
 │  │
@@ -64,7 +64,7 @@ apps/*  → beliebige packages
 | `core`, `themes`, `layout`, `render-svg`, `export-reactflow` | **keine** | überall (kein DOM, kein Node-API) |
 | `export-png` | keine | Browser (DOM, Canvas) |
 | `editor` | CodeMirror 6 | Browser |
-| `apps/web` | — | Browser |
+| `apps/web` | Vite (nur Build) | Browser |
 | `apps/obsidian` | `obsidian` (API-Typen) | Obsidian |
 | `apps/cli` | `@resvg/resvg-js` (ab M5, PNG) | Node |
 

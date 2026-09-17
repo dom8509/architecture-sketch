@@ -5,9 +5,7 @@ import {
   compile, format, hasErrors, loadLibrary, standardLibrary, THEMES,
   type Diagnostic, type Severity,
 } from "@sysarch/core";
-import { layout } from "@sysarch/layout";
-import { renderSvg } from "@sysarch/render-svg";
-import { getTheme } from "@sysarch/themes";
+import { renderArchitecture } from "@sysarch/render-svg";
 
 export const VERSION = "0.1.0";
 
@@ -107,7 +105,7 @@ function render(args: readonly string[], io: Io): number {
       failed = true;
       continue;
     }
-    const svg = renderSvg(layout(model, getTheme(values.theme ?? model.theme)));
+    const svg = renderArchitecture(model, values.theme);
     if (out === "-") {
       io.stdout(svg);
       continue;

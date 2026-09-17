@@ -1,0 +1,171 @@
+:root {
+  --editor-width: 42%;
+  --bg: #f8fafc;
+  --panel: #ffffff;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --muted: #64748b;
+  --accent: #1d4ed8;
+  --error: #dc2626;
+  --warning: #d97706;
+  --info: #2563eb;
+  color-scheme: light;
+  font: 13px/1.4 Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+}
+
+body {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  overflow: hidden;
+}
+
+button, select {
+  font: inherit;
+  color: inherit;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+button:hover, select:hover { border-color: #94a3b8; }
+button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* ── Werkzeugleiste ─────────────────────────────────────────── */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding: 8px 12px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+.brand { font-size: 15px; letter-spacing: 0.02em; color: var(--accent); }
+.file { color: var(--muted); min-width: 8ch; }
+.group { display: flex; align-items: center; gap: 6px; }
+.group label { display: flex; align-items: center; gap: 6px; color: var(--muted); }
+.group .label { color: var(--muted); }
+.group.end { margin-left: auto; }
+
+/* ── Arbeitsfläche ──────────────────────────────────────────── */
+
+.workspace {
+  display: grid;
+  grid-template-columns: var(--editor-width) 5px 1fr;
+  min-height: 0;
+}
+.pane { position: relative; min-width: 0; min-height: 0; }
+.editor-pane { background: var(--panel); overflow: hidden; }
+.editor-pane .cm-editor { height: 100%; font-size: 13px; }
+.editor-pane .cm-scroller { font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace; }
+.splitter { cursor: col-resize; background: var(--border); }
+.splitter:hover { background: #cbd5e1; }
+
+.preview-pane { overflow: hidden; }
+.preview-tools { position: absolute; top: 8px; right: 8px; z-index: 2; }
+
+.sa-preview {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  background:
+    radial-gradient(circle, #cbd5e1 1px, transparent 1px) 0 0 / 16px 16px,
+    var(--bg);
+}
+.sa-preview.sa-panning { cursor: grabbing; }
+.sa-preview-canvas { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+.sa-preview-canvas > svg { display: block; box-shadow: 0 1px 4px rgb(15 23 42 / 0.15); }
+.sa-preview.sa-stale .sa-preview-canvas { opacity: 0.55; filter: grayscale(0.6); transition: opacity 0.2s; }
+.sa-preview.sa-stale::after {
+  content: "Fehler im Quelltext — letzter gültiger Stand";
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--error);
+  color: white;
+  font-size: 12px;
+}
+
+/* ── Diagnosen ──────────────────────────────────────────────── */
+
+.sa-diagnostics {
+  max-height: 26vh;
+  overflow: auto;
+  background: var(--panel);
+  border-top: 1px solid var(--border);
+}
+.sa-diagnostics-summary {
+  position: sticky;
+  top: 0;
+  padding: 4px 12px;
+  background: var(--panel);
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.sa-diagnostics-summary label { cursor: pointer; }
+.sa-diagnostics ul { list-style: none; margin: 0; padding: 0; }
+.sa-diagnostic button {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  padding: 3px 12px;
+  border: 0;
+  border-radius: 0;
+  text-align: left;
+  background: transparent;
+}
+.sa-diagnostic button:hover { background: var(--bg); }
+.sa-diagnostic-position { min-width: 6ch; color: var(--muted); font-variant-numeric: tabular-nums; }
+.sa-diagnostic-code { min-width: 5ch; font-weight: 600; }
+.sa-error .sa-diagnostic-code { color: var(--error); }
+.sa-warning .sa-diagnostic-code { color: var(--warning); }
+.sa-info .sa-diagnostic-code { color: var(--info); }
+
+/* ── Präsentation ───────────────────────────────────────────── */
+
+body.presenting .toolbar > :not(.group:has(#theme)),
+body.presenting .editor-pane,
+body.presenting .splitter,
+body.presenting #diagnostics { display: none; }
+body.presenting .toolbar { position: absolute; top: 8px; left: 8px; z-index: 3; border: 1px solid var(--border); border-radius: 8px; opacity: 0.2; transition: opacity 0.2s; }
+body.presenting .toolbar:hover { opacity: 1; }
+body.presenting .workspace { grid-template-columns: 1fr; grid-row: 1 / -1; }
+body.presenting .sa-preview { background: var(--bg); cursor: default; }
+
+/* ── Meldung ────────────────────────────────────────────────── */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translate(-50%, 16px);
+  max-width: 80vw;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: var(--text);
+  color: white;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.toast.visible { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 720px) {
+  .workspace { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+  .splitter { display: none; }
+}
