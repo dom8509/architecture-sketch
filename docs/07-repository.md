@@ -88,7 +88,7 @@ Konvention.
 | Lint/Format | oxlint + Prettier (nur TS, nicht DSL) | schnell |
 | Laufzeit | Node ≥ 22 LTS | |
 | CI | GitHub Actions: `check`, `test`, Golden-File-Diff, Build aller Apps | |
-| Release | Obsidian-Plugin über GitHub Release (`main.js`, `manifest.json`, `styles.css`) | Obsidian-Community-Format |
+| Release | Obsidian-Plugin über GitHub Release (`main.js`, `manifest.json`, `styles.css`); Workflow `obsidian-release.yml` bei Tag = Version aus `apps/obsidian/manifest.json` | Obsidian-Community-Format |
 
 ## Konventionen
 

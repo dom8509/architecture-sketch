@@ -21,7 +21,9 @@ const NEW_SOURCE = `architecture "Neue Architektur" {
     direction LR
 
     component battery: battery { label "KL30" }
-    component mcu: microcontroller
+    component mcu: microcontroller {
+        pin power VDD
+    }
 
     battery -> mcu.VDD
 }
