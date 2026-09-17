@@ -4,13 +4,16 @@
 > Pins als First-Class-Elemente, orthogonale Verbindungen, Corporate Styles und
 > reproduzierbare SVG-/PNG-Ausgabe.
 
-**Status:** In Entwicklung. Meilenstein M1 (Sprache: Lexer, Parser, Resolver,
-Diagnosen) ist in [`packages/core`](packages/core) umgesetzt; Layout und Rendering folgen.
+**Status:** In Entwicklung. Umgesetzt sind M1 (Sprache: [`packages/core`](packages/core))
+und M2 (Layout & SVG: [`packages/themes`](packages/themes), [`packages/layout`](packages/layout),
+[`packages/render-svg`](packages/render-svg)). CLI und Web-App folgen.
 
 ```sh
 npm install
 npm run typecheck
-npm test
+npm test                  # inkl. Golden Files unter tests/golden/
+npx vitest run -u         # Golden Files nach einer gewollten Layoutänderung aktualisieren
+npm run render:examples   # examples/*.arch → tmp/examples/*.svg
 ```
 
 ## Positionierung

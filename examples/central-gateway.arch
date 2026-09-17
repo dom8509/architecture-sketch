@@ -1,0 +1,69 @@
+// Central Gateway — Flussrichtung von oben nach unten, Busse, Diagnose, Masse,
+// verschachtelte Systeme und Software-Komponenten
+
+define cloud_backend {
+    label "Backend"
+    shape rect
+    icon cloud
+    category external
+    size small
+}
+
+architecture "Central Gateway" {
+    theme automotive-light
+    direction TB
+
+    component kl30: battery { label "KL30" }
+    component fuse: fuse { label "F12" }
+
+    system gateway {
+        label "Central Gateway"
+        component pmic: buck_converter { label "PMIC" }
+        component soc: soc {
+            label "S32G"
+            importance primary
+            top { pin power VDD }
+            bottom {
+                pin ethernet ETH0
+                pin digital CAN0_TX
+                pin digital LIN0_TX
+                pin spi QSPI
+            }
+            right { pin debug JTAG }
+        }
+        component flash: flash { label "QSPI NOR" }
+        system software {
+            label "Software"
+            component router: software_component { label "Signal Router" }
+            component uds: software_component { label "UDS Server" }
+        }
+        component phy: ethernet_phy { label "100BASE-T1 PHY" }
+        component can_trx: can_transceiver
+        component lin_trx: lin_transceiver
+    }
+
+    component gnd: ground
+    component debugger: connector { label "JTAG" }
+    component backbone: switch { label "Ethernet Backbone" }
+    component body_can: bus { label "Body CAN" }
+    component seat_lin: bus { label "Seat LIN" }
+    component tcu: external_ecu { label "TCU" }
+    component backend: cloud_backend
+
+    kl30 -> fuse.IN               { type power }
+    fuse.OUT -> pmic.VIN          { label "12 V" }
+    pmic.VOUT -> soc.VDD          { label "1.8 V" }
+    pmic.GND -> gnd.GND
+    soc.QSPI -> flash.SPI
+    soc -- router                 { type signal }
+    router <-> uds                { label "PDU" }
+    soc.ETH0 <-> phy.MII
+    phy.MDI <-> backbone
+    soc.CAN0_TX -> can_trx.TXD
+    can_trx.CANH <-> body_can
+    soc.LIN0_TX -> lin_trx.TXD
+    lin_trx.LIN <-> seat_lin
+    debugger -> soc.JTAG          { type debug }
+    backbone <-> tcu              { type ethernet }
+    tcu -> backend                { label "OTA"  type diagnostic }
+}

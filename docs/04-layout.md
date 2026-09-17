@@ -44,7 +44,10 @@ Phasen rechnen in abstrakten Achsen *main* (Fluss) und *cross* (quer).
   später als Rückführung geroutet.
 - **Rang** = längster Pfad von einer Quelle. Danach Kompaktierung: Knoten ohne
   Vorgänger rücken so nah wie möglich an ihren ersten Nachfolger.
-- Unverbundene Komponenten erhalten Rang 0 ihrer Zone.
+- Unverbundene Komponenten erhalten einen **eigenen Rang am Ende ihrer Zone**. Rang 0
+  würde die Rangbreite und damit alle folgenden Positionen verändern und den
+  Stabilitätstest (siehe unten) verletzen. Ränge werden quer von oben aufgefüllt, nicht
+  zentriert — aus demselben Grund.
 
 ## 2. Zonen
 
@@ -91,11 +94,16 @@ Rang 0 … 1     │ Rang 2          │ Rang 3 … 4
   breiteste Pin-Label-Kombination links + rechts + Mindestabstand).
 - Komponentenhöhe = max(`minHeight[size]`, Label + Padding, Pins pro Seite × `pinPitch`).
 - Alle Größen werden **auf das Grid aufgerundet** (Standard 16 px).
-- Pins sitzen auf Grid-Punkten, gleichmäßig um die Seitenmitte verteilt.
+- Pins sitzen auf Grid-Punkten. Pins links/rechts werden unterhalb des Kopfs (Icon + Label)
+  gleichmäßig um die Mitte des verbleibenden Bereichs verteilt, Pins oben/unten um die
+  Seitenmitte; ihre Labels liegen im Innenbereich an der jeweiligen Seite.
 - Die Größenberechnung erfolgt für den **Innenbereich** der Form (siehe unten); die Hülle
   wird daraus zurückgerechnet.
-- Labels, die breiter als die dreifache `minWidth` wären, werden an Wortgrenzen
-  umbrochen; kein Abschneiden, keine Schriftverkleinerung.
+- Labels, die breiter als die dreifache `minWidth` wären (bei `circle`: die einfache, weil
+  Kreise in beide Richtungen wachsen), werden an Wortgrenzen umbrochen; kein Abschneiden,
+  keine Schriftverkleinerung.
+- Nach Mindestgröße und Rundung wird geprüft, ob der Innenbereich den Inhalt noch aufnimmt
+  (beim Sechseck wächst die Spitzentiefe mit der Höhe); sonst wächst die Hülle weiter.
 
 ### Formen und Pins
 
@@ -152,8 +160,10 @@ mcu ●─────────┐
 
 **Verfahren:**
 
-1. Aus Komponenten- und Gruppenrechtecken wird ein **spärliches Routing-Gitter** gebaut
-   (Knotenlinien an Hindernisrändern, Pin-Koordinaten und Kanalmitten).
+1. Geroutet wird auf dem **Layout-Grid** selbst (alle Koordinaten sind Grid-Vielfache,
+   Diagramme bis ~100 Komponenten bleiben klein genug). Komponenten sperren ihre
+   Grid-Punkte; Rahmenlinien, Gruppenlabels und fremde Pin-Stummel kosten zusätzlich.
+   Ein spärliches Gitter bleibt eine mögliche Optimierung.
 2. Jede Verbindung startet mit einem Stummel senkrecht aus der Pin-Seite
    (mindestens eine Grid-Einheit).
 3. **A\*** auf dem Gitter mit Kosten = Länge + Knickstrafe (hoch) + Kreuzungsstrafe
@@ -161,11 +171,17 @@ mcu ●─────────┐
    Verbindungen (sehr hoch).
 4. Reihenfolge der Verbindungen: Versorgung zuerst, dann Busse, Einzelsignale, Diagnose;
    innerhalb der Gruppe Deklarationsreihenfolge.
-5. **Kanal-Zuteilung:** Parallele vertikale Segmente im selben Zwischenraum erhalten
-   eigene Spuren im Grid-Abstand, sortiert nach Ziel-Position, damit sie sich nicht kreuzen.
+5. **Kanal-Zuteilung:** Parallele Segmente im selben Zwischenraum erhalten über die
+   Überdeckungsstrafe eigene Spuren im Grid-Abstand. Verbindungen, die sich einen Pin
+   teilen, dürfen sich überdecken. Eine explizite Sortierung nach Ziel-Position ist in
+   v0.1 nicht umgesetzt.
 6. **Rückführungen** (gebrochene Zyklen) laufen außen um die beteiligten Komponenten
    herum — unterhalb bei `LR`, rechts bei `TB`.
-7. Körperanschlüsse (Verbindung ohne Pin) erhalten einen virtuellen Port auf der Seite
+7. **Brücken:** Kreuzt ein waagerechtes Segment ein senkrechtes einer anderen Verbindung,
+   springt das waagerechte mit einem Halbkreis (`markers.hop`) darüber. So bleibt jede
+   Leitung und ihre Pfeilrichtung eindeutig verfolgbar. Keine Brücke zwischen Verbindungen
+   am selben Anschluss und nicht direkt an Knicken.
+8. Körperanschlüsse (Verbindung ohne Pin) erhalten einen virtuellen Port auf der Seite
    zur Gegenstelle, mehrere Ports auf einer Seite werden verteilt.
 
 ## 8. Verbindungslabels
@@ -173,8 +189,10 @@ mcu ●─────────┐
 - Kandidaten: Mitte des längsten Segments, dann Segment am Quell-Pin, dann am Ziel-Pin.
 - Gewählt wird der erste Kandidat ohne Überlappung mit Komponenten, Pins oder anderen Labels.
 - Label bekommt einen Halo in Hintergrundfarbe.
-- Findet sich kein freier Platz, wird der Kanal um eine Grid-Einheit verbreitert und
-  Phase 6–8 wiederholt (höchstens zweimal).
+- Der Abstand zwischen zwei benachbarten Rängen wird schon in Phase 6 so bemessen, dass
+  Labels direkter Verbindungen samt Endmarkern hineinpassen. Weitere Kandidaten liegen
+  im Grid-Abstand entlang aller Segmente; findet sich trotzdem kein freier Platz, wird der
+  erste Kandidat genommen (kein erneuter Layoutlauf).
 
 ---
 

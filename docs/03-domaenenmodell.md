@@ -25,8 +25,8 @@ Obsidian und CLI identisch und trivial testbar.
 ```ts
 parse(source: string): ParseResult<SyntaxTree>
 resolve(tree: SyntaxTree, library: Library): ParseResult<ArchitectureModel>
-layout(model: ArchitectureModel, theme: Theme, metrics: FontMetrics): SceneGraph
-renderSvg(scene: SceneGraph): string
+layout(model: ArchitectureModel, theme: Theme, metrics?: FontMetrics, options?: { icons }): SceneGraph
+renderSvg(scene: SceneGraph, options?: { embedFont }): string
 toReactFlow(model: ArchitectureModel, scene: SceneGraph): ReactFlowJsonObject
 ```
 
@@ -283,10 +283,11 @@ interface Theme {
     minHeight: Record<Size, number>;
   };
   categories: Record<Category, { fill: string; border: string; text: string }>;
-  icon: { size: Record<Size, number>; gap: number; strokeWidth: number };
+  icon: { size: Record<Size, number>; gap: number; strokeWidth: number };  // strokeWidth im 24×24-Raster
   lines: Record<SignalGroup, LineStyle>;
+  markers: { arrow: number; ground: number; pin: number };                 // Kantenlängen in px
   zone: { fill: string; border: string };
-  system: { border: string; dash?: number[] };
+  system: { border: string; width: number; radius: number; dash?: number[] };
 }
 
 interface TextStyle { size: number; weight: 400 | 500 | 600 | 700; color: string }
@@ -295,7 +296,7 @@ interface LineStyle {
   width: number;
   color: string;
   dash?: number[];                       // gestrichelt
-  double?: boolean;                      // Doppellinie für Busse
+  double?: boolean;                      // Doppellinie für Busse; width = Gesamtbreite, innen ⅓ frei
   endMarker: "arrow" | "ground" | "none";
 }
 ```
@@ -313,6 +314,8 @@ interface SceneGraph {
   width: number;
   height: number;
   background: string;
+  title: string;                         // für <title>
+  icons: IconDef[];                      // alle verwendeten Icons, nach Name sortiert
   /** Zeichenreihenfolge: Zonen → Systeme → Verbindungen → Komponenten → Icons → Pins → Labels. */
   items: SceneItem[];
 }
@@ -338,7 +341,7 @@ interface SceneShape extends SceneBase {
   type: "shape";
   shape: Shape;
   x: number; y: number; width: number; height: number;
-  radius: number;                        // nur für "rounded"
+  radius: number;                        // "rounded": Eckenradius, "cylinder": halbe Ellipsenhöhe
   fill: string; stroke: string; strokeWidth: number;
 }
 
@@ -347,6 +350,7 @@ interface SceneIcon extends SceneBase {
   name: string;                          // Verweis auf Library.icons, im SVG als <symbol>
   x: number; y: number; size: number;
   color: string;
+  strokeWidth: number;                   // im 24×24-Raster
 }
 
 interface ScenePath extends SceneBase {
@@ -356,6 +360,9 @@ interface ScenePath extends SceneBase {
   stroke: string; strokeWidth: number;
   dash?: number[];
   double?: boolean;
+  hops?: { x: number; y: number }[];     // Brücken über kreuzende Leitungen (waagerechte Segmente)
+  hopRadius?: number;
+  gap?: string;                          // Farbe zwischen den Linien einer Doppellinie
 }
 
 interface SceneText extends SceneBase {
@@ -365,6 +372,9 @@ interface SceneText extends SceneBase {
   baseline: "top" | "middle" | "bottom";
   lines: string[];                       // umbrochen bereits im Layout
   style: TextStyle & { fontFamily: string };
+  lineHeight: number;                    // px
+  ascent: number;                        // Zeilenoberkante → Grundlinie, px
+  width: number;                         // gemessene Breite der breitesten Zeile
   /** Optionaler Hintergrund, damit Verbindungslabels Linien nicht überlagern. */
   halo?: string;
 }
@@ -373,10 +383,14 @@ interface SceneMarker extends SceneBase {
   type: "marker";
   shape: "arrow" | "ground" | "pin" | "junction";
   x: number; y: number;
-  angle: 0 | 90 | 180 | 270;
-  fill: string; stroke: string;
+  angle: 0 | 90 | 180 | 270;              // Richtung, in die der Marker zeigt
+  size: number;
+  fill: string; stroke: string; strokeWidth: number;
 }
 ```
+
+Text- und Markergeometrie steht vollständig im Scene Graph (Zeilenhöhe, Grundlinie,
+Breite, Markergröße), damit der Renderer ohne Font-Metriken und ohne Theme auskommt.
 
 ### Warum ein eigener Scene Graph statt direkt SVG?
 

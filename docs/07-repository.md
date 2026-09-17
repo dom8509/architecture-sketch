@@ -51,7 +51,7 @@ sysarch/
 ```
 core  ←  layout  ←  render-svg  ←  export-png
   ↑        ↑            ↑
-themes ────┘            │
+themes ────┴────────────┤ (render-svg: Schriftkonturen für das Subset)
   ↑                     │
 export-reactflow ───────┘ (nur Typen aus core/layout)
 
