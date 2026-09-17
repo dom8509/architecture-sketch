@@ -4,6 +4,8 @@
 > Pins als First-Class-Elemente, orthogonale Verbindungen, Corporate Styles und
 > reproduzierbare SVG-/PNG-Ausgabe.
 
+**Dokumentation:** https://dom8509.github.io/sysarch/ · **Web-App:** https://dom8509.github.io/sysarch/app/
+
 **Status:** In Entwicklung. Umgesetzt sind M1 (Sprache: [`packages/core`](packages/core)),
 M2 (Layout & SVG: [`packages/themes`](packages/themes), [`packages/layout`](packages/layout),
 [`packages/render-svg`](packages/render-svg)), M3 (CLI: [`apps/cli`](apps/cli)), M4
@@ -21,6 +23,8 @@ npm run build             # CLI, Web-App, React-Flow-Test-App und Obsidian-Plugi
 npm run web               # Web-App mit Live-Vorschau unter http://localhost:5173
 npm run reactflow-test    # React-Flow-Test-App: lädt Beispiele bzw. exportiertes JSON
 npm run obsidian:install -- ~/Pfad/zum/Vault   # Obsidian-Plugin bauen und in einen Vault kopieren
+npm run docs              # Dokumentation mit Live-Reload unter http://localhost:5173/sysarch/
+npm run docs:build        # Dokumentation + Web-App wie auf GitHub Pages bauen
 
 npm run sysarch -- render examples --out build/examples
 npm run sysarch -- render examples --format png --scale 2 --out build/examples

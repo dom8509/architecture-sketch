@@ -41,6 +41,7 @@ sysarch/
 │  ├─ web/                    Vite, statische Seite
 │  ├─ reactflow-test/         Test-App für den React-Flow-Export (React, nur hier)
 │  ├─ obsidian/               Obsidian-Plugin (esbuild)
+│  ├─ docs/                   Nutzerdokumentation (VitePress, GitHub Pages)
 │  └─ cli/                    Node-CLI
 │
 └─ tests/
@@ -69,6 +70,7 @@ apps/*  → beliebige packages
 | `apps/reactflow-test` | React, `@xyflow/react` | Browser (nur Test-App, nicht ausgeliefert) |
 | `apps/obsidian` | `obsidian` (API-Typen) | Obsidian |
 | `apps/cli` | `@resvg/resvg-js` (ab M5, PNG) | Node |
+| `apps/docs` | VitePress, markdown-it (nur Build) | statische Seite |
 
 Verboten im gesamten Repo: Mermaid, Graphviz, Dagre, ELK.js, Konva, Fabric.js,
 JointJS, GoJS, React Flow als Laufzeitabhängigkeit eines Pakets (die Test-App
@@ -88,6 +90,7 @@ Konvention.
 | Lint/Format | oxlint + Prettier (nur TS, nicht DSL) | schnell |
 | Laufzeit | Node ≥ 22 LTS | |
 | CI | GitHub Actions: `check`, `test`, Golden-File-Diff, Build aller Apps | |
+| Dokumentation | VitePress in `apps/docs`; Workflow `docs.yml` veröffentlicht Doku und Web-App bei jedem Push auf `main` auf GitHub Pages | Referenzteile und Diagramme werden beim Build aus dem Code erzeugt |
 | Release | Obsidian-Plugin über GitHub Release (`main.js`, `manifest.json`, `styles.css`); Workflow `obsidian-release.yml` bei Tag = Version aus `apps/obsidian/manifest.json` | Obsidian-Community-Format |
 
 ## Konventionen
@@ -95,7 +98,11 @@ Konvention.
 - Öffentliche API je Paket ausschließlich über `src/index.ts`.
 - Reine Funktionen im Core; keine Klassen mit veränderlichem Zustand außerhalb von `editor`.
 - Keine `Map`/`Set`-Iteration ohne definierte Reihenfolge in Layout und Rendering.
-- Jede neue Diagnose bekommt Code, Dokumentation in `02-dsl.md` und einen Test.
+- Jede neue Diagnose bekommt Code, Dokumentation in `02-dsl.md` und in
+  `apps/docs/referenz/diagnosen.md` sowie einen Test.
+- Nutzerseitige Änderungen (Sprache, Bibliothek, CLI, Web-App, Obsidian) aktualisieren die
+  Dokumentation in `apps/docs` im selben Pull Request — siehe
+  `apps/docs/mitwirken/dokumentation.md`.
 - Jede Layout-Änderung aktualisiert die Golden Files im selben Commit.
 - Icon-Bereinigung (`scripts/build-icons`) läuft im Build und in der CI; ein ungültiges
   Icon bricht den Build.

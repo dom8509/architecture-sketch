@@ -15,3 +15,9 @@ build
 # generiert von scripts/build-icons.ts
 packages/core/src/library/generated.ts
 *.tsbuildinfo
+
+# generiert von apps/docs/scripts/generate.ts
+apps/docs/_generated
+apps/docs/konzept
+apps/docs/public/generated
+apps/docs/.vitepress/cache
