@@ -86,7 +86,12 @@ architecture "Door ECU" {
   springt an die Stelle im Codeblock.
 - Eigener View für `.arch`-Dateien (gleicher Editor wie in der Web-App), Exporte im
   Menü „Weitere Optionen“ der Ansicht.
-- Befehle: „Codeblock einfügen“, „Neue .arch-Datei“.
+- **Bibliothek** in der rechten Seitenleiste (Befehl „Bibliothek anzeigen“ oder Ribbon-Symbol):
+  alle Templates der Standardbibliothek nach Kategorie, je mit Vorschau im aktuellen Theme,
+  Label, Basis-Template und Pins; Suchfeld filtert über Name, Label, Icon und Pins. Klick fügt
+  `component <name>: <template>` an der Cursorposition der zuletzt aktiven Notiz bzw.
+  `.arch`-Datei ein (ohne Editor: Zwischenablage); Kontextmenü „Kopieren“.
+- Befehle: „Codeblock einfügen“, „Neue .arch-Datei“, „Bibliothek anzeigen“.
 - Plugin-Einstellungen: Standard-Theme („Obsidian folgen“ oder ein festes Theme),
   PNG-Skalierung, Exportordner (leer = Anhangsordner).
 - **Installation:** Release über GitHub (`main.js`, `manifest.json`, `styles.css`), ausgelöst

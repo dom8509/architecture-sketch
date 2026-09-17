@@ -163,3 +163,58 @@
   .sysarch-workbench { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) auto; }
   .sysarch-editor-pane { border-right: 0; border-bottom: 1px solid var(--background-modifier-border); }
 }
+
+/* ── Bibliothek (Seitenleiste) ──────────────────────────────── */
+
+.sysarch-library-search {
+  width: 100%;
+  margin-bottom: var(--size-4-2);
+}
+.sysarch-library-category {
+  margin: var(--size-4-3) 0 var(--size-4-1);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.sysarch-library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--size-4-2);
+}
+.sysarch-library-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-1);
+  padding: var(--size-4-2);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  cursor: pointer;
+}
+.sysarch-library-item:hover,
+.sysarch-library-item:focus-visible {
+  background: var(--background-modifier-hover);
+  border-color: var(--interactive-accent);
+}
+.sysarch-library-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 90px;
+}
+.sysarch-library-preview > svg {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+}
+.sysarch-library-name {
+  font-family: var(--font-monospace);
+  font-size: var(--font-ui-small);
+  font-weight: var(--font-semibold);
+}
+.sysarch-library-details,
+.sysarch-library-pins,
+.sysarch-library-empty {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+}

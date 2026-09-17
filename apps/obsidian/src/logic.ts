@@ -1,4 +1,4 @@
-import { parse } from "@sysarch/core";
+import { CATEGORIES, parse, type Category, type Library, type TemplateDef } from "@sysarch/core";
 
 // Reine Funktionen des Plugins — ohne Obsidian-API, damit Vitest sie direkt prüfen kann.
 
@@ -57,4 +57,52 @@ export function replaceBlock(text: string, lineStart: number, lineEnd: number, e
 
 function trimEnd(text: string): string {
   return text.replace(/\n+$/, "");
+}
+
+/** Überschriften der Bibliotheksansicht, in der Reihenfolge von `CATEGORIES`. */
+export const CATEGORY_TITLES: Record<Category, string> = {
+  power: "Versorgung",
+  controller: "Steuergeräte & Controller",
+  communication: "Kommunikation",
+  sensor: "Sensorik",
+  actuator: "Aktorik",
+  software: "Software",
+  external: "Extern",
+  generic: "Generisch",
+};
+
+export interface LibraryGroup {
+  category: Category;
+  title: string;
+  templates: TemplateDef[];
+}
+
+/**
+ * Templates nach Kategorie gruppiert und nach Namen sortiert; `query` filtert über Name, Label,
+ * Icon und Pins (Groß-/Kleinschreibung egal). Leere Gruppen fallen weg.
+ */
+export function libraryGroups(library: Library, query = ""): LibraryGroup[] {
+  const needle = query.trim().toLowerCase();
+  const matches = (t: TemplateDef) =>
+    needle === "" ||
+    [t.name, t.label, t.icon, t.extends, ...t.pins.map((p) => p.name)]
+      .some((text) => text?.toLowerCase().includes(needle));
+  const templates = [...library.templates.values()].filter(matches).sort((a, b) => a.name.localeCompare(b.name));
+  return CATEGORIES
+    .map((category) => ({
+      category,
+      title: CATEGORY_TITLES[category],
+      templates: templates.filter((t) => (t.category ?? "generic") === category),
+    }))
+    .filter((group) => group.templates.length > 0);
+}
+
+/** Minimale Architektur mit genau einer Komponente des Templates — für die Vorschau. */
+export function templatePreviewSource(template: TemplateDef): string {
+  return `architecture "${template.name}" {\n    component ${template.name}: ${template.name}\n}\n`;
+}
+
+/** Zeile zum Einfügen in eine Quelle. */
+export function componentSnippet(template: TemplateDef): string {
+  return `component ${template.name}: ${template.name}`;
 }
