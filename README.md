@@ -6,15 +6,16 @@
 
 **Status:** In Entwicklung. Umgesetzt sind M1 (Sprache: [`packages/core`](packages/core)),
 M2 (Layout & SVG: [`packages/themes`](packages/themes), [`packages/layout`](packages/layout),
-[`packages/render-svg`](packages/render-svg)) und M3 (CLI: [`apps/cli`](apps/cli)).
-Web-App und Exporte folgen.
+[`packages/render-svg`](packages/render-svg)), M3 (CLI: [`apps/cli`](apps/cli)) und M4
+(Web-App: [`packages/editor`](packages/editor), [`apps/web`](apps/web)). Exporte folgen.
 
 ```sh
 npm install
 npm run typecheck
 npm test                  # inkl. Golden Files unter tests/golden/
 npx vitest run -u         # Golden Files nach einer gewollten Layoutänderung aktualisieren
-npm run build             # CLI nach apps/cli/dist bauen
+npm run build             # CLI nach apps/cli/dist, Web-App nach apps/web/dist bauen
+npm run web               # Web-App mit Live-Vorschau unter http://localhost:5173
 
 npm run sysarch -- render examples --out build/examples
 npm run sysarch -- check examples library --max-warnings 0

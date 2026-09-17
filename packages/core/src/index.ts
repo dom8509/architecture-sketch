@@ -4,6 +4,7 @@ export * from "./diagnostics/index.js";
 export { lex, type LexResult, type Token, type TokenType } from "./lexer/index.js";
 export { parse } from "./parser/index.js";
 export { format } from "./format/index.js";
+export { applyEdits, codeActions, type CodeAction, type TextEdit } from "./edit/index.js";
 export {
   resolve,
   type ArchitectureModel, type Component, type ComponentId, type Connection, type Endpoint,

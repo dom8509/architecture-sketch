@@ -1,0 +1,32 @@
+{
+  "name": "@sysarch/editor",
+  "version": "0.1.0",
+  "description": "sysarch Editor: CodeMirror 6, Live-Vorschau, Diagnosen — framework-frei",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@codemirror/autocomplete": "^6.20.3",
+    "@codemirror/commands": "^6.11.1",
+    "@codemirror/language": "^6.12.4",
+    "@codemirror/lint": "^6.9.7",
+    "@codemirror/search": "^6.7.2",
+    "@codemirror/state": "^6.7.5",
+    "@codemirror/view": "^6.43.12",
+    "@lezer/highlight": "^1.2.3",
+    "@sysarch/core": "0.1.0",
+    "@sysarch/layout": "0.1.0",
+    "@sysarch/render-svg": "0.1.0",
+    "@sysarch/themes": "0.1.0"
+  }
+}

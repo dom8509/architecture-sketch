@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>sysarch</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='1' y='4' width='5' height='8' rx='1' fill='%231d4ed8'/%3E%3Crect x='10' y='4' width='5' height='8' rx='1' fill='%231d4ed8'/%3E%3Cpath d='M6 8h4' stroke='%231d4ed8' stroke-width='1.5'/%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <header class="toolbar">
+      <strong class="brand">sysarch</strong>
+      <span class="file" id="file-name">Entwurf</span>
+      <div class="group">
+        <button type="button" id="new" title="Neue Architektur">Neu</button>
+        <button type="button" id="open" title="Datei öffnen (⌘O)">Öffnen</button>
+        <button type="button" id="save" title="Speichern (⌘S)">Speichern</button>
+        <select id="example" title="Beispiel laden">
+          <option value="">Beispiele…</option>
+        </select>
+      </div>
+      <div class="group">
+        <label>Theme
+          <select id="theme"><option value="">aus der Quelle</option></select>
+        </label>
+      </div>
+      <div class="group">
+        <span class="label">Export:</span>
+        <button type="button" id="export-svg">SVG</button>
+        <button type="button" id="copy-svg">SVG kopieren</button>
+      </div>
+      <div class="group end">
+        <button type="button" id="share" title="Link mit der Quelle im URL-Fragment kopieren">Link teilen</button>
+        <button type="button" id="present" title="Präsentationsmodus (Esc beendet)">Präsentation</button>
+      </div>
+    </header>
+    <main class="workspace">
+      <section class="pane editor-pane" id="editor" aria-label="DSL-Editor"></section>
+      <div class="splitter" id="splitter" role="separator" aria-orientation="vertical"></div>
+      <section class="pane preview-pane" id="preview" aria-label="Vorschau">
+        <div class="preview-tools">
+          <button type="button" id="fit" title="Einpassen (Doppelklick)">Einpassen</button>
+        </div>
+      </section>
+    </main>
+    <footer id="diagnostics" aria-label="Diagnosen"></footer>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <input type="file" id="file-input" accept=".arch,.txt,text/plain" hidden />
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

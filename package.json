@@ -12,10 +12,11 @@
   "scripts": {
     "build:icons": "tsx scripts/build-icons.ts",
     "build:font": "tsx scripts/build-font.ts",
-    "build": "npm run build:icons && tsc -b apps/cli",
+    "build": "npm run build:icons && tsc -b apps/cli && npm run build -w @sysarch/web",
+    "web": "npm run build:icons && npm run dev -w @sysarch/web",
     "sysarch": "node apps/cli/dist/main.js",
     "render:examples": "tsx scripts/render-examples.ts",
-    "typecheck": "npm run build:icons && tsc -b packages/render-svg && tsc -p packages/core/test && tsc -p packages/themes/test && tsc -p packages/layout/test && tsc -p packages/render-svg/test && tsc -b apps/cli && tsc -p apps/cli/test",
+    "typecheck": "npm run build:icons && tsc -b packages/render-svg && tsc -p packages/core/test && tsc -p packages/themes/test && tsc -p packages/layout/test && tsc -p packages/render-svg/test && tsc -b apps/cli && tsc -p apps/cli/test && tsc -b packages/editor && tsc -p packages/editor/test && tsc -p apps/web",
     "test": "npm run build:icons && vitest run"
   },
   "devDependencies": {
