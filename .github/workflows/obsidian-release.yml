@@ -19,7 +19,9 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Tag passt zur Plugin-Version
-        run: test "$(node -p "require('./apps/obsidian/manifest.json').version")" = "${GITHUB_REF_NAME}"
+        run: |
+          test "$(node -p "require('./apps/obsidian/manifest.json').version")" = "${GITHUB_REF_NAME}"
+          cmp manifest.json apps/obsidian/manifest.json
       - run: npm run typecheck
       - run: npm test
       - run: npm run build:icons && npm run build -w @sysarch/obsidian

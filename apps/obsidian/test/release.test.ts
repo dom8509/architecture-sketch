@@ -12,6 +12,10 @@ describe("Release-Dateien", () => {
     expect(read("versions.json")[manifest.version]).toBe(manifest.minAppVersion);
   });
 
+  it("manifest.json im Repo-Wurzelverzeichnis ist identisch (BRAT liest sie dort)", () => {
+    expect(read("../../manifest.json")).toEqual(manifest);
+  });
+
   it("manifest.json hat die Pflichtfelder eines Community-Plugins", () => {
     for (const key of ["id", "name", "version", "minAppVersion", "description", "author", "isDesktopOnly"]) {
       expect(manifest).toHaveProperty(key);

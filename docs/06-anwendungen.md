@@ -91,6 +91,8 @@ architecture "Door ECU" {
   PNG-Skalierung, Exportordner (leer = Anhangsordner).
 - **Installation:** Release über GitHub (`main.js`, `manifest.json`, `styles.css`), ausgelöst
   durch einen Tag mit der Plugin-Version (`0.1.0`); lokal `npm run obsidian:install -- <vault>`.
+  Für BRAT liegt eine Kopie von `apps/obsidian/manifest.json` im Repo-Wurzelverzeichnis (ein Test
+  hält beide gleich); BRAT installiert dann die Dateien aus dem Release zu dieser Version.
 
 ## CLI
 

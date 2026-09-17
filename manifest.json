@@ -1,0 +1,10 @@
+{
+  "id": "sysarch",
+  "name": "sysarch",
+  "version": "0.1.0",
+  "minAppVersion": "1.5.7",
+  "description": "Architecture-as-Code: sysarch-Codeblöcke und .arch-Dateien als Engineering-Diagramme mit SVG-, PNG- und React-Flow-Export.",
+  "author": "Dominik Stamm",
+  "authorUrl": "https://github.com/dom8509",
+  "isDesktopOnly": false
+}
