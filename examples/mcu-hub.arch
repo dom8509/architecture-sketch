@@ -1,11 +1,11 @@
 // MCU-Hub — Präsentationssicht: SBC links, breite MCU in der Mitte, Co-MCU rechts,
 // gruppierte Peripherie darüber und darunter. Die MCU überspannt drei Grid-Spalten,
-// `pins connected` blendet die unverbundenen Pins der Bibliotheks-Templates aus.
+// `pins none` blendet die Pins der Bibliotheks-Templates aus.
 
 architecture "MCU Hub" {
     theme presentation
     direction LR
-    pins connected
+    pins none
 
     layout {
         grid {

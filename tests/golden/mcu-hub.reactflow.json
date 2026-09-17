@@ -5,10 +5,10 @@
       "type": "power_supply",
       "position": {
         "x": 48,
-        "y": 336
+        "y": 360
       },
       "width": 216,
-      "height": 120,
+      "height": 96,
       "data": {
         "label": "SBC",
         "category": "power",
@@ -29,15 +29,7 @@
             }
           ]
         },
-        "pins": [
-          {
-            "id": "VOUT",
-            "label": "VOUT",
-            "kind": "power",
-            "side": "right",
-            "offset": 72
-          }
-        ],
+        "pins": [],
         "meta": {}
       }
     },
@@ -376,7 +368,7 @@
     {
       "id": "sbc.VOUT->mcu#1",
       "source": "sbc",
-      "sourceHandle": "VOUT",
+      "sourceHandle": "__body_right",
       "target": "mcu",
       "targetHandle": "__body_left",
       "type": "step",
