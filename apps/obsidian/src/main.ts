@@ -1,6 +1,7 @@
 import { Notice, Plugin, normalizePath, type TFolder } from "obsidian";
 import { ArchView, ARCH_VIEW } from "./arch-view.js";
 import { SysarchBlock } from "./block.js";
+import { LibraryView, LIBRARY_VIEW, revealLibrary } from "./library-view.js";
 import { NEW_SOURCE } from "./logic.js";
 import { DEFAULT_SETTINGS, SysarchSettingTab, type SysarchSettings } from "./settings.js";
 
@@ -18,6 +19,14 @@ export default class SysarchPlugin extends Plugin {
 
     this.registerView(ARCH_VIEW, (leaf) => new ArchView(leaf, this));
     this.registerExtensions(["arch"], ARCH_VIEW);
+
+    this.registerView(LIBRARY_VIEW, (leaf) => new LibraryView(leaf, this));
+    this.addRibbonIcon("library", "sysarch-Bibliothek anzeigen", () => revealLibrary(this));
+    this.addCommand({
+      id: "show-library",
+      name: "Bibliothek anzeigen",
+      callback: () => revealLibrary(this),
+    });
 
     this.addCommand({
       id: "insert-codeblock",
@@ -57,6 +66,9 @@ export default class SysarchPlugin extends Plugin {
     for (const block of this.blocks) block.render(true);
     for (const leaf of this.app.workspace.getLeavesOfType(ARCH_VIEW)) {
       if (leaf.view instanceof ArchView) leaf.view.workbench?.refresh();
+    }
+    for (const leaf of this.app.workspace.getLeavesOfType(LIBRARY_VIEW)) {
+      if (leaf.view instanceof LibraryView) leaf.view.render();
     }
   }
 }

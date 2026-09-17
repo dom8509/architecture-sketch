@@ -1,6 +1,8 @@
-import { compile, format } from "@sysarch/core";
+import { compile, format, hasErrors, standardLibrary } from "@sysarch/core";
 import { describe, expect, it } from "vitest";
-import { effectiveTheme, exportBaseName, NEW_SOURCE, replaceBlock } from "../src/logic.js";
+import {
+  componentSnippet, effectiveTheme, exportBaseName, libraryGroups, NEW_SOURCE, replaceBlock, templatePreviewSource,
+} from "../src/logic.js";
 
 describe("NEW_SOURCE", () => {
   it("ist fehlerfrei, formatiert und folgt dem Obsidian-Modus", () => {
@@ -61,5 +63,28 @@ describe("replaceBlock", () => {
     expect(replaceBlock(crlf, 2, 5, expected, "architecture \"B\" {\n}")).toBe(
       ["# Titel", "", "```sysarch", "architecture \"B\" {", "}", "```", "", "Text"].join("\r\n"),
     );
+  });
+});
+
+describe("Bibliothek", () => {
+  const library = standardLibrary();
+
+  it("zeigt jedes Template genau einmal, gruppiert nach Kategorie", () => {
+    const names = libraryGroups(library).flatMap((g) => g.templates.map((t) => t.name));
+    expect(names.sort()).toEqual([...library.templates.keys()].sort());
+  });
+
+  it("filtert über Name, Label und Pins", () => {
+    const names = (query: string) => libraryGroups(library, query).flatMap((g) => g.templates.map((t) => t.name));
+    expect(names("CANH")).toEqual(["can_transceiver"]);
+    expect(names("Battery")).toContain("battery");
+    expect(libraryGroups(library, "gibt-es-nicht")).toEqual([]);
+  });
+
+  it("rendert für jedes Template eine fehlerfreie Vorschau", () => {
+    for (const template of library.templates.values()) {
+      expect(hasErrors(compile(templatePreviewSource(template)).diagnostics), template.name).toBe(false);
+      expect(compile(`architecture "A" {\n    ${componentSnippet(template)}\n}\n`).diagnostics.filter((d) => d.severity === "error")).toEqual([]);
+    }
   });
 });
