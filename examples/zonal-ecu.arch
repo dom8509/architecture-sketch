@@ -12,12 +12,8 @@ architecture "Zonal ECU" {
 
     zone supply {
         label "Power"
-        component kl30: power_source {
-            label "KL30"
-        }
-        component psu: power_supply {
-            label "Power Supply"
-        }
+        component kl30: power_source { label "KL30" }
+        component psu: power_supply { label "Power Supply" }
     }
 
     zone processing {
@@ -36,15 +32,13 @@ architecture "Zonal ECU" {
 
     zone output {
         label "Actuation"
-        component hb: half_bridge {
-            label "TLE9201"
-        }
+        component hb: half_bridge { label "TLE9201" }
         component motor: window_motor
     }
 
-    kl30 -> psu.VIN       { label "12 V"  type power }
-    psu.VOUT -> mcu.VDD   { label "3.3 V" }
-    mcu.HB_PWM -> hb.IN   { label "PWM" }
-    hb.IS -> mcu.HB_IS    { label "Current Feedback" }
-    hb.OUT -> motor       { label "PWM 12 V" }
+    kl30 -> psu.VIN     { label "12 V" type power }
+    psu.VOUT -> mcu.VDD { label "3.3 V" }
+    mcu.HB_PWM -> hb.IN { label "PWM" }
+    hb.IS -> mcu.HB_IS  { label "Current Feedback" }
+    hb.OUT -> motor     { label "PWM 12 V" }
 }

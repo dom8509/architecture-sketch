@@ -10,6 +10,7 @@ coverage
 .playwright-mcp
 .vite
 tmp
+build
 
 # generiert von scripts/build-icons.ts
 packages/core/src/library/generated.ts

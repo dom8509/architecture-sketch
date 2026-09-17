@@ -62,8 +62,8 @@ define relay {
     icon relay
     category power
     size small
-    left   { pin power IN   pin digital COIL }
-    right  { pin power OUT }
+    left  { pin power IN   pin digital COIL }
+    right { pin power OUT }
 }
 
 define power_supply {

@@ -333,7 +333,33 @@ letzten fehlerfreien Stand plus Diagnosen — sie wird nie leer, nur weil gerade
 
 ## 6. Kanonische Formatierung
 
-`sysarch fmt` erzeugt eine eindeutige Schreibweise (4 Leerzeichen, Reihenfolge
-`theme` › `direction` › `layout` › Zonen/Systeme/Komponenten › Verbindungen,
-Einzeiler-Blöcke für Verbindungen mit höchstens zwei Eigenschaften). Kommentare bleiben
-erhalten. Der visuelle Editor nutzt dieselben Regeln für eingefügten Text.
+`sysarch fmt` erzeugt eine eindeutige Schreibweise. Der Visuelle Editor nutzt dieselben
+Regeln für eingefügten Text.
+
+- **Einrückung** 4 Leerzeichen, ein Leerzeichen zwischen Token, `\n` als Zeilenende,
+  genau ein Zeilenumbruch am Dateiende.
+- **Reihenfolge in `architecture`:** `theme` › `direction` › `layout` ›
+  Zonen/Systeme/Komponenten › Verbindungen. Innerhalb dieser Gruppen und in allen anderen
+  Blöcken bleibt die Quelltextreihenfolge — sie trägt Bedeutung (Pin- und Zonenreihenfolge).
+- **Leerzeilen:** höchstens eine in Folge, keine am Anfang oder Ende eines Blocks. Zwischen
+  den Abschnitten (`theme`/`direction`, `layout`, Struktur, Verbindungen) und zwischen
+  `define`s steht immer eine.
+- **Einzeiler** `kopf { … }`, sofern der Block keine Kommentare enthält:
+  - Verbindungen mit höchstens zwei Eigenschaften: `a.X -> b { label "x" type can }`
+  - Komponenten mit genau einer Eigenschaft (`label`, `size`, `importance`, `category`,
+    `hint`): `component kl30: battery { label "KL30" }`
+  - Seitenblöcke mit höchstens drei Pins ohne Anzeigelabel, getrennt durch drei Leerzeichen,
+    solange die Zeile höchstens 80 Zeichen breit ist: `left { pin power VS   pin digital IN }`
+  - Leere Blöcke entfallen bei Komponenten und Verbindungen; sonst `zone z {}`.
+  - `layout`, `grid`, `meta`, Zonen, Systeme, `define` und `architecture` sind immer mehrzeilig.
+- **Ausrichtung:** Aufeinanderfolgende einzeilige Verbindungen bzw. Seitenblöcke richten ihr
+  `{` bündig aus; eine Leerzeile, ein Kommentar auf eigener Zeile oder ein mehrzeiliger Block
+  beginnt eine neue Gruppe. Grid-Spalten werden auf die breiteste Zelle aufgefüllt.
+- **Strings** werden mit den Escapes `\"`, `\\` und `\n` neu geschrieben.
+- **Kommentare bleiben erhalten.** Ein Kommentar auf eigener Zeile gehört zur folgenden
+  Anweisung und wandert beim Umsortieren mit ihr; ein Kommentar am Zeilenende bleibt hinter
+  der Anweisung davor. Kommentare mitten in einer Anweisung (`pin /* x */ can TX`) stehen
+  danach auf eigener Zeile vor der Anweisung.
+- Dateien mit **Syntaxfehlern** werden nicht verändert; Fehler des Resolvers (z. B. unbekannte
+  Pins) verhindern das Formatieren nicht.
+- `fmt` ist idempotent und ändert das Semantic Model nicht (per Test über alle Beispiele).

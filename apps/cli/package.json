@@ -1,0 +1,17 @@
+{
+  "name": "@sysarch/cli",
+  "version": "0.1.0",
+  "description": "sysarch CLI: render, check, fmt",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "sysarch": "dist/main.js"
+  },
+  "files": ["dist"],
+  "dependencies": {
+    "@sysarch/core": "0.1.0",
+    "@sysarch/layout": "0.1.0",
+    "@sysarch/render-svg": "0.1.0",
+    "@sysarch/themes": "0.1.0"
+  }
+}

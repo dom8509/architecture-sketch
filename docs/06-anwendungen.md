@@ -83,8 +83,17 @@ sysarch fmt    examples/*.arch --check                # nur prüfen (CI)
 ```
 
 - Diagnosen im Compiler-Format `datei:zeile:spalte: error E103: …`, damit Editoren und
-  CI-Annotationen sie erkennen; `--format json` für Maschinenlesbarkeit.
-- Ausgabe ist byte-identisch zur Web-App — geprüft über Golden-File-Tests.
+  CI-Annotationen sie erkennen; `check --format json` für Maschinenlesbarkeit (inkl.
+  Endposition und Vorschlägen). Hinweise (`I…`) erscheinen im Textformat nur mit `--verbose`.
+- Eingaben sind Dateien oder Verzeichnisse (rekursiv nach `.arch`, bei `check`/`fmt` auch
+  `.archlib`), damit Aufrufe ohne Shell-Globbing (Windows, npm-Skripte) funktionieren.
+- `render`: ohne `--out` neben die Quelle, `--out <verzeichnis>`, `--out datei.svg` (genau
+  eine Eingabe) oder `--out -` (stdout); `--theme` überschreibt das Theme der Quelle.
+  Dateien mit Fehlern werden nicht gerendert.
+- `fmt -` liest von stdin und schreibt nach stdout (für Editor-Integrationen).
+- Exit-Codes: `0` ok, `1` Diagnosen bzw. Prüfung fehlgeschlagen, `2` Aufruf- oder Dateifehler.
+- Ausgabe ist byte-identisch zur Web-App — geprüft über Golden-File-Tests; die CI vergleicht
+  die von der CLI gerenderten Beispiele mit `tests/golden/`.
 
 ---
 

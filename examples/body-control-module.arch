@@ -8,11 +8,11 @@ architecture "Body Control Module" {
         label "Power"
         component battery: battery {
             label "KL30"
-            meta { voltage "12 V" }
+            meta {
+                voltage "12 V"
+            }
         }
-        component regulator: power_supply {
-            label "5 V Supply"
-        }
+        component regulator: power_supply { label "5 V Supply" }
     }
 
     zone processing {
@@ -32,40 +32,29 @@ architecture "Body Control Module" {
                     pin digital CAN_TX
                     pin digital CAN_RX
                 }
-                bottom {
-                    pin debug SWDIO
-                    pin debug SWCLK
-                }
+                bottom { pin debug SWDIO   pin debug SWCLK }
             }
-            component can_trx: can_transceiver {
-                label "TJA1043"
-            }
+            component can_trx: can_transceiver { label "TJA1043" }
         }
     }
 
     zone actuation {
         label "Actuation"
-        component hb1: half_bridge {
-            label "Half Bridge 1"
-        }
-        component motor: motor {
-            label "DC Motor"
-        }
+        component hb1: half_bridge { label "Half Bridge 1" }
+        component motor: motor { label "DC Motor" }
     }
 
     zone network {
         label "Vehicle Network"
-        component vehicle_can: bus {
-            label "Vehicle CAN"
-        }
+        component vehicle_can: bus { label "Vehicle CAN" }
     }
 
-    battery -> regulator.VIN          { label "KL30"  type power }
-    regulator.VOUT -> mcu.VDD         { label "5 V" }
-    mcu.HB1_PWM -> hb1.IN             { label "PWM" }
-    hb1.IS -> mcu.CURRENT_SENSE       { label "Current Sense" }
-    hb1.OUT -> motor                  { label "Motor Output" }
+    battery -> regulator.VIN     { label "KL30" type power }
+    regulator.VOUT -> mcu.VDD    { label "5 V" }
+    mcu.HB1_PWM -> hb1.IN        { label "PWM" }
+    hb1.IS -> mcu.CURRENT_SENSE  { label "Current Sense" }
+    hb1.OUT -> motor             { label "Motor Output" }
     mcu.CAN_TX -> can_trx.TXD
     can_trx.RXD -> mcu.CAN_RX
-    can_trx.CANH <-> vehicle_can      { label "CAN" }
+    can_trx.CANH <-> vehicle_can { label "CAN" }
 }
