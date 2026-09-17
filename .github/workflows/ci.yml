@@ -17,3 +17,16 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
+      - run: npm run build
+      - name: sysarch check
+        run: node apps/cli/dist/main.js check examples library --max-warnings 0
+      - name: sysarch fmt --check
+        run: node apps/cli/dist/main.js fmt examples library --check
+      - name: sysarch render
+        run: node apps/cli/dist/main.js render examples --out build/examples
+      - name: Gerenderte Beispiele == Golden Files
+        run: for svg in build/examples/*.svg; do cmp "$svg" "tests/golden/$(basename "$svg")"; done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: examples-svg
+          path: build/examples

@@ -50,20 +50,20 @@ architecture "Central Gateway" {
     component tcu: external_ecu { label "TCU" }
     component backend: cloud_backend
 
-    kl30 -> fuse.IN               { type power }
-    fuse.OUT -> pmic.VIN          { label "12 V" }
-    pmic.VOUT -> soc.VDD          { label "1.8 V" }
+    kl30 -> fuse.IN      { type power }
+    fuse.OUT -> pmic.VIN { label "12 V" }
+    pmic.VOUT -> soc.VDD { label "1.8 V" }
     pmic.GND -> gnd.GND
     soc.QSPI -> flash.SPI
-    soc -- router                 { type signal }
-    router <-> uds                { label "PDU" }
+    soc -- router        { type signal }
+    router <-> uds       { label "PDU" }
     soc.ETH0 <-> phy.MII
     phy.MDI <-> backbone
     soc.CAN0_TX -> can_trx.TXD
     can_trx.CANH <-> body_can
     soc.LIN0_TX -> lin_trx.TXD
     lin_trx.LIN <-> seat_lin
-    debugger -> soc.JTAG          { type debug }
-    backbone <-> tcu              { type ethernet }
-    tcu -> backend                { label "OTA"  type diagnostic }
+    debugger -> soc.JTAG { type debug }
+    backbone <-> tcu     { type ethernet }
+    tcu -> backend       { label "OTA" type diagnostic }
 }

@@ -4,16 +4,21 @@
 > Pins als First-Class-Elemente, orthogonale Verbindungen, Corporate Styles und
 > reproduzierbare SVG-/PNG-Ausgabe.
 
-**Status:** In Entwicklung. Umgesetzt sind M1 (Sprache: [`packages/core`](packages/core))
-und M2 (Layout & SVG: [`packages/themes`](packages/themes), [`packages/layout`](packages/layout),
-[`packages/render-svg`](packages/render-svg)). CLI und Web-App folgen.
+**Status:** In Entwicklung. Umgesetzt sind M1 (Sprache: [`packages/core`](packages/core)),
+M2 (Layout & SVG: [`packages/themes`](packages/themes), [`packages/layout`](packages/layout),
+[`packages/render-svg`](packages/render-svg)) und M3 (CLI: [`apps/cli`](apps/cli)).
+Web-App und Exporte folgen.
 
 ```sh
 npm install
 npm run typecheck
 npm test                  # inkl. Golden Files unter tests/golden/
 npx vitest run -u         # Golden Files nach einer gewollten Layoutänderung aktualisieren
-npm run render:examples   # examples/*.arch → tmp/examples/*.svg
+npm run build             # CLI nach apps/cli/dist bauen
+
+npm run sysarch -- render examples --out build/examples
+npm run sysarch -- check examples library --max-warnings 0
+npm run sysarch -- fmt examples library --check
 ```
 
 ## Positionierung

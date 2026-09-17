@@ -66,7 +66,7 @@ apps/*  → beliebige packages
 | `editor` | CodeMirror 6 | Browser |
 | `apps/web` | — | Browser |
 | `apps/obsidian` | `obsidian` (API-Typen) | Obsidian |
-| `apps/cli` | `@resvg/resvg-js` | Node |
+| `apps/cli` | `@resvg/resvg-js` (ab M5, PNG) | Node |
 
 Verboten im gesamten Repo: Mermaid, Graphviz, Dagre, ELK.js, Konva, Fabric.js,
 JointJS, GoJS, React Flow als Laufzeitabhängigkeit.
@@ -80,7 +80,7 @@ Konvention.
 |---------|------|------------|
 | Sprache | TypeScript, `strict`, ES2022-Module | Obsidian-Plugins sind TypeScript |
 | Paketverwaltung | npm Workspaces | kein zusätzliches Werkzeug nötig |
-| Build | TypeScript Project References; esbuild für Obsidian/CLI; Vite für Web | schnell, wenig Konfiguration |
+| Build | TypeScript Project References (auch CLI, solange sie nur im Monorepo läuft); esbuild für Obsidian und ein veröffentlichtes CLI-Bundle; Vite für Web | schnell, wenig Konfiguration |
 | Tests | Vitest | Snapshot-/Golden-File-Tests eingebaut |
 | Lint/Format | oxlint + Prettier (nur TS, nicht DSL) | schnell |
 | Laufzeit | Node ≥ 22 LTS | |

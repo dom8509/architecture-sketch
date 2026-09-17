@@ -7,8 +7,8 @@ architecture "Door ECU" {
     layout {
         mode assisted
         grid {
-            kl30 | ldo | mcu    | driver | .
-            .    | .   | wdg    | .      | .
+            kl30 | ldo | mcu | driver | .
+            .    | .   | wdg | .      | .
         }
     }
 
@@ -34,10 +34,10 @@ architecture "Door ECU" {
         hint column 5
     }
 
-    kl30 -> ldo.VIN          { type power }
-    ldo.VOUT -> mcu.VDD      { label "3.3 V" }
-    mcu.PWM -> driver.IN     { label "PWM" }
+    kl30 -> ldo.VIN      { type power }
+    ldo.VOUT -> mcu.VDD  { label "3.3 V" }
+    mcu.PWM -> driver.IN { label "PWM" }
     mcu.WD_KICK -> wdg.WDI
     wdg.RESET -> mcu.RESET_N
-    driver.OUT -> motor      { label "12 V PWM" }
+    driver.OUT -> motor  { label "12 V PWM" }
 }

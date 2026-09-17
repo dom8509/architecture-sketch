@@ -53,12 +53,12 @@ architecture "Library Gallery" {
 
     layout {
         grid {
-            power_source | battery         | fuse            | relay          | power_supply | ground
-            mcu          | soc             | memory          | watchdog       | oscillator   | block
-            can_trx      | lin_trx         | eth_phy         | switch         | bus          | connector
-            half_bridge  | load            | motor           | window_motor   | heater       | valve
-            sensor       | current_sensor  | temp_sensor     | position       | software     | external_ecu
-            cloud        | vehicle         | .               | .              | .            | .
+            power_source | battery        | fuse        | relay        | power_supply | ground
+            mcu          | soc            | memory      | watchdog     | oscillator   | block
+            can_trx      | lin_trx        | eth_phy     | switch       | bus          | connector
+            half_bridge  | load           | motor       | window_motor | heater       | valve
+            sensor       | current_sensor | temp_sensor | position     | software     | external_ecu
+            cloud        | vehicle        | .           | .            | .            | .
         }
     }
 
