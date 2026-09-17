@@ -1,5 +1,5 @@
 import type { ArchitectureModel, IconDef } from "@sysarch/core";
-import { layout } from "@sysarch/layout";
+import { layout, stackFront } from "@sysarch/layout";
 import type {
   Point, SceneGraph, SceneIcon, SceneItem, SceneMarker, ScenePath, SceneRect, SceneShape, SceneText,
 } from "@sysarch/layout";
@@ -88,6 +88,18 @@ function rect(r: SceneRect): string {
 }
 
 function shape(s: SceneShape): string {
+  if (!s.stack) return outline(s);
+  // Mehrfachelement: hintere Karten zuerst, jede nach oben rechts versetzt, vorne die kleinere Karte.
+  const { layers, offset } = s.stack;
+  const front = stackFront(s, layers * offset);
+  const cards: string[] = [];
+  for (let k = layers; k >= 0; k--) {
+    cards.push(outline({ ...front, x: front.x + k * offset, y: front.y - k * offset, shape: s.shape, radius: s.radius, fill: s.fill, stroke: s.stroke, strokeWidth: s.strokeWidth, type: "shape" }));
+  }
+  return `<g${common(s)}>${cards.join("")}</g>`;
+}
+
+function outline(s: SceneShape): string {
   const paint = ` fill="${s.fill}" stroke="${s.stroke}" stroke-width="${num(s.strokeWidth)}"`;
   const { x, y, width, height } = s;
   switch (s.shape) {

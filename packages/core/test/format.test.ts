@@ -59,9 +59,11 @@ describe("format: Beispiele und Bibliothek", () => {
 describe("format", () => {
   const arch = (body: string) => `architecture "A" {\n${body}\n}\n`;
 
-  it("ordnet theme › direction › layout › Struktur › Verbindungen, Rest in Quelltextreihenfolge", () => {
+  it("ordnet theme › direction › pins › stack › layout › Struktur › Verbindungen, Rest in Quelltextreihenfolge", () => {
     const source = arch([
       "a -> b",
+      "pins none",
+      "stack identical",
       "component b",
       "direction TB",
       "layout { mode strict }",
@@ -72,6 +74,8 @@ describe("format", () => {
     expect(fmt(source)).toBe(arch([
       "    theme technical",
       "    direction TB",
+      "    pins none",
+      "    stack identical",
       "",
       "    layout {",
       "        mode strict",
@@ -86,6 +90,11 @@ describe("format", () => {
       "    b -> a",
     ].join("\n")));
     expect(semantics(fmt(source))).toEqual(semantics(source));
+  });
+
+  it("schreibt count wie hint, einzeln als Einzeiler", () => {
+    expect(fmt(arch("component a {\n count   3\n}"))).toBe(arch("    component a { count 3 }"));
+    expect(fmt(arch("component a { label \"A\" count 3 }"))).toBe(arch("    component a {\n        label \"A\"\n        count 3\n    }"));
   });
 
   it("schreibt Einzeiler nur für einfache Blöcke", () => {

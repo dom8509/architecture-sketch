@@ -124,7 +124,7 @@ describe("sysarch check", () => {
   it("akzeptiert Beispiele und Bibliothek", () => {
     const result = sysarch("check", examples, library, "--max-warnings", "0");
     expect(result).toMatchObject({ code: 0, stdout: "" });
-    expect(result.stderr).toMatch(/^6 Dateien geprüft: 0 Fehler, 0 Warnungen, \d+ Hinweise\n$/);
+    expect(result.stderr).toMatch(/^7 Dateien geprüft: 0 Fehler, 0 Warnungen, \d+ Hinweise\n$/);
   });
 
   it("gibt Hinweise nur mit --verbose aus", () => {

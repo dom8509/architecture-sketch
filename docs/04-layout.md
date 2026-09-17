@@ -81,6 +81,23 @@ Rang 0 … 1     │ Rang 2          │ Rang 3 … 4
 - `grid`: Zeile/Spalte im fertigen Bild. Spalten bestimmen den Rang (bei `LR`),
   Zeilen die Reihenfolge. Aufgeführte Komponenten sind fixiert, die übrigen werden in
   Phase 1–3 um sie herum eingefügt.
+- **Überspannte Zellen** (dieselbe ID in einem Rechteck aus Zellen): Die Komponente belegt
+  die Ränge `rank … rank + n − 1` bzw. die Zeilen `slot … slot + n − 1`.
+  - Rangbreiten zählen nur Komponenten ohne Span; reicht die Summe der überspannten Ränge
+    samt Abständen nicht für die natürliche Breite, wächst der letzte überspannte Rang.
+    Danach wird die Hülle auf die volle Ausdehnung gestreckt, Pins oben/unten verteilen
+    sich über die neue Breite.
+  - Quer reicht die Komponente bis zur Unterkante ihrer letzten Zeile; nur diese letzte
+    Zeile schiebt folgende Zeilen nach unten.
+  - Freie Komponenten in überdeckten Rängen weichen quer aus.
+  - Nach der Platzierung werden Körperanschlüsse an Verbindungen mit einer überspannenden
+    Komponente nach der tatsächlichen Lage neu gesetzt: Die Gegenstelle nimmt ihre
+    Seitenmitte (und weicht Gruppenlabels aus), die überspannende Komponente den Punkt
+    genau gegenüber. So laufen Leitungen zu Nachbarn darüber und darunter ohne Knick.
+- Feste Zeilen haben Vorrang vor der Pin-Ausrichtung: Ein Knoten richtet sich nur an einer
+  Verbindung aus, deren Gegenstelle in derselben Zeile liegt. Die gemeinsame Oberkante einer
+  Zeile entsteht aus den Mindestlagen, nicht aus ausgerichteten Lagen (sonst schaukeln sich
+  Zeilen über die Durchläufe auf).
 - `hint row|column`: wie ein Grid-Eintrag für eine einzelne Komponente.
 - Konflikte (zwei Komponenten in derselben Zelle) → Fehler, Layout fällt für die
   betroffenen Komponenten auf automatisch zurück.
@@ -135,6 +152,11 @@ interface ShapeGeometry {
   Stummel höchstens eine halbe Hüllbreite lang sind.
 - Icon und Label werden im Innenbereich zentriert: Icon links vom Label, bei `size small`
   und `circle` Icon über dem Label.
+- **Mehrfachelemente** (`count` > 1): Die Hülle wächst um eine halbe Grid-Einheit nach oben
+  und rechts. Darin liegen unten links die vordere Karte und dahinter eine (bei 2) bzw. zwei
+  Karten (ab 3), je nach oben rechts versetzt. Innenbereich und Kontur gehören zur vorderen
+  Karte, Pins bleiben wie bei allen Formen auf der Hülle; oben und rechts überbrückt ein
+  Stummel den Stapel. Die Anzahl „×n“ gehört zum Kopf und wird bei der Breite mitgemessen.
 
 ## 6. Koordinaten
 

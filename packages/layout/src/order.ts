@@ -8,7 +8,7 @@ const SWEEPS = 4;
  * Deklarationsreihenfolge, feste Zeilen aus `grid`/`hint` werden danach eingesetzt.
  */
 export function orderLayers(nodes: readonly LNode[], edges: readonly LEdge[], axes: Axes): LNode[][] {
-  const rankCount = nodes.reduce((m, n) => Math.max(m, n.rank + 1), 0);
+  const rankCount = nodes.reduce((m, n) => Math.max(m, n.rank + n.mainSpan), 0);
   const layers: LNode[][] = Array.from({ length: rankCount }, () => []);
   for (const n of nodes) layers[n.rank]!.push(n);
   layers.forEach((layer) => finish(layer, new Map(layer.map((n) => [n, n.index]))));

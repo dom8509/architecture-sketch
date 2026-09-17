@@ -78,6 +78,46 @@ describe("React-Flow-Export", () => {
     });
   }
 
+  it("exportiert bei stack identical dieselbe Sicht wie das Bild", () => {
+    const flow = exportSource(`architecture "A" {
+    stack identical
+    component mcu: microcontroller
+    component l1: load { label "Lamp 1" }
+    component l2: load { label "Lamp 2" }
+    mcu -> l1
+    mcu -> l2
+}
+`);
+    expect(flow.nodes.map((n) => n.id)).toEqual(["mcu", "l1"]);
+    expect((flow.nodes[1] as ComponentNode).data).toMatchObject({ label: "Lamp", count: 2 });
+    expect(flow.edges).toHaveLength(1);
+  });
+
+  it("exportiert count nur bei Mehrfachelementen", () => {
+    const flow = exportSource(`architecture "A" {
+    component a { count 3 }
+    component b
+}
+`);
+    const [a, b] = flow.nodes as ComponentNode[];
+    expect(a!.data.count).toBe(3);
+    expect("count" in b!.data).toBe(false);
+  });
+
+  it("hängt Kanten an ausgeblendeten Pins an den Körper", () => {
+    const flow = exportSource(`architecture "A" {
+    pins none
+    component psu: power_supply
+    component mcu: microcontroller { pin power VDD }
+    psu.VOUT -> mcu.VDD
+}
+`);
+    const [edge] = flow.edges;
+    expect(SIDES.map(bodyHandle)).toContain(edge!.sourceHandle);
+    expect(SIDES.map(bodyHandle)).toContain(edge!.targetHandle);
+    for (const node of flow.nodes as ComponentNode[]) expect(node.data.pins).toEqual([]);
+  });
+
   it("bildet Körperanschlüsse, Richtungen und Metadaten ab", () => {
     const flow = exportSource(`architecture "A" {
     zone z {

@@ -1,19 +1,19 @@
 import { RangeSetBuilder } from "@codemirror/state";
 import { Decoration, EditorView, ViewPlugin, type DecorationSet, type ViewUpdate } from "@codemirror/view";
 import {
-  CATEGORIES, DIRECTIONS, IMPORTANCES, LAYOUT_MODES, SHAPES, SIDES, SIGNAL_KINDS, SIZES, THEMES, lex,
+  CATEGORIES, DIRECTIONS, IMPORTANCES, LAYOUT_MODES, PIN_DISPLAYS, STACK_MODES, SHAPES, SIDES, SIGNAL_KINDS, SIZES, THEMES, lex,
   type Token,
 } from "@sysarch/core";
 
 const KEYWORDS = new Set([
-  "architecture", "theme", "direction", "layout", "mode", "grid", "zone", "system", "component",
-  "label", "size", "importance", "category", "pin", ...SIDES, "hint", "row", "column", "meta",
+  "architecture", "theme", "direction", "pins", "stack", "layout", "mode", "grid", "zone", "system", "component",
+  "label", "size", "importance", "category", "pin", ...SIDES, "hint", "count", "row", "column", "meta",
   "define", "extends", "shape", "icon", "type",
 ]);
 /** Nach diesen Schlüsselwörtern folgt ein Wert aus einer festen Menge. */
-const VALUE_KEYWORDS = new Set(["theme", "direction", "mode", "size", "importance", "category", "pin", "type", "shape", "icon"]);
+const VALUE_KEYWORDS = new Set(["theme", "direction", "pins", "stack", "mode", "size", "importance", "category", "pin", "type", "shape", "icon"]);
 const VALUES = new Set<string>([
-  ...SIGNAL_KINDS, ...SIZES, ...IMPORTANCES, ...DIRECTIONS, ...LAYOUT_MODES, ...SHAPES, ...CATEGORIES, ...THEMES, "none",
+  ...SIGNAL_KINDS, ...SIZES, ...IMPORTANCES, ...DIRECTIONS, ...PIN_DISPLAYS, ...STACK_MODES, ...LAYOUT_MODES, ...SHAPES, ...CATEGORIES, ...THEMES, "none",
 ]);
 const DECLARING = new Set(["component", "zone", "system", "define"]);
 

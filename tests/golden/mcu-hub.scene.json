@@ -1,0 +1,1028 @@
+{
+  "width": 1584,
+  "height": 816,
+  "background": "#FFFFFF",
+  "title": "MCU Hub",
+  "icons": [
+    {
+      "name": "bridge",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M5 3v18M19 3v18",
+          "mode": "stroke"
+        },
+        {
+          "d": "M5 12h14",
+          "mode": "stroke"
+        },
+        {
+          "d": "M10 9l3 3-3 3",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "can",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M2 9h20M2 15h20",
+          "mode": "stroke"
+        },
+        {
+          "d": "M7 9v6M17 9v6",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "chip",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M7 6h10a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1v-10a1 1 0 0 1 1 -1Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "ethernet",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M5 3h14a1 1 0 0 1 1 1v11a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1v-11a1 1 0 0 1 1 -1Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M9 16v5h6v-5",
+          "mode": "stroke"
+        },
+        {
+          "d": "M8 7v3M12 7v3M16 7v3",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "lin",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M2 12h20",
+          "mode": "stroke"
+        },
+        {
+          "d": "M5 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M15 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0Z",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "regulator",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M7 12c1.5-3 3-3 4.5 0s3 3 4.5 0",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "sensor",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M9 12a3 3 0 1 0 6 0a3 3 0 1 0 -6 0Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M6.3 6.3a8 8 0 0 0 0 11.4",
+          "mode": "stroke"
+        },
+        {
+          "d": "M17.7 6.3a8 8 0 0 1 0 11.4",
+          "mode": "stroke"
+        }
+      ]
+    }
+  ],
+  "items": [
+    {
+      "type": "rect",
+      "ref": "system:communication",
+      "className": "sa-system",
+      "x": 384,
+      "y": 120,
+      "width": 888,
+      "height": 168,
+      "radius": 14,
+      "fill": "none",
+      "stroke": "#6B7280",
+      "strokeWidth": 2,
+      "dash": [
+        8,
+        5
+      ]
+    },
+    {
+      "type": "rect",
+      "ref": "system:io",
+      "className": "sa-system",
+      "x": 384,
+      "y": 528,
+      "width": 840,
+      "height": 240,
+      "radius": 14,
+      "fill": "none",
+      "stroke": "#6B7280",
+      "strokeWidth": 2,
+      "dash": [
+        8,
+        5
+      ]
+    },
+    {
+      "type": "path",
+      "ref": "connection:sbc.VOUT->mcu#1",
+      "className": "sa-connection sa-group-supply sa-kind-power",
+      "points": [
+        {
+          "x": 264,
+          "y": 408
+        },
+        {
+          "x": 408,
+          "y": 408
+        }
+      ],
+      "stroke": "#8A6100",
+      "strokeWidth": 4
+    },
+    {
+      "type": "marker",
+      "ref": "connection:sbc.VOUT->mcu#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 408,
+      "y": 408,
+      "angle": 0,
+      "size": 12,
+      "fill": "#8A6100",
+      "stroke": "#8A6100",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:mcu->can#1",
+      "className": "sa-connection sa-group-bus sa-kind-can",
+      "points": [
+        {
+          "x": 528,
+          "y": 336
+        },
+        {
+          "x": 528,
+          "y": 264
+        }
+      ],
+      "stroke": "#1D5FBF",
+      "strokeWidth": 7,
+      "double": true,
+      "gap": "#FFFFFF"
+    },
+    {
+      "type": "marker",
+      "ref": "connection:mcu->can#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 528,
+      "y": 264,
+      "angle": 270,
+      "size": 12,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "marker",
+      "ref": "connection:mcu->can#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 528,
+      "y": 336,
+      "angle": 90,
+      "size": 12,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:mcu->eth#1",
+      "className": "sa-connection sa-group-bus sa-kind-ethernet",
+      "points": [
+        {
+          "x": 840,
+          "y": 336
+        },
+        {
+          "x": 840,
+          "y": 264
+        }
+      ],
+      "stroke": "#1D5FBF",
+      "strokeWidth": 7,
+      "double": true,
+      "gap": "#FFFFFF"
+    },
+    {
+      "type": "marker",
+      "ref": "connection:mcu->eth#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 840,
+      "y": 264,
+      "angle": 270,
+      "size": 12,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "marker",
+      "ref": "connection:mcu->eth#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 840,
+      "y": 336,
+      "angle": 90,
+      "size": 12,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:mcu->lin#1",
+      "className": "sa-connection sa-group-bus sa-kind-lin",
+      "points": [
+        {
+          "x": 1152,
+          "y": 336
+        },
+        {
+          "x": 1152,
+          "y": 264
+        }
+      ],
+      "stroke": "#1D5FBF",
+      "strokeWidth": 7,
+      "double": true,
+      "gap": "#FFFFFF"
+    },
+    {
+      "type": "marker",
+      "ref": "connection:mcu->lin#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 1152,
+      "y": 264,
+      "angle": 270,
+      "size": 12,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "marker",
+      "ref": "connection:mcu->lin#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 1152,
+      "y": 336,
+      "angle": 90,
+      "size": 12,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:mcu->hb#1",
+      "className": "sa-connection sa-group-single sa-kind-pwm",
+      "points": [
+        {
+          "x": 552,
+          "y": 480
+        },
+        {
+          "x": 552,
+          "y": 576
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 2.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:mcu->hb#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 552,
+      "y": 576,
+      "angle": 90,
+      "size": 12,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:temp->mcu#1",
+      "className": "sa-connection sa-group-single sa-kind-analog",
+      "points": [
+        {
+          "x": 840,
+          "y": 576
+        },
+        {
+          "x": 840,
+          "y": 480
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 2.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:temp->mcu#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 840,
+      "y": 480,
+      "angle": 270,
+      "size": 12,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:cur->mcu#1",
+      "className": "sa-connection sa-group-single sa-kind-analog",
+      "points": [
+        {
+          "x": 1128,
+          "y": 576
+        },
+        {
+          "x": 1128,
+          "y": 480
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 2.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:cur->mcu#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 1128,
+      "y": 480,
+      "angle": 270,
+      "size": 12,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:mcu->comcu#1",
+      "className": "sa-connection sa-group-bus sa-kind-spi",
+      "points": [
+        {
+          "x": 1248,
+          "y": 408
+        },
+        {
+          "x": 1392,
+          "y": 408
+        }
+      ],
+      "stroke": "#1D5FBF",
+      "strokeWidth": 7,
+      "double": true,
+      "gap": "#FFFFFF"
+    },
+    {
+      "type": "marker",
+      "ref": "connection:mcu->comcu#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 1392,
+      "y": 408,
+      "angle": 0,
+      "size": 12,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "marker",
+      "ref": "connection:mcu->comcu#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 1248,
+      "y": 408,
+      "angle": 180,
+      "size": 12,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "shape",
+      "ref": "component:sbc",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 48,
+      "y": 360,
+      "width": 216,
+      "height": 96,
+      "radius": 12,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "shape",
+      "ref": "component:mcu",
+      "className": "sa-component sa-shape-rounded sa-cat-controller sa-importance-primary",
+      "shape": "rounded",
+      "x": 408,
+      "y": 336,
+      "width": 840,
+      "height": 144,
+      "radius": 12,
+      "fill": "#EAF2FF",
+      "stroke": "#316BD6",
+      "strokeWidth": 3
+    },
+    {
+      "type": "shape",
+      "ref": "component:comcu",
+      "className": "sa-component sa-shape-rounded sa-cat-controller sa-importance-secondary",
+      "shape": "rounded",
+      "x": 1392,
+      "y": 360,
+      "width": 144,
+      "height": 96,
+      "radius": 12,
+      "fill": "#EAF2FF",
+      "stroke": "#316BD6",
+      "strokeWidth": 2
+    },
+    {
+      "type": "shape",
+      "ref": "component:can",
+      "className": "sa-component sa-shape-rounded sa-cat-communication sa-importance-secondary",
+      "shape": "rounded",
+      "x": 408,
+      "y": 168,
+      "width": 216,
+      "height": 96,
+      "radius": 12,
+      "fill": "#E7F7EF",
+      "stroke": "#23875B",
+      "strokeWidth": 2
+    },
+    {
+      "type": "shape",
+      "ref": "component:eth",
+      "className": "sa-component sa-shape-rounded sa-cat-communication sa-importance-secondary",
+      "shape": "rounded",
+      "x": 720,
+      "y": 168,
+      "width": 216,
+      "height": 96,
+      "radius": 12,
+      "fill": "#E7F7EF",
+      "stroke": "#23875B",
+      "strokeWidth": 2
+    },
+    {
+      "type": "shape",
+      "ref": "component:lin",
+      "className": "sa-component sa-shape-rounded sa-cat-communication sa-importance-secondary",
+      "shape": "rounded",
+      "x": 1032,
+      "y": 168,
+      "width": 216,
+      "height": 96,
+      "radius": 12,
+      "fill": "#E7F7EF",
+      "stroke": "#23875B",
+      "strokeWidth": 2
+    },
+    {
+      "type": "shape",
+      "ref": "component:hb",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 408,
+      "y": 576,
+      "width": 216,
+      "height": 96,
+      "radius": 12,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 2,
+      "stack": {
+        "layers": 2,
+        "offset": 6
+      }
+    },
+    {
+      "type": "shape",
+      "ref": "component:temp",
+      "className": "sa-component sa-shape-circle sa-cat-sensor sa-importance-secondary",
+      "shape": "circle",
+      "x": 744,
+      "y": 576,
+      "width": 168,
+      "height": 168,
+      "radius": 0,
+      "fill": "#F3EDFF",
+      "stroke": "#7B4FD1",
+      "strokeWidth": 2
+    },
+    {
+      "type": "shape",
+      "ref": "component:cur",
+      "className": "sa-component sa-shape-circle sa-cat-sensor sa-importance-secondary",
+      "shape": "circle",
+      "x": 1056,
+      "y": 576,
+      "width": 144,
+      "height": 144,
+      "radius": 0,
+      "fill": "#F3EDFF",
+      "stroke": "#7B4FD1",
+      "strokeWidth": 2,
+      "stack": {
+        "layers": 1,
+        "offset": 12
+      }
+    },
+    {
+      "type": "icon",
+      "ref": "component:sbc",
+      "className": "sa-icon",
+      "name": "regulator",
+      "x": 120.69287109375,
+      "y": 395,
+      "size": 26,
+      "color": "#3D2E00",
+      "strokeWidth": 2.25
+    },
+    {
+      "type": "icon",
+      "ref": "component:mcu",
+      "className": "sa-icon",
+      "name": "chip",
+      "x": 765.7705078125,
+      "y": 392,
+      "size": 32,
+      "color": "#0F2A5C",
+      "strokeWidth": 2.25
+    },
+    {
+      "type": "icon",
+      "ref": "component:comcu",
+      "className": "sa-icon",
+      "name": "chip",
+      "x": 1453,
+      "y": 381.375,
+      "size": 22,
+      "color": "#0F2A5C",
+      "strokeWidth": 2.25
+    },
+    {
+      "type": "icon",
+      "ref": "component:can",
+      "className": "sa-icon",
+      "name": "can",
+      "x": 429.3525390625,
+      "y": 203,
+      "size": 26,
+      "color": "#0D3B26",
+      "strokeWidth": 2.25
+    },
+    {
+      "type": "icon",
+      "ref": "component:eth",
+      "className": "sa-icon",
+      "name": "ethernet",
+      "x": 755.50537109375,
+      "y": 203,
+      "size": 26,
+      "color": "#0D3B26",
+      "strokeWidth": 2.25
+    },
+    {
+      "type": "icon",
+      "ref": "component:lin",
+      "className": "sa-icon",
+      "name": "lin",
+      "x": 1058.303955078125,
+      "y": 203,
+      "size": 26,
+      "color": "#0D3B26",
+      "strokeWidth": 2.25
+    },
+    {
+      "type": "icon",
+      "ref": "component:hb",
+      "className": "sa-icon",
+      "name": "bridge",
+      "x": 424.864501953125,
+      "y": 617,
+      "size": 26,
+      "color": "#3D2E00",
+      "strokeWidth": 2.25
+    },
+    {
+      "type": "icon",
+      "ref": "component:temp",
+      "className": "sa-icon",
+      "name": "sensor",
+      "x": 817,
+      "y": 633.375,
+      "size": 22,
+      "color": "#2E1766",
+      "strokeWidth": 2.25
+    },
+    {
+      "type": "icon",
+      "ref": "component:cur",
+      "className": "sa-icon",
+      "name": "sensor",
+      "x": 1111,
+      "y": 627.375,
+      "size": 22,
+      "color": "#2E1766",
+      "strokeWidth": 2.25
+    },
+    {
+      "type": "text",
+      "ref": "system:communication",
+      "className": "sa-label sa-system-label",
+      "x": 396,
+      "y": 126,
+      "anchor": "start",
+      "baseline": "top",
+      "lines": [
+        "Kommunikation"
+      ],
+      "style": {
+        "size": 15,
+        "weight": 600,
+        "color": "#4B5563",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 18.75,
+      "ascent": 14.83154296875,
+      "width": 113.0712890625
+    },
+    {
+      "type": "text",
+      "ref": "system:io",
+      "className": "sa-label sa-system-label",
+      "x": 396,
+      "y": 534,
+      "anchor": "start",
+      "baseline": "top",
+      "lines": [
+        "Aktorik & Sensorik"
+      ],
+      "style": {
+        "size": 15,
+        "weight": 600,
+        "color": "#4B5563",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 18.75,
+      "ascent": 14.83154296875,
+      "width": 133.43994140625
+    },
+    {
+      "type": "text",
+      "ref": "component:sbc",
+      "className": "sa-label sa-component-label",
+      "x": 174,
+      "y": 397.375,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "SBC"
+      ],
+      "style": {
+        "size": 17,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 21.25,
+      "ascent": 16.80908203125,
+      "width": 34.6142578125
+    },
+    {
+      "type": "text",
+      "ref": "component:mcu",
+      "className": "sa-label sa-component-label",
+      "x": 849,
+      "y": 396.75,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "S32K344"
+      ],
+      "style": {
+        "size": 18,
+        "weight": 600,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 22.5,
+      "ascent": 17.7978515625,
+      "width": 82.458984375
+    },
+    {
+      "type": "text",
+      "ref": "component:comcu",
+      "className": "sa-label sa-component-label",
+      "x": 1464,
+      "y": 413.375,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Co-MCU"
+      ],
+      "style": {
+        "size": 17,
+        "weight": 500,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 21.25,
+      "ascent": 16.80908203125,
+      "width": 71.16259765625
+    },
+    {
+      "type": "text",
+      "ref": "component:can",
+      "className": "sa-label sa-component-label",
+      "x": 534,
+      "y": 205.375,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "CAN Transceiver"
+      ],
+      "style": {
+        "size": 17,
+        "weight": 500,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 21.25,
+      "ascent": 16.80908203125,
+      "width": 137.294921875
+    },
+    {
+      "type": "text",
+      "ref": "component:eth",
+      "className": "sa-label sa-component-label",
+      "x": 846,
+      "y": 205.375,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Ethernet PHY"
+      ],
+      "style": {
+        "size": 17,
+        "weight": 500,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 21.25,
+      "ascent": 16.80908203125,
+      "width": 108.9892578125
+    },
+    {
+      "type": "text",
+      "ref": "component:lin",
+      "className": "sa-label sa-component-label",
+      "x": 1158,
+      "y": 205.375,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "LIN Transceiver"
+      ],
+      "style": {
+        "size": 17,
+        "weight": 500,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 21.25,
+      "ascent": 16.80908203125,
+      "width": 127.39208984375
+    },
+    {
+      "type": "text",
+      "ref": "component:hb",
+      "className": "sa-label sa-component-label",
+      "x": 511.88525390625,
+      "y": 619.375,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Motor Driver"
+      ],
+      "style": {
+        "size": 17,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 21.25,
+      "ascent": 16.80908203125,
+      "width": 102.04150390625
+    },
+    {
+      "type": "text",
+      "ref": "component:hb",
+      "className": "sa-label sa-component-count",
+      "x": 572.906005859375,
+      "y": 619.375,
+      "anchor": "start",
+      "baseline": "top",
+      "lines": [
+        "×4"
+      ],
+      "style": {
+        "size": 17,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 21.25,
+      "ascent": 16.80908203125,
+      "width": 22.2294921875
+    },
+    {
+      "type": "text",
+      "ref": "component:temp",
+      "className": "sa-label sa-component-label",
+      "x": 828,
+      "y": 665.375,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Temperatur"
+      ],
+      "style": {
+        "size": 17,
+        "weight": 500,
+        "color": "#2E1766",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 21.25,
+      "ascent": 16.80908203125,
+      "width": 94.08935546875
+    },
+    {
+      "type": "text",
+      "ref": "component:cur",
+      "className": "sa-label sa-component-label",
+      "x": 1106.1923828125,
+      "y": 659.375,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Strom"
+      ],
+      "style": {
+        "size": 17,
+        "weight": 500,
+        "color": "#2E1766",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 21.25,
+      "ascent": 16.80908203125,
+      "width": 48.38525390625
+    },
+    {
+      "type": "text",
+      "ref": "component:cur",
+      "className": "sa-label sa-component-count",
+      "x": 1140.385009765625,
+      "y": 659.375,
+      "anchor": "start",
+      "baseline": "top",
+      "lines": [
+        "×2"
+      ],
+      "style": {
+        "size": 17,
+        "weight": 400,
+        "color": "#2E1766",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 21.25,
+      "ascent": 16.80908203125,
+      "width": 21.615234375
+    },
+    {
+      "type": "text",
+      "ref": "connection:sbc.VOUT->mcu#1",
+      "className": "sa-label sa-connection-label",
+      "x": 336,
+      "y": 408,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "3.3 V"
+      ],
+      "style": {
+        "size": 14,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 17.5,
+      "ascent": 13.8427734375,
+      "width": 34.794921875
+    },
+    {
+      "type": "text",
+      "ref": "connection:mcu->comcu#1",
+      "className": "sa-label sa-connection-label",
+      "x": 1320,
+      "y": 408,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "SPI"
+      ],
+      "style": {
+        "size": 14,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 17.5,
+      "ascent": 13.8427734375,
+      "width": 21.8408203125
+    },
+    {
+      "type": "text",
+      "className": "sa-title",
+      "x": 48,
+      "y": 48,
+      "anchor": "start",
+      "baseline": "top",
+      "lines": [
+        "MCU Hub"
+      ],
+      "style": {
+        "size": 26,
+        "weight": 600,
+        "color": "#111827",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 32.5,
+      "ascent": 25.7080078125,
+      "width": 120.3515625
+    }
+  ]
+}

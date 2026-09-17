@@ -11,6 +11,10 @@ export type Side = "left" | "right" | "top" | "bottom";
 export type Size = "small" | "medium" | "large";
 export type Importance = "primary" | "secondary";
 export type LayoutMode = "strict" | "assisted";
+/** Welche Pins gezeichnet werden: alle, nur verbundene, keine. */
+export type PinDisplay = "all" | "connected" | "none";
+/** Gleich verschaltete Komponenten automatisch zu einem Stapel zusammenfassen? */
+export type StackMode = "none" | "identical";
 export type Arrow = "->" | "<-" | "<->" | "--";
 
 export type SignalKind =
@@ -32,6 +36,8 @@ export const SIZES: readonly Size[] = ["small", "medium", "large"];
 export const IMPORTANCES: readonly Importance[] = ["primary", "secondary"];
 export const DIRECTIONS: readonly Direction[] = ["LR", "TB"];
 export const LAYOUT_MODES: readonly LayoutMode[] = ["strict", "assisted"];
+export const PIN_DISPLAYS: readonly PinDisplay[] = ["all", "connected", "none"];
+export const STACK_MODES: readonly StackMode[] = ["none", "identical"];
 export const SHAPES: readonly Shape[] = ["rounded", "rect", "circle", "hexagon", "cylinder"];
 export const CATEGORIES: readonly Category[] = [
   "power", "controller", "communication", "sensor",

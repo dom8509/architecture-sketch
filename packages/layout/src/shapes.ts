@@ -122,6 +122,27 @@ function cylinder(p: ShapeParams): ShapeGeometry {
   };
 }
 
+/** Vordere Karte eines Stapels: unten links in der Hülle, `depth` kleiner. */
+export function stackFront(hull: Rect, depth: number): Rect {
+  return { x: hull.x, y: hull.y + depth, width: hull.width - depth, height: hull.height - depth };
+}
+
+/**
+ * Gestapelte Mehrfachelemente (`count`): Die hinteren Karten liegen nach oben rechts versetzt
+ * innerhalb der Hülle. Innenbereich und Kontur gehören zur vorderen Karte; Pins oben und
+ * rechts erhalten wie bei Kreisen einen Stummel bis zur Hülle.
+ */
+export function stackedGeometry(base: ShapeGeometry, depth: number): ShapeGeometry {
+  return {
+    inner: (hull) => base.inner(stackFront(hull, depth)),
+    hullFor: (c) => {
+      const front = base.hullFor(c);
+      return { width: front.width + depth, height: front.height + depth };
+    },
+    contour: (hull, side, t) => base.contour(stackFront(hull, depth), side, t),
+  };
+}
+
 export function shapeGeometry(shape: Shape, params: ShapeParams): ShapeGeometry {
   switch (shape) {
     case "rounded":

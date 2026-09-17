@@ -56,6 +56,11 @@ export interface SceneShape extends SceneBase, Rect {
   fill: string;
   stroke: string;
   strokeWidth: number;
+  /**
+   * Mehrfachelement: `layers` hintere Karten, je `offset` nach oben rechts versetzt. Die vordere
+   * Karte ist `stackFront(hülle, layers × offset)`; der Renderer zeichnet hinten zuerst.
+   */
+  stack?: { layers: number; offset: number };
 }
 
 export interface SceneIcon extends SceneBase {

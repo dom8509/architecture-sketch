@@ -20,6 +20,9 @@ export interface LNode {
   rank: number;
   fixedRank?: number;
   fixedSlot?: number;
+  /** Überspannte Ränge bzw. Zeilen aus `grid`, mindestens 1. */
+  mainSpan: number;
+  crossSpan: number;
   /** Position innerhalb des Rangs. */
   order: number;
   /** Hülle, absolute Koordinaten. */
@@ -100,6 +103,8 @@ export function buildNodes(model: ArchitectureModel, boxes: Map<string, Componen
       zone: Math.max(zone, 0),
       systems: zone >= 0 ? component.groupPath.slice(1) : component.groupPath,
       rank: 0,
+      mainSpan: 1,
+      crossSpan: 1,
       order: 0,
       x: 0,
       y: 0,
@@ -109,31 +114,61 @@ export function buildNodes(model: ArchitectureModel, boxes: Map<string, Componen
   return { nodes, zones };
 }
 
+/** Letzter belegter Rang eines Knotens. */
+export const rankEnd = (n: LNode) => n.rank + n.mainSpan - 1;
+
+/** Zwischenraum zwischen zwei Knoten entlang der Flussrichtung: nach Rang `after`, `width` Ränge weit. Überlappende Ränge → undefined. */
+export function rankGap(a: LNode, b: LNode): { after: number; width: number } | undefined {
+  if (rankEnd(a) < b.rank) return { after: rankEnd(a), width: b.rank - rankEnd(a) };
+  if (rankEnd(b) < a.rank) return { after: rankEnd(b), width: a.rank - rankEnd(b) };
+  return undefined;
+}
+
+/** Überspannt der Knoten mehr als eine Grid-Zelle? */
+export const spans = (n: LNode) => n.mainSpan > 1 || n.crossSpan > 1;
+
 /** Feste Ränge und Querpositionen aus `grid` und `hint`. Belegte Zellen → späterer Eintrag fällt auf automatisch zurück. */
 export function applyOverrides(model: ArchitectureModel, byId: Map<string, LNode>): void {
   const lr = model.direction === "LR";
   const cells = new Map<string, string>();
-  const fix = (node: LNode, rank: number | undefined, slot: number | undefined) => {
+  const fix = (node: LNode, rank: number | undefined, slot: number | undefined, mainSpan = 1, crossSpan = 1) => {
     if (rank !== undefined && slot !== undefined) {
-      const key = `${rank},${slot}`;
-      const owner = cells.get(key);
-      if (owner !== undefined && owner !== node.id) return;
-      cells.set(key, node.id);
+      const keys: string[] = [];
+      for (let m = 0; m < mainSpan; m++) for (let c = 0; c < crossSpan; c++) keys.push(`${rank + m},${slot + c}`);
+      if (keys.some((key) => cells.has(key) && cells.get(key) !== node.id)) return;
+      for (const key of keys) cells.set(key, node.id);
     }
     if (rank !== undefined) node.fixedRank = rank;
     if (slot !== undefined) node.fixedSlot = slot;
+    node.mainSpan = mainSpan;
+    node.crossSpan = crossSpan;
   };
+  // Überspannte Zellen: Rechteck je Komponente (der Resolver garantiert die Form).
+  const area = new Map<string, { top: number; bottom: number; left: number; right: number }>();
   model.grid?.rows.forEach((row, r) => {
     row.forEach((id, c) => {
-      const node = id === null ? undefined : byId.get(id);
-      if (node) fix(node, lr ? c : r, lr ? r : c);
+      if (id === null) return;
+      const a = area.get(id);
+      if (a === undefined) area.set(id, { top: r, bottom: r, left: c, right: c });
+      else {
+        a.bottom = Math.max(a.bottom, r);
+        a.right = Math.max(a.right, c);
+      }
     });
   });
+  for (const [id, a] of area) {
+    const node = byId.get(id);
+    if (!node) continue;
+    const rows = a.bottom - a.top + 1;
+    const columns = a.right - a.left + 1;
+    if (lr) fix(node, a.left, a.top, columns, rows);
+    else fix(node, a.top, a.left, rows, columns);
+  }
   for (const node of byId.values()) {
     const { row, column } = node.component.hints;
     if (row === undefined && column === undefined) continue;
     const main = lr ? column : row;
     const cross = lr ? row : column;
-    fix(node, main === undefined ? node.fixedRank : main - 1, cross === undefined ? node.fixedSlot : cross - 1);
+    fix(node, main === undefined ? node.fixedRank : main - 1, cross === undefined ? node.fixedSlot : cross - 1, node.mainSpan, node.crossSpan);
   }
 }

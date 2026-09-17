@@ -1,6 +1,6 @@
 import type { CompletionContext, CompletionResult, Completion } from "@codemirror/autocomplete";
 import {
-  CATEGORIES, DIRECTIONS, IMPORTANCES, LAYOUT_MODES, SHAPES, SIGNAL_GROUPS, SIGNAL_KINDS, SIZES, THEMES,
+  CATEGORIES, DIRECTIONS, IMPORTANCES, LAYOUT_MODES, PIN_DISPLAYS, STACK_MODES, SHAPES, SIGNAL_GROUPS, SIGNAL_KINDS, SIZES, THEMES,
   standardLibrary,
 } from "@sysarch/core";
 import type { Analysis } from "./document.js";
@@ -13,6 +13,8 @@ const AFTER_KEYWORD: Record<string, Completion[]> = {
   type: values(SIGNAL_KINDS, "enum", (k) => SIGNAL_GROUPS[k as keyof typeof SIGNAL_GROUPS]),
   theme: values(THEMES, "enum"),
   direction: values(DIRECTIONS, "enum"),
+  pins: values(PIN_DISPLAYS, "enum"),
+  stack: values(STACK_MODES, "enum"),
   mode: values(LAYOUT_MODES, "enum"),
   size: values(SIZES, "enum"),
   importance: values(IMPORTANCES, "enum"),

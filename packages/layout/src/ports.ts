@@ -1,5 +1,7 @@
 import type { Side } from "@sysarch/core";
-import type { Axes, LEdge, LNode, Port } from "./graph.js";
+import { rankEnd, spans, type Axes, type LEdge, type LNode, type Port } from "./graph.js";
+import { portPoint } from "./route.js";
+import type { Rect } from "./scene.js";
 
 /**
  * Körperanschlüsse (Verbindung ohne Pin) erhalten einen virtuellen Port auf der Seite zur
@@ -17,9 +19,9 @@ export function assignBodyPorts(edges: readonly LEdge[], axes: Axes, grid: numbe
       const other = end === "source" ? edge.target : edge.source;
       let side: Side;
       if (edge.feedback || other === node) side = axes.realSide("crossEnd");
-      else if (other.rank > node.rank) side = axes.realSide("mainEnd");
-      else if (other.rank < node.rank) side = axes.realSide("mainStart");
-      else side = axes.realSide(other.order > node.order ? "crossEnd" : "crossStart");
+      else if (other.rank > rankEnd(node)) side = axes.realSide("mainEnd");
+      else if (rankEnd(other) < node.rank) side = axes.realSide("mainStart");
+      else side = axes.realSide(crossAfter(other, node) ? "crossEnd" : "crossStart");
       requests.push({ edge, end, node, other, side });
     }
   }
@@ -53,5 +55,100 @@ export function assignBodyPorts(edges: readonly LEdge[], axes: Axes, grid: numbe
       if (r.end === "source") r.edge.sourcePort = port;
       else r.edge.targetPort = port;
     });
+  }
+}
+
+/** Liegt `a` quer hinter `b`? Im selben Rang zählt die Reihenfolge, über Ränge hinweg die feste Zeile. */
+function crossAfter(a: LNode, b: LNode): boolean {
+  if (a.rank !== b.rank && a.fixedSlot !== undefined && b.fixedSlot !== undefined) return a.fixedSlot > b.fixedSlot;
+  return a.order > b.order;
+}
+
+/**
+ * Nach der Platzierung: Körperanschlüsse an Verbindungen mit einem überspannenden Knoten
+ * werden nach der tatsächlichen Lage neu gesetzt. Die Gegenstelle zeigt mit der Seitenmitte
+ * zum überspannenden Knoten, dieser setzt seinen Port genau gegenüber — die Leitung läuft
+ * gerade, auch wenn mehrere Komponenten über bzw. unter ihm liegen. Gruppenlabels zwischen
+ * beiden Knoten weicht der Port der Gegenstelle aus.
+ */
+export function alignSpanPorts(edges: readonly LEdge[], axes: Axes, grid: number, labels: readonly Rect[] = []): void {
+  const affected = edges.filter((e) => e.source !== e.target && !e.feedback && (spans(e.source) || spans(e.target)));
+  if (affected.length === 0) return;
+
+  const range = (n: LNode, main: boolean) => {
+    const start = main ? axes.main(n) : axes.cross(n);
+    return [start, start + (main ? axes.mainSize(n.box) : axes.crossSize(n.box))] as const;
+  };
+  const sideTowards = (node: LNode, other: LNode): Side => {
+    const [ms, me] = range(node, true);
+    const [os, oe] = range(other, true);
+    if (os < me && ms < oe) {
+      return axes.realSide(axes.cross(other) + axes.crossSize(other.box) / 2 > axes.cross(node) + axes.crossSize(node.box) / 2 ? "crossEnd" : "crossStart");
+    }
+    return axes.realSide(os >= me ? "mainEnd" : "mainStart");
+  };
+  // Vorläufige Ports der betroffenen Enden zählen nicht als belegt, nur schon neu gesetzte.
+  const pending = new Set<Port>(affected.flatMap((e) => [e.sourcePort, e.targetPort]).filter((p) => p.pin === undefined));
+  const length = (n: LNode, side: Side) => (side === "left" || side === "right" ? n.box.height : n.box.width);
+  const taken = (n: LNode, side: Side, except: Port) => {
+    const used = [...n.pinPorts.values()].filter((p) => p.side === side).map((p) => p.offset);
+    for (const e of edges) {
+      for (const port of [e.source === n ? e.sourcePort : undefined, e.target === n ? e.targetPort : undefined]) {
+        if (port && port !== except && !pending.has(port) && port.pin === undefined && port.side === side) used.push(port.offset);
+      }
+    }
+    return new Set(used);
+  };
+  /** Kreuzt die gerade Leitung vom Port bis zur Gegenstelle ein Gruppenlabel? */
+  const hitsLabel = (n: LNode, side: Side, offset: number, other: LNode) => {
+    const p = portPoint(n, { side, offset });
+    const vertical = side === "top" || side === "bottom";
+    const [from, to] = vertical
+      ? [Math.min(p.y, other.y + other.box.height), Math.max(p.y, other.y)]
+      : [Math.min(p.x, other.x + other.box.width), Math.max(p.x, other.x)];
+    return labels.some((l) => vertical
+      ? p.x >= l.x - grid / 2 && p.x <= l.x + l.width + grid / 2 && l.y < to && l.y + l.height > from
+      : p.y >= l.y - grid / 2 && p.y <= l.y + l.height + grid / 2 && l.x < to && l.x + l.width > from);
+  };
+  /** Freier Grid-Punkt auf der Seite, möglichst nah an `wanted`; Label-Kreuzungen nur als Ausweg. */
+  const nearestFree = (n: LNode, side: Side, wanted: number, except: Port, other: LNode) => {
+    const used = taken(n, side, except);
+    const max = length(n, side) - grid;
+    const start = Math.min(Math.max(Math.round(wanted / grid) * grid, grid), max);
+    for (const avoidLabels of [true, false]) {
+      for (let d = 0; d <= max; d += grid) {
+        for (const p of [start - d, start + d]) {
+          if (p < grid || p > max || used.has(p)) continue;
+          if (!avoidLabels || !hitsLabel(n, side, p, other)) return p;
+        }
+      }
+    }
+    return start;
+  };
+  const set = (e: LEdge, end: "source" | "target", port: Port) => {
+    if (end === "source") e.sourcePort = port;
+    else e.targetPort = port;
+  };
+
+  // Erst die Enden an normalen Knoten (Seitenmitte), dann die überspannenden Enden gegenüber.
+  for (const pass of [false, true]) {
+    for (const e of affected) {
+      for (const end of ["source", "target"] as const) {
+        const node = e[end];
+        const other = end === "source" ? e.target : e.source;
+        const port = end === "source" ? e.sourcePort : e.targetPort;
+        if (port.pin !== undefined || spans(node) !== pass) continue;
+        const side = sideTowards(node, other);
+        let wanted = length(node, side) / 2;
+        if (pass) {
+          const otherPort = end === "source" ? e.targetPort : e.sourcePort;
+          const p = portPoint(other, otherPort);
+          wanted = side === "left" || side === "right" ? p.y - node.y : p.x - node.x;
+        }
+        const placeholder: Port = { side, offset: -1 };
+        set(e, end, placeholder);
+        placeholder.offset = nearestFree(node, side, wanted, placeholder, other);
+      }
+    }
   }
 }

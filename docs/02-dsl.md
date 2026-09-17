@@ -2,7 +2,7 @@
 
 Die DSL ist bewusst klein. v0.1 kennt genau diese Konstrukte:
 
-`architecture` · `theme` · `direction` · `component` · `pin` · `zone` · `system` ·
+`architecture` · `theme` · `direction` · `pins` · `stack` · `component` · `pin` · `zone` · `system` ·
 Verbindungen · `layout` · `define` (inkl. `shape` und `icon`)
 
 Alles andere (Views, `use`, Metadaten-Vererbung, Plausibilitätsregeln) ist für spätere
@@ -88,16 +88,18 @@ Die Regel für `-` in Bezeichnern macht `a--b` eindeutig (`a`, `--`, `b`), ebens
 document      = { define } architecture ;
 
 architecture  = "architecture" STRING "{" { arch_stmt } "}" ;
-arch_stmt     = theme | direction | layout | zone | system | component | connection ;
+arch_stmt     = theme | direction | pins | stack | layout | zone | system | component | connection ;
 
 theme         = "theme" IDENT ;
 direction     = "direction" ( "LR" | "TB" ) ;
+pins          = "pins" ( "all" | "connected" | "none" ) ;
+stack         = "stack" ( "none" | "identical" ) ;
 
 zone          = "zone" IDENT "{" { label | system | component } "}" ;
 system        = "system" IDENT "{" { label | system | component } "}" ;
 
 component     = "component" IDENT [ ":" IDENT ] [ "{" { comp_stmt } "}" ] ;
-comp_stmt     = label | size | importance | category | pin | side_block | hint | meta ;
+comp_stmt     = label | size | importance | category | pin | side_block | hint | count | meta ;
 
 pin           = "pin" IDENT IDENT [ STRING ] ;          (* Art, Name, optionales Label *)
 side_block    = ( "left" | "right" | "top" | "bottom" ) "{" { pin } "}" ;
@@ -107,6 +109,7 @@ size          = "size" ( "small" | "medium" | "large" ) ;
 importance    = "importance" ( "primary" | "secondary" ) ;
 category      = "category" IDENT ;
 hint          = "hint" ( "row" | "column" ) INT ;
+count         = "count" INT ;                            (* ≥ 1 *)
 meta          = "meta" "{" { IDENT STRING } "}" ;
 
 connection    = endpoint arrow endpoint [ "{" { label | conn_type } "}" ] ;
@@ -146,6 +149,26 @@ component <id>[: <template>] { … }
   Das Theme übersetzt sie in Mindestbreite, Rahmenstärke und Schriftschnitt.
 - `category` wählt die Farbfamilie im Theme (`power`, `controller`, `communication`,
   `sensor`, `actuator`, `software`, `external`, `generic`). Templates setzen eine Vorgabe.
+- `count 4` steht für mehrere gleiche Elemente (z. B. vier Halbbrücken). Die Komponente wird
+  als Stapel gezeichnet — bei 2 eine, ab 3 zwei versetzte Karten dahinter — und zeigt die
+  Anzahl als „×4“ rechts neben dem Label. Pins, Verbindungen und Layout bleiben die einer
+  einzelnen Komponente; im React-Flow-Export steht die Anzahl in `data.count`.
+- **Automatisch stapeln:** `stack identical` (Architektur-Ebene, Standard `none`) fasst
+  gleich verschaltete Komponenten zu einem Mehrfachelement zusammen, ohne dass `count`
+  geschrieben werden muss. Zusammengefasst werden Komponenten mit
+  - gleichem **Namensstamm**: Label ohne laufende Nummer („Half Bridge 1“ … „Half Bridge 4“ →
+    „Half Bridge“, „HB1“ → „HB“, „Strom A“ → „Strom“). Als Nummer gelten höchstens zwei Ziffern
+    oder ein Einzelbuchstabe nach Trennzeichen; „Temperatur“ und „Strom“ bleiben immer getrennt,
+    „S32K344“ bleibt ganz.
+  - gleichem Template, gleicher Gruppe (Zone/System), gleichen Pins, Eigenschaften und `meta`,
+  - gleichen Verbindungen: gleiche Pins, Signalart, Richtung und Beschriftung zu Gegenstellen,
+    die ihrerseits gleich verschaltet sind. Dadurch fassen sich auch Ketten zusammen
+    (`hb1 → m1` … `hb4 → m4` ergibt „Half Bridge ×4 → Motor ×4“).
+
+  Die erste Komponente bleibt stehen (ID, Grid-Platz), erhält den Namensstamm als Label und die
+  Summe der Anzahlen; Verbindungen der übrigen entfallen als Duplikate, ihre Grid-Zellen werden
+  leer. Das Semantic Model bleibt vollständig, `check` sieht alle Komponenten; die Sicht gilt für
+  Layout, SVG/PNG und React-Flow-Export.
 - `meta { voltage "12 V" }` speichert Freitext-Metadaten. Sie werden in v0.1 **nicht**
   gerendert, aber exportiert (React Flow `data.meta`). Metadaten stehen bewusst in einem
   eigenen Block, damit Tippfehler wie `lable "x"` ein Fehler bleiben und nicht still als
@@ -177,6 +200,20 @@ pin <art> <NAME> ["Anzeigelabel"]
 | Einzelsignal | `signal`, `digital`, `analog`, `pwm` |
 | Bus | `bus`, `can`, `lin`, `spi`, `i2c`, `uart`, `ethernet` |
 | Diagnose | `diagnostic`, `debug` |
+
+**Pin-Darstellung** (`pins`, auf Architektur-Ebene, Standard `all`):
+
+| Wert | gezeichnet |
+|------|------------|
+| `all` | alle Pins |
+| `connected` | nur Pins, an denen eine Verbindung hängt |
+| `none` | keine Pins |
+
+Gedacht für Präsentationssichten mit Bibliotheks-Templates. Ausgeblendete Pins bleiben im
+Semantic Model (Adressierung, Typableitung, Seitenwahl funktionieren unverändert); das Layout
+misst die Komponente ohne sie, und Verbindungen an einen ausgeblendeten Pin docken wie
+Körperanschlüsse an. Im React-Flow-Export fehlen ausgeblendete Pins als Handles, die Kante
+hängt am Körper-Handle. `I301` entfällt bei `connected` und `none`.
 
 Die Gruppe bestimmt die Linienform (siehe [05 Rendering](05-rendering-export.md#linienformen)),
 die konkrete Art bestimmt Label-Vorgaben und später Plausibilitätsregeln.
@@ -238,6 +275,22 @@ layout {
   `hint row N` / `hint column N` in die DSL geschrieben — nie als Pixel.
 - `grid` legt Spalte und Zeile im **fertigen Bild** fest (unabhängig von `direction`).
   `.` ist eine leere Zelle. Nicht aufgeführte Komponenten platziert das Layout automatisch.
+- **Überspannen:** Steht dieselbe ID in mehreren benachbarten Zellen, belegt die Komponente
+  alle diese Zellen und wird auf ihre Breite bzw. Höhe gestreckt. Die Zellen müssen ein
+  lückenloses Rechteck bilden. Typisch für Präsentationssichten mit einem zentralen Baustein:
+
+  ```sysarch
+  layout {
+      grid {
+          .   | can | eth  | lin | .
+          sbc | mcu | mcu  | mcu | comcu
+          .   | hb  | temp | cur | .
+      }
+  }
+  ```
+
+  Verbindungen ohne Pin zu Komponenten darüber und darunter docken genau gegenüber an und
+  laufen gerade (vollständiges Beispiel: [`examples/mcu-hub.arch`](../examples/mcu-hub.arch)).
 - `hint row|column` (1-basiert) hat dieselbe Bedeutung für eine einzelne Komponente.
 - Grid und Hints dürfen Zonen-Zusammenhang nicht verletzen (sonst Fehler `E108`).
 
@@ -315,7 +368,7 @@ Codes sind stabil und dokumentiert, damit CI-Filter und Tests darauf aufbauen k�
 | `E104` | Fehler | unbekanntes Template oder zyklisches `extends` |
 | `E105` | Fehler | doppelter Pin-Name bzw. Neudeklaration mit anderer Art |
 | `E106` | Fehler | Komponente außerhalb einer Zone, obwohl Zonen verwendet werden |
-| `E107` | Fehler | Komponente mehrfach im Grid oder Grid-Zeilen unterschiedlich breit |
+| `E107` | Fehler | Grid-Zellen einer Komponente bilden kein lückenloses Rechteck oder Grid-Zeilen unterschiedlich breit |
 | `E108` | Fehler | Grid/Hint verletzt Zonen-Zusammenhang |
 | `E109` | Fehler | unbekannte Signalart, Kategorie oder unbekanntes Theme |
 | `E110` | Fehler | reserviertes Konstrukt aus späterer Version |
@@ -338,16 +391,16 @@ Regeln für eingefügten Text.
 
 - **Einrückung** 4 Leerzeichen, ein Leerzeichen zwischen Token, `\n` als Zeilenende,
   genau ein Zeilenumbruch am Dateiende.
-- **Reihenfolge in `architecture`:** `theme` › `direction` › `layout` ›
+- **Reihenfolge in `architecture`:** `theme` › `direction` › `pins` › `stack` › `layout` ›
   Zonen/Systeme/Komponenten › Verbindungen. Innerhalb dieser Gruppen und in allen anderen
   Blöcken bleibt die Quelltextreihenfolge — sie trägt Bedeutung (Pin- und Zonenreihenfolge).
 - **Leerzeilen:** höchstens eine in Folge, keine am Anfang oder Ende eines Blocks. Zwischen
-  den Abschnitten (`theme`/`direction`, `layout`, Struktur, Verbindungen) und zwischen
+  den Abschnitten (`theme`/`direction`/`pins`/`stack`, `layout`, Struktur, Verbindungen) und zwischen
   `define`s steht immer eine.
 - **Einzeiler** `kopf { … }`, sofern der Block keine Kommentare enthält:
   - Verbindungen mit höchstens zwei Eigenschaften: `a.X -> b { label "x" type can }`
   - Komponenten mit genau einer Eigenschaft (`label`, `size`, `importance`, `category`,
-    `hint`): `component kl30: battery { label "KL30" }`
+    `hint`, `count`): `component kl30: battery { label "KL30" }`
   - Seitenblöcke mit höchstens drei Pins ohne Anzeigelabel, getrennt durch drei Leerzeichen,
     solange die Zeile höchstens 80 Zeichen breit ist: `left { pin power VS   pin digital IN }`
   - Leere Blöcke entfallen bei Komponenten und Verbindungen; sonst `zone z {}`.
