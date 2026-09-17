@@ -1,5 +1,5 @@
 import {
-  SIDES, SIGNAL_GROUPS,
+  SIDES, SIGNAL_GROUPS, stackIdentical,
   type ArchitectureModel, type Category, type IconDef, type Importance, type Shape, type Side, type SignalKind, type Size,
 } from "@sysarch/core";
 import type { Point, Rect, SceneGraph, SceneMarker, ScenePath, SceneRect, SceneShape } from "@sysarch/layout";
@@ -49,6 +49,8 @@ export interface ComponentData {
   shape: Shape;
   /** Vollständige Pfaddaten, damit die Zielanwendung ohne sysarch-Bibliothek auskommt. */
   icon?: IconDef;
+  /** Anzahl gleicher Elemente (`count`); fehlt bei 1. Die Hülle umfasst den ganzen Stapel. */
+  count?: number;
   pins: PinData[];
   meta: Record<string, string>;
 }
@@ -93,7 +95,9 @@ export function bodyHandle(side: Side): string {
  * Geometrie kommt vollständig aus dem Scene Graph, damit sie dem SVG entspricht.
  * Eltern stehen in `nodes` vor ihren Kindern, wie React Flow es verlangt.
  */
-export function toReactFlow(model: ArchitectureModel, scene: SceneGraph): ReactFlowExport {
+export function toReactFlow(source: ArchitectureModel, scene: SceneGraph): ReactFlowExport {
+  // Dieselbe Sicht wie das Layout: zusammengefasste Komponenten erscheinen einmal mit `count`.
+  const model = stackIdentical(source);
   const shapes = new Map<string, SceneShape>();
   const frames = new Map<string, SceneRect>();
   const pins = new Map<string, SceneMarker>();
@@ -148,6 +152,7 @@ export function toReactFlow(model: ArchitectureModel, scene: SceneGraph): ReactF
           size: component.size,
           shape: component.shape,
           ...(icon && { icon }),
+          ...(component.count > 1 && { count: component.count }),
           pins: component.pins.flatMap((pin) => {
             const marker = pins.get(`pin:${id}.${pin.name}`);
             if (!marker) return [];
@@ -162,6 +167,9 @@ export function toReactFlow(model: ArchitectureModel, scene: SceneGraph): ReactF
   };
   visit(model.root.children, undefined, undefined);
 
+  // Ausgeblendete Pins (`pins connected|none`) haben keinen Handle; die Kante hängt am Körper.
+  const handle = (component: string, pin: string | undefined) =>
+    pin !== undefined && pins.has(`pin:${component}.${pin}`) ? pin : undefined;
   const edges: ConnectionEdge[] = [];
   for (const c of model.connections) {
     const path = paths.get(`connection:${c.id}`);
@@ -174,9 +182,9 @@ export function toReactFlow(model: ArchitectureModel, scene: SceneGraph): ReactF
     edges.push({
       id: c.id,
       source: c.source.component,
-      sourceHandle: c.source.pin ?? bodyHandle(nearestSide(source, first)),
+      sourceHandle: handle(c.source.component, c.source.pin) ?? bodyHandle(nearestSide(source, first)),
       target: c.target.component,
-      targetHandle: c.target.pin ?? bodyHandle(nearestSide(target, last)),
+      targetHandle: handle(c.target.component, c.target.pin) ?? bodyHandle(nearestSide(target, last)),
       type: "step",
       ...(c.label && { label: c.label }),
       ...(c.direction === "bidirectional" && { markerStart: arrow }),

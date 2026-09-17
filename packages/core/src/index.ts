@@ -10,6 +10,7 @@ export {
   type ArchitectureModel, type Component, type ComponentId, type Connection, type Endpoint,
   type GridSpec, type Group, type GroupId, type Pin, type PinAddress,
 } from "./resolve/index.js";
+export { labelStem, stackIdentical } from "./resolve/stack.js";
 export { loadLibrary, resolveDefines, type IconDef, type Library, type TemplateDef, type TemplatePin } from "./resolve/library.js";
 export { convertIcon, IconError } from "./library/icons.js";
 export { loadStandardLibrary, standardLibrary } from "./library/index.js";

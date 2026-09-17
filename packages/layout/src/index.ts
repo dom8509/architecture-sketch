@@ -1,20 +1,20 @@
 import {
-  SIGNAL_GROUPS, standardLibrary,
+  SIGNAL_GROUPS, stackIdentical, standardLibrary,
   type ArchitectureModel, type IconDef, type Side,
 } from "@sysarch/core";
 import { ascent, INTER_METRICS, LINE_HEIGHT, measureLine, type FontMetrics, type TextStyle, type Theme } from "@sysarch/themes";
-import { applyOverrides, Axes, buildNodes, type LEdge, type LNode } from "./graph.js";
+import { applyOverrides, Axes, buildNodes, rankGap, type LEdge, type LNode } from "./graph.js";
 import { placeLabel } from "./labels.js";
 import { orderLayers } from "./order.js";
 import { placeNodes } from "./place.js";
-import { assignBodyPorts } from "./ports.js";
+import { alignSpanPorts, assignBodyPorts } from "./ports.js";
 import { assignRanks } from "./rank.js";
 import { portPoint, routeEdges } from "./route.js";
 import { textBounds, type Point, type Rect, type SceneGraph, type SceneItem, type SceneMarker, type ScenePath, type SceneText } from "./scene.js";
 import { sizeComponent, type ComponentBox } from "./size.js";
 
 export * from "./scene.js";
-export { shapeGeometry, type ShapeGeometry, type ShapeParams, type Size2 } from "./shapes.js";
+export { shapeGeometry, stackFront, stackedGeometry, type ShapeGeometry, type ShapeParams, type Size2 } from "./shapes.js";
 
 export interface LayoutOptions {
   /** Icons für `SceneGraph.icons`; Standard: Icons der Standardbibliothek. */
@@ -23,11 +23,12 @@ export interface LayoutOptions {
 
 /** ArchitectureModel → SceneGraph. Reine Funktion, deterministisch. */
 export function layout(
-  model: ArchitectureModel,
+  source: ArchitectureModel,
   theme: Theme,
   metrics: FontMetrics = INTER_METRICS,
   options: LayoutOptions = {},
 ): SceneGraph {
+  const model = withVisiblePins(stackIdentical(source));
   const { grid } = theme.spacing;
   const axes = new Axes(model.direction);
   const font = theme.typography.fontFamily;
@@ -65,15 +66,28 @@ export function layout(
   const labelSpace: number[] = [];
   for (const e of edges) {
     const label = e.connection.label;
-    if (!label || e.feedback || Math.abs(e.source.rank - e.target.rank) !== 1) continue;
+    if (!label || e.feedback) continue;
+    const gap = rankGap(e.source, e.target);
+    if (gap === undefined || gap.width !== 1) continue;
     const lines = label.split("\n");
     const along = model.direction === "LR"
       ? Math.max(...lines.map((l) => measureLine(metrics, l, connectionStyle.size, connectionStyle.weight)))
       : lines.length * connectionStyle.size * LINE_HEIGHT;
-    const r = Math.min(e.source.rank, e.target.rank);
+    const r = gap.after;
     labelSpace[r] = Math.max(labelSpace[r] ?? 0, along + 2 * theme.markers.arrow + 2 * grid);
   }
-  const frames = placeNodes({ model, theme, axes, nodes, edges, layers, zones, labelSpace });
+  // Knoten über mehrere Grid-Zellen: Hülle strecken, Pins behalten ihre Port-Objekte.
+  const stretched = new Map<LNode, { main?: number; cross?: number }>();
+  const stretch = (n: LNode, main: number | undefined, cross: number | undefined) => {
+    const current = { ...stretched.get(n), ...(main !== undefined && { main }), ...(cross !== undefined && { cross }) };
+    stretched.set(n, current);
+    n.box = sizeComponent(n.component, theme, metrics, model.direction === "LR"
+      ? { width: current.main, height: current.cross }
+      : { width: current.cross, height: current.main });
+    for (const pin of n.box.pins) Object.assign(n.pinPorts.get(pin.name)!, { side: pin.side, offset: pin.offset });
+  };
+  const natural = (n: LNode) => boxes.get(n.id)!;
+  const frames = placeNodes({ model, theme, axes, nodes, edges, layers, zones, labelSpace, stretch, natural });
 
   // ── Gruppenlabels ────────────────────────────────────────────
   const groupStyle = style(theme.typography.group, font);
@@ -92,6 +106,8 @@ export function layout(
       style: groupStyle,
     }));
   }
+
+  alignSpanPorts(edges, axes, grid, groupLabels.map(textBounds));
 
   // ── Routing ──────────────────────────────────────────────────
   const routes = routeEdges({
@@ -144,6 +160,7 @@ export function layout(
       fill: colors.fill,
       stroke: colors.border,
       strokeWidth: theme.component.borderWidth[c.importance],
+      ...(n.box.stack && { stack: n.box.stack }),
     });
 
     const box = n.box;
@@ -165,6 +182,18 @@ export function layout(
       lines: box.label.lines,
       style: style({ ...box.label.style, color: colors.text }, font),
     }));
+    if (box.count) {
+      labelItems.push(text(metrics, {
+        ref: `component:${c.id}`,
+        className: "sa-label sa-component-count",
+        x: n.x + box.count.x,
+        y: n.y + box.count.y,
+        anchor: "start",
+        baseline: "top",
+        lines: box.count.lines,
+        style: style({ ...box.count.style, color: colors.text }, font),
+      }));
+    }
 
     const pinStyle = style({ ...theme.typography.pin, color: colors.text }, font);
     const inner = box.geometry.inner(rect);
@@ -283,6 +312,23 @@ export function layout(
 }
 
 // ── Hilfsfunktionen ────────────────────────────────────────────
+
+/**
+ * `pins connected|none`: Komponenten nur mit den gezeichneten Pins. Verbindungen an
+ * ausgeblendete Pins docken wie Körperanschlüsse an, weil das Layout den Pin nicht findet.
+ */
+function withVisiblePins(model: ArchitectureModel): ArchitectureModel {
+  if (model.pins === "all") return model;
+  const connected = new Set<string>();
+  for (const c of model.connections) {
+    for (const end of [c.source, c.target]) if (end.pin !== undefined) connected.add(`${end.component}.${end.pin}`);
+  }
+  const components = new Map([...model.components].map(([id, c]) => [
+    id,
+    { ...c, pins: model.pins === "none" ? [] : c.pins.filter((p) => connected.has(`${id}.${p.name}`)) },
+  ]));
+  return { ...model, components };
+}
 
 /**
  * Brücken an Kreuzungen: Kreuzt ein waagerechtes Segment ein senkrechtes einer anderen

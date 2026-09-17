@@ -15,6 +15,7 @@ const cases: Record<DiagnosticCode, Case[]> = {
   E001: [
     { name: "fehlendes Token", source: 'architecture "A" {\n component : block\n}', at: "2:12" },
     { name: "falscher Wert für size", source: arch(" component a { size huge }"), message: "`small` | `medium` | `large`" },
+    { name: "count kleiner 1", source: arch(" component a { count 0 }"), at: "3:22" },
     { name: "Hint kleiner 1", source: arch(" layout { mode assisted }\n component a { hint row 0 }"), at: "4:25" },
     { name: "define nach architecture", source: 'architecture "A" {}\ndefine x {}', at: "2:8" },
     { name: "unerwartetes Zeichen", source: arch(" component a,"), message: "unerwartetes Zeichen `,`" },
@@ -49,7 +50,8 @@ const cases: Record<DiagnosticCode, Case[]> = {
     { name: "Komponente außerhalb einer Zone", source: arch(" zone z { component a }\n component b\n system s { component c }"), at: "4:12" },
   ],
   E107: [
-    { name: "Komponente mehrfach im Grid", source: arch(" component a\n component b\n layout { grid {\n a | b\n b | .\n } }"), at: "7:2" },
+    { name: "Zellen einer Komponente bilden kein Rechteck", source: arch(" component a\n component b\n layout { grid {\n a | b\n b | .\n } }"), at: "7:2" },
+    { name: "Zellen mit Lücke", source: arch(" component a\n component b\n layout { grid {\n a | b | a\n } }"), at: "6:10" },
     { name: "unterschiedlich breite Zeilen", source: arch(" component a\n component b\n layout { grid {\n a | b\n .\n } }"), at: "7:2" },
   ],
   E108: [

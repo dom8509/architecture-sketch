@@ -16,6 +16,18 @@ const source = `architecture "Tür & <Fenster>" {
 const scene = () => layout(compile(source).value, getTheme("automotive-light"));
 
 describe("renderSvg", () => {
+  it("zeichnet Mehrfachelemente als Stapel: hintere Karten zuerst, vorne die kleinere Karte", () => {
+    const svg = renderSvg(layout(compile(`architecture "A" { component hb: half_bridge { count 3 } }`).value, getTheme("automotive-light")));
+    const group = /<g class="sa-component[^"]*" data-ref="component:hb">(.*?)<\/g>/.exec(svg);
+    expect(group).not.toBeNull();
+    const rects = [...group![1]!.matchAll(/<rect x="([\d.]+)" y="([\d.]+)"/g)].map((m) => [Number(m[1]), Number(m[2])]);
+    expect(rects).toHaveLength(3);
+    // Hinten = weiter rechts oben.
+    expect(rects[0]![0]!).toBeGreaterThan(rects[2]![0]!);
+    expect(rects[0]![1]!).toBeLessThan(rects[2]![1]!);
+    expect(svg).toContain(">×3<");
+  });
+
   it("ist deterministisch", () => {
     expect(renderSvg(scene())).toBe(renderSvg(scene()));
   });

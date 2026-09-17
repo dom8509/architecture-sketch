@@ -1,4 +1,4 @@
-import type { Arrow, Direction, Importance, LayoutMode, Side, Size, Span } from "../types.js";
+import type { Arrow, Direction, Importance, LayoutMode, PinDisplay, Side, StackMode, Size, Span } from "../types.js";
 
 export interface Trivia {
   kind: "comment" | "blankLine";
@@ -34,11 +34,13 @@ export interface ArchitectureNode extends SyntaxNode {
 }
 
 export type Statement =
-  | ThemeStmt | DirectionStmt | LayoutStmt
+  | ThemeStmt | DirectionStmt | PinsStmt | StackStmt | LayoutStmt
   | ZoneNode | SystemNode | ComponentNode | ConnectionNode;
 
 export interface ThemeStmt extends SyntaxNode { kind: "Theme"; name: Ident }
 export interface DirectionStmt extends SyntaxNode { kind: "Direction"; value: Direction }
+export interface PinsStmt extends SyntaxNode { kind: "Pins"; value: PinDisplay }
+export interface StackStmt extends SyntaxNode { kind: "Stack"; value: StackMode }
 
 export interface LayoutStmt extends SyntaxNode {
   kind: "Layout";
@@ -75,7 +77,7 @@ export interface ComponentNode extends SyntaxNode {
 
 export type ComponentStmt =
   | LabelStmt | SizeStmt | ImportanceStmt | CategoryStmt
-  | PinStmt | SideBlock | HintStmt | MetaBlock;
+  | PinStmt | SideBlock | HintStmt | CountStmt | MetaBlock;
 
 export interface LabelStmt extends SyntaxNode { kind: "Label"; value: StringLit }
 export interface SizeStmt extends SyntaxNode { kind: "Size"; value: Size }
@@ -94,6 +96,9 @@ export interface SideBlock extends SyntaxNode {
   side: Side;
   pins: PinStmt[];
 }
+
+/** Anzahl gleicher Elemente, dargestellt als gestapelte Karten. */
+export interface CountStmt extends SyntaxNode { kind: "Count"; value: number }
 
 export interface HintStmt extends SyntaxNode {
   kind: "Hint";

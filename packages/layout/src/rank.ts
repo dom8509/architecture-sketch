@@ -1,4 +1,4 @@
-import type { LEdge, LNode } from "./graph.js";
+import { rankEnd, type LEdge, type LNode } from "./graph.js";
 
 /**
  * Phase 1 + 2: Ränge je Zone (nur zoneninterne Kanten), Zonen hintereinander gereiht.
@@ -9,6 +9,7 @@ import type { LEdge, LNode } from "./graph.js";
  * - Komponenten ganz ohne Verbindung bekommen einen eigenen Rang am Ende ihrer Zone,
  *   damit sie keine bestehende Position verschieben.
  * - Feste Spalten aus `grid`/`hint` sind globale Ränge; die übrigen Knoten ordnen sich darum.
+ * - Ein Knoten über mehrere Spalten belegt die Ränge `rank … rank + mainSpan − 1`.
  */
 export function assignRanks(nodes: readonly LNode[], edges: readonly LEdge[], zoneCount: number): void {
   const connected = new Set<LNode>();
@@ -83,7 +84,7 @@ export function assignRanks(nodes: readonly LNode[], edges: readonly LEdge[], zo
         continue;
       }
       let rank = 0;
-      for (const p of preds.get(n)!) rank = Math.max(rank, local.get(p)! + 1);
+      for (const p of preds.get(n)!) rank = Math.max(rank, local.get(p)! + p.mainSpan);
       local.set(n, rank);
     }
 
@@ -91,11 +92,11 @@ export function assignRanks(nodes: readonly LNode[], edges: readonly LEdge[], zo
     for (const n of [...topo].reverse()) {
       if (preds.get(n)!.length > 0 || succs.get(n)!.length === 0 || fixedLocal(n) !== undefined) continue;
       const nearest = Math.min(...succs.get(n)!.map((s) => local.get(s)!));
-      local.set(n, Math.max(local.get(n)!, nearest - 1));
+      local.set(n, Math.max(local.get(n)!, nearest - n.mainSpan));
     }
 
     let last = -1;
-    for (const n of members) if (connected.has(n) || fixedLocal(n) !== undefined) last = Math.max(last, local.get(n)!);
+    for (const n of members) if (connected.has(n) || fixedLocal(n) !== undefined) last = Math.max(last, local.get(n)! + n.mainSpan - 1);
     for (const n of members) {
       if (!connected.has(n) && fixedLocal(n) === undefined) local.set(n, last + 1);
     }
@@ -103,7 +104,7 @@ export function assignRanks(nodes: readonly LNode[], edges: readonly LEdge[], zo
     let end = offset;
     for (const n of members) {
       n.rank = offset + local.get(n)!;
-      end = Math.max(end, n.rank);
+      end = Math.max(end, rankEnd(n));
     }
     offset = end + 1;
   }

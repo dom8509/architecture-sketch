@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { themes } from "@sysarch/themes";
-import { shapeGeometry, textBounds, type Rect, type SceneGraph, type SceneShape, type SceneText } from "../src/index.js";
+import { shapeGeometry, stackedGeometry, textBounds, type Rect, type SceneGraph, type SceneShape, type SceneText } from "../src/index.js";
 import { appendUnconnected, examples, render, withDirection } from "./helpers.js";
 
 const EPS = 0.01;
@@ -59,9 +59,13 @@ function checkProperties(scene: SceneGraph, grid: number, padding: number): void
     }
   }
 
-  // Label und Icon liegen im Innenbereich ihrer Form.
+  // Label, Anzahl und Icon liegen im Innenbereich ihrer Form (bei Stapeln: der vorderen Karte).
   for (const s of bodies) {
-    const inner = shapeGeometry(s.shape, { padding, grid }).inner(s);
+    const base = shapeGeometry(s.shape, { padding, grid });
+    const inner = (s.stack ? stackedGeometry(base, s.stack.layers * s.stack.offset) : base).inner(s);
+    const count = scene.items.find((i): i is SceneText => i.type === "text" && i.ref === s.ref && i.className === "sa-label sa-component-count");
+    expect(count !== undefined, `${s.ref}: Anzahl genau bei Stapeln`).toBe(s.stack !== undefined);
+    if (count) expect(contains(inner, textBounds(count)), `Anzahl von ${s.ref} ragt aus dem Innenbereich`).toBe(true);
     const label = scene.items.find((i): i is SceneText => i.type === "text" && i.ref === s.ref && i.className === "sa-label sa-component-label");
     expect(label, `${s.ref} ohne Label`).toBeDefined();
     expect(contains(inner, textBounds(label!)), `Label von ${s.ref} ragt aus dem Innenbereich`).toBe(true);

@@ -20,6 +20,21 @@ describe("Dokumenteinstellungen", () => {
     const m = model(arch(" theme technical\n direction TB\n component a\n layout { mode assisted\n grid {\n a | .\n } }"));
     expect(m).toMatchObject({ theme: "technical", direction: "TB", layoutMode: "assisted" });
     expect(m.grid!.rows).toEqual([["a", null]]);
+    expect(m.pins).toBe("all");
+  });
+
+  it("übernimmt count, Standard 1", () => {
+    const m = model(arch(" component a { count 4 }\n component b"));
+    expect(m.components.get("a")!.count).toBe(4);
+    expect(m.components.get("b")!.count).toBe(1);
+  });
+
+  it("übernimmt pins und lässt die Pins im Modell", () => {
+    const { value: m, diagnostics } = compile(arch(" pins connected\n component a: power_supply\n component b\n a.VOUT -> b"));
+    expect(m.pins).toBe("connected");
+    expect(m.components.get("a")!.pins.map((p) => p.name)).toEqual(["VIN", "EN", "VOUT", "GND"]);
+    // Unverbundene Pins werden nicht gezeichnet, also kein I301.
+    expect(diagnostics.map((d) => d.code)).not.toContain("I301");
   });
 });
 
@@ -149,6 +164,17 @@ describe("Invarianten bei Fehlern", () => {
   it("Grid enthält nur existierende Komponenten", () => {
     const m = compile(arch(" component a\n layout { grid { a | ghost } }")).value;
     expect(m.grid!.rows).toEqual([["a", null]]);
+  });
+
+  it("überspannte Zellen bleiben im Grid stehen", () => {
+    const { value: m, diagnostics } = compile(arch(" component a\n component b\n layout { grid {\n a | a | b\n a | a | .\n } }"));
+    expect(diagnostics.filter((d) => d.severity === "error")).toEqual([]);
+    expect(m.grid!.rows).toEqual([["a", "a", "b"], ["a", "a", null]]);
+  });
+
+  it("überspannte Zellen zählen für den Zonen-Zusammenhang bis zur letzten Spalte", () => {
+    const { diagnostics } = compile(arch(" zone z1 { component a }\n zone z2 { component b }\n layout { grid {\n a | a | .\n . | b | .\n } }"));
+    expect(diagnostics.map((d) => d.code)).toContain("E108");
   });
 
   it("unbekanntes Template fällt auf block zurück", () => {

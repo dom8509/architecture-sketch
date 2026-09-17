@@ -1,0 +1,56 @@
+// MCU-Hub — Präsentationssicht: SBC links, breite MCU in der Mitte, Co-MCU rechts,
+// gruppierte Peripherie darüber und darunter. Die MCU überspannt drei Grid-Spalten,
+// `pins connected` blendet die unverbundenen Pins der Bibliotheks-Templates aus.
+
+architecture "MCU Hub" {
+    theme presentation
+    direction LR
+    pins connected
+
+    layout {
+        grid {
+            .   | can | eth  | lin | .
+            sbc | mcu | mcu  | mcu | comcu
+            .   | hb  | temp | cur | .
+        }
+    }
+
+    component sbc: power_supply { label "SBC" }
+    component mcu: microcontroller {
+        label "S32K344"
+        importance primary
+    }
+    component comcu: microcontroller {
+        label "Co-MCU"
+        size small
+    }
+
+    system communication {
+        label "Kommunikation"
+        component can: can_transceiver
+        component eth: ethernet_phy
+        component lin: lin_transceiver
+    }
+
+    system io {
+        label "Aktorik & Sensorik"
+        component hb: half_bridge {
+            label "Motor Driver"
+            count 4
+        }
+        component temp: sensor { label "Temperatur" }
+        component cur: sensor {
+            label "Strom"
+            count 2
+        }
+    }
+
+    sbc.VOUT -> mcu { label "3.3 V" type power }
+    mcu <-> can     { type can }
+    mcu <-> eth     { type ethernet }
+    mcu <-> lin     { type lin }
+    mcu -> hb       { type pwm }
+    temp -> mcu     { type analog }
+    cur -> mcu      { type analog }
+    mcu <-> comcu   { label "SPI" type spi }
+}

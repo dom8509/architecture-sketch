@@ -1,3 +1,4 @@
+import { getTheme } from "@sysarch/themes";
 import { describe, expect, it } from "vitest";
 import type { SceneGraph, SceneShape } from "../src/index.js";
 import { examples, render } from "./helpers.js";
@@ -79,6 +80,118 @@ describe("Overrides", () => {
     expect(body(scene, "b").x).toBeLessThan(body(scene, "a").x);
     expect(body(scene, "b").x).toBe(body(scene, "c").x);
     expect(body(scene, "b").y).toBeLessThan(body(scene, "c").y);
+  });
+
+  it("streckt eine Komponente über mehrere Spalten; Nachbarn darüber und darunter docken gerade an", () => {
+    const scene = render(`architecture "T" {
+      layout { grid {
+        .   | a   | b   | .
+        sbc | mcu | mcu | co
+        .   | c   | d   | .
+      } }
+      component sbc  component mcu  component co
+      component a  component b  component c  component d
+      sbc -> mcu  mcu -> co
+      mcu -> a  mcu -> b  c -> mcu  d -> mcu
+    }`);
+    const mcu = body(scene, "mcu");
+    for (const id of ["a", "b", "c", "d"]) {
+      const s = body(scene, id);
+      expect(s.x, id).toBeGreaterThanOrEqual(mcu.x);
+      expect(s.x + s.width, id).toBeLessThanOrEqual(mcu.x + mcu.width);
+    }
+    expect(body(scene, "a").y + body(scene, "a").height).toBeLessThan(mcu.y);
+    expect(body(scene, "c").y).toBeGreaterThan(mcu.y + mcu.height);
+    expect(body(scene, "sbc").x + body(scene, "sbc").width).toBeLessThan(mcu.x);
+    expect(body(scene, "co").x).toBeGreaterThan(mcu.x + mcu.width);
+    // Verbindungen nach oben und unten ohne Knick.
+    for (const id of ["a", "b", "c", "d"]) {
+      const path = scene.items.find((i) => i.type === "path" && i.ref?.startsWith("connection:") && i.ref.includes(id));
+      expect(path?.type === "path" && path.points.length, id).toBe(2);
+    }
+  });
+
+  it("streckt eine Komponente über mehrere Zeilen", () => {
+    const scene = render(`architecture "T" {
+      layout { grid {
+        a | mcu
+        b | mcu
+        c | mcu
+      } }
+      component a  component b  component c  component mcu
+    }`);
+    const mcu = body(scene, "mcu");
+    expect(mcu.y).toBe(body(scene, "a").y);
+    expect(mcu.y + mcu.height).toBe(body(scene, "c").y + body(scene, "c").height);
+  });
+
+  it("hält feste Zeilen gegen die Pin-Ausrichtung", () => {
+    const scene = render(`architecture "T" {
+      layout { grid {
+        .   | top
+        src | .
+      } }
+      component src  component top
+      src -> top
+    }`);
+    expect(body(scene, "top").y + body(scene, "top").height).toBeLessThanOrEqual(body(scene, "src").y);
+  });
+
+  it("count stapelt Karten innerhalb der Hülle und zeigt die Anzahl", () => {
+    const scene = render(`architecture "T" {
+      component one: half_bridge
+      component two: half_bridge { count 2 }
+      component many: half_bridge { count 8 }
+    }`);
+    const shape = (id: string) => scene.items.find((i) => i.type === "shape" && i.ref === `component:${id}`)!;
+    const one = shape("one");
+    expect(one.type === "shape" && one.stack).toBeUndefined();
+    // Stapeltiefe = halbe Grid-Einheit, höchstens zwei hintere Karten.
+    const grid = getTheme("automotive-light").spacing.grid;
+    expect(shape("two")).toMatchObject({ stack: { layers: 1, offset: grid / 2 } });
+    expect(shape("many")).toMatchObject({ stack: { layers: 2, offset: grid / 4 } });
+    const count = scene.items.find((i) => i.type === "text" && i.className === "sa-label sa-component-count" && i.ref === "component:many");
+    expect(count?.type === "text" && count.lines).toEqual(["×8"]);
+    // Pins rechts sitzen weiter auf der Hülle (mit Stummel über die hinteren Karten).
+    const out = scene.items.find((i) => i.type === "marker" && i.ref === "pin:many.OUT");
+    expect(out?.type === "marker" && out.x).toBe(body(scene, "many").x + body(scene, "many").width);
+  });
+
+  it("stack identical zeichnet gleich verschaltete Komponenten als einen Stapel", () => {
+    const scene = render(`architecture "T" {
+      stack identical
+      component mcu: microcontroller
+      component l1: load { label "Lamp 1" }
+      component l2: load { label "Lamp 2" }
+      component l3: load { label "Lamp 3" }
+      mcu -> l1
+      mcu -> l2
+      mcu -> l3
+    }`);
+    const shapes = scene.items.filter((i) => i.type === "shape").map((i) => i.ref);
+    expect(shapes).toEqual(["component:mcu", "component:l1"]);
+    expect(scene.items.filter((i) => i.type === "path" && i.ref?.startsWith("connection:"))).toHaveLength(1);
+    const count = scene.items.find((i) => i.type === "text" && i.className === "sa-label sa-component-count");
+    expect(count?.type === "text" && count.lines).toEqual(["×3"]);
+  });
+
+  it("pins connected zeichnet nur verbundene Pins, pins none keine", () => {
+    const source = (mode: string) => `architecture "T" {
+      pins ${mode}
+      component psu: power_supply
+      component mcu: microcontroller { pin power VDD  pin can CAN_TX }
+      psu.VOUT -> mcu.VDD
+    }`;
+    const pinRefs = (scene: SceneGraph) =>
+      scene.items.filter((i) => i.type === "marker" && i.shape === "pin").map((i) => i.ref).sort();
+    expect(pinRefs(render(source("all")))).toHaveLength(6);
+    expect(pinRefs(render(source("connected")))).toEqual(["pin:mcu.VDD", "pin:psu.VOUT"]);
+    const none = render(source("none"));
+    expect(pinRefs(none)).toEqual([]);
+    expect(none.items.some((i) => i.type === "text" && i.className === "sa-label sa-pin-label")).toBe(false);
+    // Die Verbindung bleibt, jetzt als Körperanschluss.
+    expect(none.items.filter((i) => i.type === "path" && i.ref?.startsWith("connection:"))).toHaveLength(1);
+    expect(body(none, "psu").height).toBeLessThan(body(render(source("all")), "psu").height);
   });
 
   it("wendet hint column in mode assisted an", () => {

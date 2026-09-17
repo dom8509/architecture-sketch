@@ -4,7 +4,7 @@ import type {
 import { diagnostic, withSuggestion, type Diagnostic, type ParseResult } from "../diagnostics/index.js";
 import {
   CATEGORIES, SIGNAL_GROUPS, THEMES, isOneOf,
-  type Category, type Direction, type Importance, type LayoutMode, type Shape, type Side,
+  type Category, type Direction, type Importance, type LayoutMode, type PinDisplay, type StackMode, type Shape, type Side,
   type SignalKind, type Size, type Span,
 } from "../types.js";
 import { resolveDefines, type Library, type TemplateDef } from "./library.js";
@@ -20,6 +20,10 @@ export interface ArchitectureModel {
   theme: string;
   direction: Direction;
   layoutMode: LayoutMode;
+  /** Darstellung der Pins; Pins bleiben im Modell, das Layout blendet sie aus. */
+  pins: PinDisplay;
+  /** `identical`: Layout und Exporte fassen gleich verschaltete Komponenten zusammen (`stackIdentical`). */
+  stack: StackMode;
   grid?: GridSpec;
   /** Einfügereihenfolge = Deklarationsreihenfolge. */
   components: Map<ComponentId, Component>;
@@ -43,6 +47,8 @@ export interface Component {
   /** Reihenfolge = Darstellungsreihenfolge. */
   pins: Pin[];
   hints: { row?: number; column?: number };
+  /** Anzahl gleicher Elemente (`count`), mindestens 1. */
+  count: number;
   meta: Record<string, string>;
   /** Z. B. ["processing", "ecu"]. */
   groupPath: GroupId[];
@@ -85,7 +91,7 @@ export interface Group {
 }
 
 export interface GridSpec {
-  /** null = ".". */
+  /** null = ".". Eine Komponente über mehrere Zellen steht in jeder davon (immer ein Rechteck). */
   rows: (ComponentId | null)[][];
   origin: Span;
 }
@@ -115,6 +121,8 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
     theme: DEFAULT_THEME,
     direction: "LR",
     layoutMode: "strict",
+    pins: "all",
+    stack: "none",
     components: new Map(),
     connections: [],
     root: { id: "root", type: "root", children: [], origin: arch?.span ?? tree.span },
@@ -137,6 +145,12 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
         break;
       case "Direction":
         model.direction = stmt.value;
+        break;
+      case "Pins":
+        model.pins = stmt.value;
+        break;
+      case "Stack":
+        model.stack = stmt.value;
         break;
       case "Layout":
         for (const item of stmt.body) {
@@ -195,6 +209,7 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
       importance: "secondary",
       pins: [],
       hints: {},
+      count: 1,
       meta: {},
       groupPath,
       origin: node.span,
@@ -231,6 +246,9 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
           break;
         case "Hint":
           applyHint(component, stmt, hints);
+          break;
+        case "Count":
+          component.count = stmt.value;
           break;
         case "Meta":
           for (const entry of stmt.entries) component.meta[entry.key.name] = entry.value.value;
@@ -407,7 +425,8 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
         const towardsEnd = outCount > inCount;
         pin.side = model.direction === "LR" ? (towardsEnd ? "right" : "left") : (towardsEnd ? "bottom" : "top");
       }
-      if (!connected.has(pinAddress)) {
+      // Bei `pins connected|none` werden unverbundene Pins nicht gezeichnet — kein Hinweis nötig.
+      if (!connected.has(pinAddress) && model.pins === "all") {
         diagnostics.push(diagnostic("I301", `Pin \`${pinAddress}\` ist nicht verbunden`, pin.origin));
       }
     }
@@ -415,11 +434,13 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
 
   // ── Grid ─────────────────────────────────────────────────────
 
-  const position = new Map<ComponentId, { value: number; span: Span }>();
+  /** Lage entlang der Hauptachse, 1-basiert; `end` > `value` bei überspannten Zellen. */
+  const position = new Map<ComponentId, { value: number; end: number; span: Span }>();
   const mainAxis = model.direction === "LR" ? "column" : "row";
 
   if (gridNode) {
-    const seen = new Set<ComponentId>();
+    // Zellen je Komponente sammeln; mehrfach genannt = überspannt, wenn sie ein Rechteck bilden.
+    const cellsOf = new Map<ComponentId, { row: number; column: number; span: Span }[]>();
     const rows = gridNode.rows.map((row, rowIndex) =>
       row.cells.map((cell, columnIndex) => {
         if (cell.id === undefined) return null;
@@ -428,15 +449,27 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
           diagnostics.push(withSuggestion("E102", `Unbekannte Komponente \`${id}\` im Grid`, id, cell.id.span, model.components.keys()));
           return null;
         }
-        if (seen.has(id)) {
-          diagnostics.push(diagnostic("E107", `Komponente \`${id}\` steht mehrfach im Grid`, cell.id.span));
-          return null;
-        }
-        seen.add(id);
-        position.set(id, { value: (mainAxis === "column" ? columnIndex : rowIndex) + 1, span: cell.span });
+        if (!cellsOf.has(id)) cellsOf.set(id, []);
+        cellsOf.get(id)!.push({ row: rowIndex, column: columnIndex, span: cell.id.span });
         return id;
       }),
     );
+    for (const [id, cells] of cellsOf) {
+      const top = Math.min(...cells.map((c) => c.row));
+      const bottom = Math.max(...cells.map((c) => c.row));
+      const left = Math.min(...cells.map((c) => c.column));
+      const right = Math.max(...cells.map((c) => c.column));
+      const rectangle = cells.length === (bottom - top + 1) * (right - left + 1) &&
+        rows.slice(top, bottom + 1).every((row) => row.slice(left, right + 1).every((cell) => cell === id) && row.length > right);
+      if (!rectangle) {
+        diagnostics.push(diagnostic("E107", `Zellen von \`${id}\` im Grid bilden kein zusammenhängendes Rechteck`, cells[1]!.span));
+        for (const row of rows) row.forEach((cell, k) => { if (cell === id) row[k] = null; });
+        continue;
+      }
+      position.set(id, mainAxis === "column"
+        ? { value: left + 1, end: right + 1, span: cells[0]!.span }
+        : { value: top + 1, end: bottom + 1, span: cells[0]!.span });
+    }
     const width = rows[0]?.length ?? 0;
     gridNode.rows.forEach((row, rowIndex) => {
       if (row.cells.length !== width) {
@@ -449,7 +482,7 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
   for (const component of model.components.values()) {
     const value = component.hints[mainAxis];
     const span = hintSpans.get(component.id)?.[mainAxis];
-    if (value !== undefined && span !== undefined) position.set(component.id, { value, span });
+    if (value !== undefined && span !== undefined) position.set(component.id, { value, end: value, span });
   }
 
   // ── Zonen-Zusammenhang ───────────────────────────────────────
@@ -461,12 +494,12 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
     for (const [id, pos] of placed) {
       const zone = zoneOf.get(id)!;
       // Je Paar genau eine Meldung, am Element der späteren Zone.
-      const conflict = placed.find(([otherId, other]) => zoneOf.get(otherId)! < zone && other.value >= pos.value);
+      const conflict = placed.find(([otherId, other]) => zoneOf.get(otherId)! < zone && other.end >= pos.value);
       if (conflict === undefined) continue;
       const [otherId, other] = conflict;
       diagnostics.push(diagnostic(
         "E108",
-        `\`${id}\` (Zone \`${zoneIds[zone]}\`, ${axisName} ${pos.value}) liegt nicht hinter \`${otherId}\` (Zone \`${zoneIds[zoneOf.get(otherId)!]}\`, ${axisName} ${other.value}) — Zonen müssen zusammenhängend in Deklarationsreihenfolge bleiben`,
+        `\`${id}\` (Zone \`${zoneIds[zone]}\`, ${axisName} ${pos.value}) liegt nicht hinter \`${otherId}\` (Zone \`${zoneIds[zoneOf.get(otherId)!]}\`, ${axisName} ${other.end}) — Zonen müssen zusammenhängend in Deklarationsreihenfolge bleiben`,
         pos.span,
       ));
     }

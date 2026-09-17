@@ -1,0 +1,604 @@
+{
+  "nodes": [
+    {
+      "id": "sbc",
+      "type": "power_supply",
+      "position": {
+        "x": 48,
+        "y": 336
+      },
+      "width": 216,
+      "height": 120,
+      "data": {
+        "label": "SBC",
+        "category": "power",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "regulator",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M7 12c1.5-3 3-3 4.5 0s3 3 4.5 0",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "VOUT",
+            "label": "VOUT",
+            "kind": "power",
+            "side": "right",
+            "offset": 72
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "mcu",
+      "type": "microcontroller",
+      "position": {
+        "x": 408,
+        "y": 336
+      },
+      "width": 840,
+      "height": 144,
+      "data": {
+        "label": "S32K344",
+        "category": "controller",
+        "importance": "primary",
+        "size": "large",
+        "shape": "rounded",
+        "icon": {
+          "name": "chip",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M7 6h10a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1v-10a1 1 0 0 1 1 -1Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [],
+        "meta": {}
+      }
+    },
+    {
+      "id": "comcu",
+      "type": "microcontroller",
+      "position": {
+        "x": 1392,
+        "y": 360
+      },
+      "width": 144,
+      "height": 96,
+      "data": {
+        "label": "Co-MCU",
+        "category": "controller",
+        "importance": "secondary",
+        "size": "small",
+        "shape": "rounded",
+        "icon": {
+          "name": "chip",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M7 6h10a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1v-10a1 1 0 0 1 1 -1Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [],
+        "meta": {}
+      }
+    },
+    {
+      "id": "communication",
+      "type": "group",
+      "position": {
+        "x": 384,
+        "y": 120
+      },
+      "style": {
+        "width": 888,
+        "height": 168
+      },
+      "data": {
+        "label": "Kommunikation",
+        "groupType": "system"
+      }
+    },
+    {
+      "id": "can",
+      "type": "can_transceiver",
+      "parentId": "communication",
+      "extent": "parent",
+      "position": {
+        "x": 24,
+        "y": 48
+      },
+      "width": 216,
+      "height": 96,
+      "data": {
+        "label": "CAN Transceiver",
+        "category": "communication",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "can",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M2 9h20M2 15h20",
+              "mode": "stroke"
+            },
+            {
+              "d": "M7 9v6M17 9v6",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [],
+        "meta": {}
+      }
+    },
+    {
+      "id": "eth",
+      "type": "ethernet_phy",
+      "parentId": "communication",
+      "extent": "parent",
+      "position": {
+        "x": 336,
+        "y": 48
+      },
+      "width": 216,
+      "height": 96,
+      "data": {
+        "label": "Ethernet PHY",
+        "category": "communication",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "ethernet",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M5 3h14a1 1 0 0 1 1 1v11a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1v-11a1 1 0 0 1 1 -1Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M9 16v5h6v-5",
+              "mode": "stroke"
+            },
+            {
+              "d": "M8 7v3M12 7v3M16 7v3",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [],
+        "meta": {}
+      }
+    },
+    {
+      "id": "lin",
+      "type": "lin_transceiver",
+      "parentId": "communication",
+      "extent": "parent",
+      "position": {
+        "x": 648,
+        "y": 48
+      },
+      "width": 216,
+      "height": 96,
+      "data": {
+        "label": "LIN Transceiver",
+        "category": "communication",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "lin",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M2 12h20",
+              "mode": "stroke"
+            },
+            {
+              "d": "M5 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M15 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0Z",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [],
+        "meta": {}
+      }
+    },
+    {
+      "id": "io",
+      "type": "group",
+      "position": {
+        "x": 384,
+        "y": 528
+      },
+      "style": {
+        "width": 840,
+        "height": 240
+      },
+      "data": {
+        "label": "Aktorik & Sensorik",
+        "groupType": "system"
+      }
+    },
+    {
+      "id": "hb",
+      "type": "half_bridge",
+      "parentId": "io",
+      "extent": "parent",
+      "position": {
+        "x": 24,
+        "y": 48
+      },
+      "width": 216,
+      "height": 96,
+      "data": {
+        "label": "Motor Driver",
+        "category": "power",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "bridge",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M5 3v18M19 3v18",
+              "mode": "stroke"
+            },
+            {
+              "d": "M5 12h14",
+              "mode": "stroke"
+            },
+            {
+              "d": "M10 9l3 3-3 3",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "count": 4,
+        "pins": [],
+        "meta": {}
+      }
+    },
+    {
+      "id": "temp",
+      "type": "sensor",
+      "parentId": "io",
+      "extent": "parent",
+      "position": {
+        "x": 360,
+        "y": 48
+      },
+      "width": 168,
+      "height": 168,
+      "data": {
+        "label": "Temperatur",
+        "category": "sensor",
+        "importance": "secondary",
+        "size": "small",
+        "shape": "circle",
+        "icon": {
+          "name": "sensor",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M9 12a3 3 0 1 0 6 0a3 3 0 1 0 -6 0Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M6.3 6.3a8 8 0 0 0 0 11.4",
+              "mode": "stroke"
+            },
+            {
+              "d": "M17.7 6.3a8 8 0 0 1 0 11.4",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [],
+        "meta": {}
+      }
+    },
+    {
+      "id": "cur",
+      "type": "sensor",
+      "parentId": "io",
+      "extent": "parent",
+      "position": {
+        "x": 672,
+        "y": 48
+      },
+      "width": 144,
+      "height": 144,
+      "data": {
+        "label": "Strom",
+        "category": "sensor",
+        "importance": "secondary",
+        "size": "small",
+        "shape": "circle",
+        "icon": {
+          "name": "sensor",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M9 12a3 3 0 1 0 6 0a3 3 0 1 0 -6 0Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M6.3 6.3a8 8 0 0 0 0 11.4",
+              "mode": "stroke"
+            },
+            {
+              "d": "M17.7 6.3a8 8 0 0 1 0 11.4",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "count": 2,
+        "pins": [],
+        "meta": {}
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "sbc.VOUT->mcu#1",
+      "source": "sbc",
+      "sourceHandle": "VOUT",
+      "target": "mcu",
+      "targetHandle": "__body_left",
+      "type": "step",
+      "label": "3.3 V",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-supply sa-kind-power",
+      "data": {
+        "kind": "power",
+        "direction": "forward",
+        "points": [
+          [
+            264,
+            408
+          ],
+          [
+            408,
+            408
+          ]
+        ]
+      }
+    },
+    {
+      "id": "mcu->can#1",
+      "source": "mcu",
+      "sourceHandle": "__body_top",
+      "target": "can",
+      "targetHandle": "__body_bottom",
+      "type": "step",
+      "markerStart": {
+        "type": "arrowclosed"
+      },
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-bus sa-kind-can",
+      "data": {
+        "kind": "can",
+        "direction": "bidirectional",
+        "points": [
+          [
+            528,
+            336
+          ],
+          [
+            528,
+            264
+          ]
+        ]
+      }
+    },
+    {
+      "id": "mcu->eth#1",
+      "source": "mcu",
+      "sourceHandle": "__body_top",
+      "target": "eth",
+      "targetHandle": "__body_bottom",
+      "type": "step",
+      "markerStart": {
+        "type": "arrowclosed"
+      },
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-bus sa-kind-ethernet",
+      "data": {
+        "kind": "ethernet",
+        "direction": "bidirectional",
+        "points": [
+          [
+            840,
+            336
+          ],
+          [
+            840,
+            264
+          ]
+        ]
+      }
+    },
+    {
+      "id": "mcu->lin#1",
+      "source": "mcu",
+      "sourceHandle": "__body_top",
+      "target": "lin",
+      "targetHandle": "__body_bottom",
+      "type": "step",
+      "markerStart": {
+        "type": "arrowclosed"
+      },
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-bus sa-kind-lin",
+      "data": {
+        "kind": "lin",
+        "direction": "bidirectional",
+        "points": [
+          [
+            1152,
+            336
+          ],
+          [
+            1152,
+            264
+          ]
+        ]
+      }
+    },
+    {
+      "id": "mcu->hb#1",
+      "source": "mcu",
+      "sourceHandle": "__body_bottom",
+      "target": "hb",
+      "targetHandle": "__body_top",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-pwm",
+      "data": {
+        "kind": "pwm",
+        "direction": "forward",
+        "points": [
+          [
+            552,
+            480
+          ],
+          [
+            552,
+            576
+          ]
+        ]
+      }
+    },
+    {
+      "id": "temp->mcu#1",
+      "source": "temp",
+      "sourceHandle": "__body_top",
+      "target": "mcu",
+      "targetHandle": "__body_bottom",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-analog",
+      "data": {
+        "kind": "analog",
+        "direction": "forward",
+        "points": [
+          [
+            840,
+            576
+          ],
+          [
+            840,
+            480
+          ]
+        ]
+      }
+    },
+    {
+      "id": "cur->mcu#1",
+      "source": "cur",
+      "sourceHandle": "__body_top",
+      "target": "mcu",
+      "targetHandle": "__body_bottom",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-analog",
+      "data": {
+        "kind": "analog",
+        "direction": "forward",
+        "points": [
+          [
+            1128,
+            576
+          ],
+          [
+            1128,
+            480
+          ]
+        ]
+      }
+    },
+    {
+      "id": "mcu->comcu#1",
+      "source": "mcu",
+      "sourceHandle": "__body_right",
+      "target": "comcu",
+      "targetHandle": "__body_left",
+      "type": "step",
+      "label": "SPI",
+      "markerStart": {
+        "type": "arrowclosed"
+      },
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-bus sa-kind-spi",
+      "data": {
+        "kind": "spi",
+        "direction": "bidirectional",
+        "points": [
+          [
+            1248,
+            408
+          ],
+          [
+            1392,
+            408
+          ]
+        ]
+      }
+    }
+  ],
+  "viewport": {
+    "x": 0,
+    "y": 0,
+    "zoom": 1
+  }
+}

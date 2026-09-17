@@ -1,6 +1,6 @@
 import type {
   ArchitectureNode, CategoryStmt, ComponentNode, ComponentStmt, ConnectionNode, DefineNode,
-  DefineStmt, DirectionStmt, EndpointNode, GridCell, GridNode, GridRow, GroupStmt, HintStmt,
+  DefineStmt, DirectionStmt, PinsStmt, StackStmt, CountStmt, EndpointNode, GridCell, GridNode, GridRow, GroupStmt, HintStmt,
   Ident, IconStmt, ImportanceStmt, LabelStmt, LayoutStmt, MetaBlock, MetaEntry, ModeStmt,
   PinStmt, ShapeStmt, SideBlock, SizeStmt, Statement, StringLit, SyntaxNode, SyntaxTree,
   SystemNode, ThemeStmt, Trivia, TypeStmt, ZoneNode,
@@ -8,8 +8,8 @@ import type {
 import { diagnostic, withSuggestion, type Diagnostic, type ParseResult } from "../diagnostics/index.js";
 import { lex, type Token, type TokenType } from "../lexer/index.js";
 import {
-  DIRECTIONS, IMPORTANCES, LAYOUT_MODES, SIDES, SIZES,
-  type Arrow, type Direction, type Importance, type LayoutMode, type Side, type Size, type Span,
+  DIRECTIONS, IMPORTANCES, LAYOUT_MODES, PIN_DISPLAYS, SIDES, STACK_MODES, SIZES,
+  type Arrow, type Direction, type Importance, type LayoutMode, type PinDisplay, type StackMode, type Side, type Size, type Span,
 } from "../types.js";
 
 /** Konstrukte späterer Versionen (02-dsl.md §4.7) mit der Version, ab der sie kommen. */
@@ -23,9 +23,9 @@ const RESERVED: Readonly<Record<string, string>> = {
 
 const ARROWS: readonly TokenType[] = ["->", "<-", "<->", "--"];
 
-const ARCH_KEYWORDS = ["theme", "direction", "layout", "zone", "system", "component"];
+const ARCH_KEYWORDS = ["theme", "direction", "pins", "stack", "layout", "zone", "system", "component"];
 const GROUP_KEYWORDS = ["label", "system", "component"];
-const COMPONENT_KEYWORDS = ["label", "size", "importance", "category", "pin", ...SIDES, "hint", "meta"];
+const COMPONENT_KEYWORDS = ["label", "size", "importance", "category", "pin", ...SIDES, "hint", "count", "meta"];
 const DEFINE_KEYWORDS = ["label", "size", "category", "shape", "icon", "pin", ...SIDES];
 const CONNECTION_KEYWORDS = ["label", "type"];
 const LAYOUT_KEYWORDS = ["mode", "grid"];
@@ -250,6 +250,16 @@ export function parse(source: string): ParseResult<SyntaxTree> {
     return node<HintStmt>(start, { kind: "Hint", axis, value: Math.max(1, n) });
   };
 
+  const count = (): CountStmt => {
+    const start = next();
+    const value = expect("int", "eine Zahl ≥ 1");
+    const n = Number(value.text);
+    if (n < 1) {
+      report(diagnostic("E001", `Erwartet eine Zahl ≥ 1, gefunden ${value.text}`, value.span));
+    }
+    return node<CountStmt>(start, { kind: "Count", value: Math.max(1, n) });
+  };
+
   const meta = (): MetaBlock => {
     const start = next();
     expect("{", "`{`");
@@ -277,6 +287,7 @@ export function parse(source: string): ParseResult<SyntaxTree> {
         case "pin": return pin();
         case "left": case "right": case "top": case "bottom": return sideBlock();
         case "hint": return hint();
+        case "count": return count();
         case "meta": return meta();
       }
     }
@@ -436,6 +447,14 @@ export function parse(source: string): ParseResult<SyntaxTree> {
         case "direction": {
           const start = next();
           return node<DirectionStmt>(start, { kind: "Direction", value: expectWord<Direction>(DIRECTIONS) });
+        }
+        case "pins": {
+          const start = next();
+          return node<PinsStmt>(start, { kind: "Pins", value: expectWord<PinDisplay>(PIN_DISPLAYS) });
+        }
+        case "stack": {
+          const start = next();
+          return node<StackStmt>(start, { kind: "Stack", value: expectWord<StackMode>(STACK_MODES) });
         }
         case "layout": return layout();
         case "zone": return zone();

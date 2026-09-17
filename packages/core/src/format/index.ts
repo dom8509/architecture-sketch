@@ -1,6 +1,6 @@
 import type {
-  ArchitectureNode, CategoryStmt, ComponentNode, ConnectionNode, DefineNode, DirectionStmt,
-  EndpointNode, GridNode, GridRow, HintStmt, IconStmt, ImportanceStmt, LabelStmt, LayoutStmt,
+  ArchitectureNode, CategoryStmt, ComponentNode, ConnectionNode, DefineNode, DirectionStmt, PinsStmt, StackStmt,
+  EndpointNode, CountStmt, GridNode, GridRow, HintStmt, IconStmt, ImportanceStmt, LabelStmt, LayoutStmt,
   MetaBlock, MetaEntry, ModeStmt, PinStmt, ShapeStmt, SideBlock, SizeStmt, StringLit, SyntaxNode,
   SyntaxTree, ThemeStmt, Trivia, TypeStmt, ZoneNode,
 } from "../ast/index.js";
@@ -17,7 +17,7 @@ type Statement = Exclude<SyntaxNode, SyntaxTree>;
 const INLINE_KINDS = new Set(["Document", "Ident", "String", "Endpoint", "GridCell"]);
 
 /** Eigenschaften, mit denen eine Komponente als Einzeiler geschrieben wird. */
-const COMPONENT_ONE_LINER_KINDS = new Set(["Label", "Size", "Importance", "Category", "Hint"]);
+const COMPONENT_ONE_LINER_KINDS = new Set(["Label", "Size", "Importance", "Category", "Hint", "Count"]);
 
 /** Seitenblöcke mit höchstens so vielen Pins ohne Label passen auf eine Zeile … */
 const MAX_INLINE_PINS = 3;
@@ -29,12 +29,12 @@ const ALIGNED_KINDS = new Set(["Connection", "SideBlock"]);
 
 /** Reihenfolge der Anweisungen in `architecture` (02-dsl.md §6). */
 const ORDER: Readonly<Record<string, number>> = {
-  Theme: 0, Direction: 1, Layout: 2, Zone: 3, System: 3, Component: 3, Connection: 4,
+  Theme: 0, Direction: 1, Pins: 2, Stack: 3, Layout: 4, Zone: 5, System: 5, Component: 5, Connection: 6,
 };
 
 /** Abschnitte in `architecture`, getrennt durch eine Leerzeile. */
 const SECTION: Readonly<Record<string, number>> = {
-  Theme: 0, Direction: 0, Layout: 1, Zone: 2, System: 2, Component: 2, Connection: 3,
+  Theme: 0, Direction: 0, Pins: 0, Stack: 0, Layout: 1, Zone: 2, System: 2, Component: 2, Connection: 3,
 };
 
 interface Entry {
@@ -185,6 +185,8 @@ export function format(source: string): ParseResult<string> {
     switch (n.kind) {
       case "Theme": return { head: `theme ${(n as ThemeStmt).name.name}` };
       case "Direction": return { head: `direction ${(n as DirectionStmt).value}` };
+      case "Pins": return { head: `pins ${(n as PinsStmt).value}` };
+      case "Stack": return { head: `stack ${(n as StackStmt).value}` };
       case "Mode": return { head: `mode ${(n as ModeStmt).value}` };
       case "Label": return { head: `label ${str((n as LabelStmt).value)}` };
       case "Size": return { head: `size ${(n as SizeStmt).value}` };
@@ -193,6 +195,7 @@ export function format(source: string): ParseResult<string> {
       case "Shape": return { head: `shape ${(n as ShapeStmt).value.name}` };
       case "Icon": return { head: `icon ${(n as IconStmt).value.name}` };
       case "Type": return { head: `type ${(n as TypeStmt).value.name}` };
+      case "Count": return { head: `count ${(n as CountStmt).value}` };
       case "Hint": {
         const h = n as HintStmt;
         return { head: `hint ${h.axis} ${h.value}` };

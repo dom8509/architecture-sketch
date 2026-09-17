@@ -1,6 +1,6 @@
 import type { Component, Side } from "@sysarch/core";
 import { LINE_HEIGHT, measureLine, measureText, wrapText, type FontMetrics, type TextStyle, type Theme } from "@sysarch/themes";
-import { shapeGeometry, type ShapeGeometry } from "./shapes.js";
+import { shapeGeometry, stackedGeometry, type ShapeGeometry } from "./shapes.js";
 
 /** Pin relativ zur Hülle: `offset` läuft entlang der Seite (y für links/rechts, x für oben/unten). */
 export interface PinBox {
@@ -28,16 +28,30 @@ export interface ComponentBox {
   /** Icon-Quadrat, relativ zur Hülle. */
   icon?: { x: number; y: number; size: number };
   label: TextBlock;
+  /** Anzahl bei Mehrfachelementen („×4“), rechts neben der ersten Labelzeile. */
+  count?: TextBlock;
+  /** Hintere Karten bei Mehrfachelementen; die vordere Karte ist um `layers × offset` kleiner. */
+  stack?: { layers: number; offset: number };
   pins: PinBox[];
 }
 
 const ceilTo = (value: number, grid: number) => Math.ceil(value / grid - 1e-9) * grid;
 const roundTo = (value: number, grid: number) => Math.round(value / grid) * grid;
 
-export function sizeComponent(component: Component, theme: Theme, metrics: FontMetrics): ComponentBox {
+/** `stretch`: Mindestmaße der Hülle, z. B. für Komponenten über mehrere Grid-Zellen. */
+export function sizeComponent(
+  component: Component,
+  theme: Theme,
+  metrics: FontMetrics,
+  stretch: { width?: number; height?: number } = {},
+): ComponentBox {
   const { grid, pinPitch } = theme.spacing;
   const { padding } = theme.component;
-  const geometry = shapeGeometry(component.shape, { padding, grid });
+  const stack = component.count > 1 ? { layers: Math.min(component.count - 1, 2), offset: 0 } : undefined;
+  const depth = stack ? grid / 2 : 0;
+  if (stack) stack.offset = depth / stack.layers;
+  const base = shapeGeometry(component.shape, { padding, grid });
+  const geometry = stack ? stackedGeometry(base, depth) : base;
 
   // ── Kopf: Icon + Label ──────────────────────────────────────
   const labelStyle = component.importance === "primary" ? theme.typography.componentPrimary : theme.typography.component;
@@ -47,10 +61,15 @@ export function sizeComponent(component: Component, theme: Theme, metrics: FontM
   const labelBox = measureText(metrics, lines, labelStyle.size, labelStyle.weight);
   const iconSize = component.icon ? theme.icon.size[component.size] : 0;
   const iconGap = component.icon && labelBox.width > 0 ? theme.icon.gap : 0;
+  const countStyle: TextStyle = { ...labelStyle, weight: 400 };
+  const countText = stack ? `×${component.count}` : "";
+  const countWidth = stack ? measureLine(metrics, countText, countStyle.size, countStyle.weight) : 0;
+  const countGap = stack ? theme.icon.gap : 0;
+  const titleWidth = labelBox.width + countGap + countWidth;
   const stacked = component.size === "small" || component.shape === "circle";
   const header = stacked
-    ? { width: Math.max(iconSize, labelBox.width), height: iconSize + iconGap + labelBox.height }
-    : { width: iconSize + iconGap + labelBox.width, height: Math.max(iconSize, labelBox.height) };
+    ? { width: Math.max(iconSize, titleWidth), height: iconSize + iconGap + labelBox.height }
+    : { width: iconSize + iconGap + titleWidth, height: Math.max(iconSize, labelBox.height) };
 
   // ── Pins ─────────────────────────────────────────────────────
   const pinStyle = theme.typography.pin;
@@ -76,8 +95,8 @@ export function sizeComponent(component: Component, theme: Theme, metrics: FontM
 
   // ── Hülle ────────────────────────────────────────────────────
   const hull = geometry.hullFor(content);
-  let width = ceilTo(Math.max(hull.width, theme.component.minWidth[component.size]), grid);
-  let height = ceilTo(Math.max(hull.height, theme.component.minHeight[component.size]), grid);
+  let width = ceilTo(Math.max(hull.width, theme.component.minWidth[component.size], stretch.width ?? 0), grid);
+  let height = ceilTo(Math.max(hull.height, theme.component.minHeight[component.size], stretch.height ?? 0), grid);
   if (component.shape === "circle") width = height = Math.max(width, height);
   // Mindestgrößen und Rundung verändern bei manchen Formen den Innenbereich (Sechseck-Spitzen).
   let inner = geometry.inner({ x: 0, y: 0, width, height });
@@ -104,7 +123,7 @@ export function sizeComponent(component: Component, theme: Theme, metrics: FontM
   for (const [side, pitch] of [["top", topPitch], ["bottom", bottomPitch]] as const) {
     const list = bySide[side];
     if (list.length === 0) continue;
-    let first = roundTo(width / 2 - ((list.length - 1) / 2) * pitch, grid);
+    let first = roundTo((width - depth) / 2 - ((list.length - 1) / 2) * pitch, grid);
     first = Math.max(first, grid);
     list.forEach((pin, k) => pins.push({ name: pin.name, side, offset: first + k * pitch, labelWidth: pin.width }));
   }
@@ -122,7 +141,7 @@ export function sizeComponent(component: Component, theme: Theme, metrics: FontM
   if (stacked) {
     if (component.icon) icon = { x: inner.x + (inner.width - iconSize) / 2, y: headerY, size: iconSize };
     label = {
-      x: inner.x + (inner.width - labelBox.width) / 2,
+      x: inner.x + (inner.width - titleWidth) / 2,
       y: headerY + iconSize + iconGap,
       lines, width: labelBox.width, height: labelBox.height, style: labelStyle,
     };
@@ -135,5 +154,13 @@ export function sizeComponent(component: Component, theme: Theme, metrics: FontM
     };
   }
 
-  return { width, height, geometry, ...(icon && { icon }), label, pins };
+  const count: TextBlock | undefined = stack && {
+    x: label.x + labelBox.width + countGap,
+    y: label.y,
+    lines: [countText],
+    width: countWidth,
+    height: countStyle.size * LINE_HEIGHT,
+    style: countStyle,
+  };
+  return { width, height, geometry, ...(icon && { icon }), label, ...(count && { count, stack }), pins };
 }
