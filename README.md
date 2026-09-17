@@ -6,18 +6,23 @@
 
 **Status:** In Entwicklung. Umgesetzt sind M1 (Sprache: [`packages/core`](packages/core)),
 M2 (Layout & SVG: [`packages/themes`](packages/themes), [`packages/layout`](packages/layout),
-[`packages/render-svg`](packages/render-svg)), M3 (CLI: [`apps/cli`](apps/cli)) und M4
-(Web-App: [`packages/editor`](packages/editor), [`apps/web`](apps/web)). Exporte folgen.
+[`packages/render-svg`](packages/render-svg)), M3 (CLI: [`apps/cli`](apps/cli)), M4
+(Web-App: [`packages/editor`](packages/editor), [`apps/web`](apps/web)) und M5 (Exporte:
+[`packages/export-png`](packages/export-png), [`packages/export-reactflow`](packages/export-reactflow),
+Test-App [`apps/reactflow-test`](apps/reactflow-test)). Obsidian folgt.
 
 ```sh
 npm install
 npm run typecheck
 npm test                  # inkl. Golden Files unter tests/golden/
 npx vitest run -u         # Golden Files nach einer gewollten Layoutänderung aktualisieren
-npm run build             # CLI nach apps/cli/dist, Web-App nach apps/web/dist bauen
+npm run build             # CLI, Web-App und React-Flow-Test-App bauen
 npm run web               # Web-App mit Live-Vorschau unter http://localhost:5173
+npm run reactflow-test    # React-Flow-Test-App: lädt Beispiele bzw. exportiertes JSON
 
 npm run sysarch -- render examples --out build/examples
+npm run sysarch -- render examples --format png --scale 2 --out build/examples
+npm run sysarch -- render examples --format reactflow --out build/examples
 npm run sysarch -- check examples library --max-warnings 0
 npm run sysarch -- fmt examples library --check
 ```

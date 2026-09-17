@@ -1,0 +1,1417 @@
+{
+  "nodes": [
+    {
+      "id": "kl30",
+      "type": "battery",
+      "position": {
+        "x": 32,
+        "y": 80
+      },
+      "width": 96,
+      "height": 64,
+      "data": {
+        "label": "KL30",
+        "category": "power",
+        "importance": "secondary",
+        "size": "small",
+        "shape": "rounded",
+        "icon": {
+          "name": "battery",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M3.5 7h14a1.5 1.5 0 0 1 1.5 1.5v7a1.5 1.5 0 0 1 -1.5 1.5h-14a1.5 1.5 0 0 1 -1.5 -1.5v-7a1.5 1.5 0 0 1 1.5 -1.5Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M22 10v4",
+              "mode": "stroke"
+            },
+            {
+              "d": "M6 12h4M8 10v4",
+              "mode": "stroke"
+            },
+            {
+              "d": "M13 12h3",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [],
+        "meta": {}
+      }
+    },
+    {
+      "id": "fuse",
+      "type": "fuse",
+      "position": {
+        "x": 80,
+        "y": 208
+      },
+      "width": 96,
+      "height": 96,
+      "data": {
+        "label": "F12",
+        "category": "power",
+        "importance": "secondary",
+        "size": "small",
+        "shape": "rounded",
+        "icon": {
+          "name": "fuse",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M6 9h12a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M2 12h20",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "IN",
+            "label": "IN",
+            "kind": "power",
+            "side": "left",
+            "offset": 80
+          },
+          {
+            "id": "OUT",
+            "label": "OUT",
+            "kind": "power",
+            "side": "right",
+            "offset": 80
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "gateway",
+      "type": "group",
+      "position": {
+        "x": 336,
+        "y": 384
+      },
+      "style": {
+        "width": 1136,
+        "height": 848
+      },
+      "data": {
+        "label": "Central Gateway",
+        "groupType": "system"
+      }
+    },
+    {
+      "id": "pmic",
+      "type": "buck_converter",
+      "parentId": "gateway",
+      "extent": "parent",
+      "position": {
+        "x": 16,
+        "y": 32
+      },
+      "width": 160,
+      "height": 112,
+      "data": {
+        "label": "PMIC",
+        "category": "power",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "regulator",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M7 12c1.5-3 3-3 4.5 0s3 3 4.5 0",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "VIN",
+            "label": "VIN",
+            "kind": "power",
+            "side": "left",
+            "offset": 48
+          },
+          {
+            "id": "EN",
+            "label": "EN",
+            "kind": "digital",
+            "side": "left",
+            "offset": 64
+          },
+          {
+            "id": "VOUT",
+            "label": "VOUT",
+            "kind": "power",
+            "side": "right",
+            "offset": 64
+          },
+          {
+            "id": "GND",
+            "label": "GND",
+            "kind": "ground",
+            "side": "bottom",
+            "offset": 80
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "soc",
+      "type": "soc",
+      "parentId": "gateway",
+      "extent": "parent",
+      "position": {
+        "x": 192,
+        "y": 256
+      },
+      "width": 272,
+      "height": 112,
+      "data": {
+        "label": "S32G",
+        "category": "controller",
+        "importance": "primary",
+        "size": "large",
+        "shape": "rounded",
+        "icon": {
+          "name": "soc",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M9 8h6a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-6a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M12 1v3M12 20v3M1 12h3M20 12h3",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "VDD",
+            "label": "VDD",
+            "kind": "power",
+            "side": "top",
+            "offset": 144
+          },
+          {
+            "id": "ETH0",
+            "label": "ETH0",
+            "kind": "ethernet",
+            "side": "bottom",
+            "offset": 48
+          },
+          {
+            "id": "CAN0_TX",
+            "label": "CAN0_TX",
+            "kind": "digital",
+            "side": "bottom",
+            "offset": 112
+          },
+          {
+            "id": "LIN0_TX",
+            "label": "LIN0_TX",
+            "kind": "digital",
+            "side": "bottom",
+            "offset": 176
+          },
+          {
+            "id": "QSPI",
+            "label": "QSPI",
+            "kind": "spi",
+            "side": "bottom",
+            "offset": 240
+          },
+          {
+            "id": "JTAG",
+            "label": "JTAG",
+            "kind": "debug",
+            "side": "right",
+            "offset": 80
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "flash",
+      "type": "flash",
+      "parentId": "gateway",
+      "extent": "parent",
+      "position": {
+        "x": 1024,
+        "y": 528
+      },
+      "width": 96,
+      "height": 112,
+      "data": {
+        "label": "QSPI NOR",
+        "category": "controller",
+        "importance": "secondary",
+        "size": "small",
+        "shape": "cylinder",
+        "icon": {
+          "name": "memory",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3v12c0 1.7-3.6 3-8 3s-8-1.3-8-3Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M4 6c0 1.7 3.6 3 8 3s8-1.3 8-3",
+              "mode": "stroke"
+            },
+            {
+              "d": "M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "SPI",
+            "label": "SPI",
+            "kind": "spi",
+            "side": "left",
+            "offset": 80
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "software",
+      "type": "group",
+      "parentId": "gateway",
+      "extent": "parent",
+      "position": {
+        "x": 240,
+        "y": 512
+      },
+      "style": {
+        "width": 176,
+        "height": 320
+      },
+      "data": {
+        "label": "Software",
+        "groupType": "system"
+      }
+    },
+    {
+      "id": "router",
+      "type": "software_component",
+      "parentId": "software",
+      "extent": "parent",
+      "position": {
+        "x": 16,
+        "y": 32
+      },
+      "width": 144,
+      "height": 64,
+      "data": {
+        "label": "Signal Router",
+        "category": "software",
+        "importance": "secondary",
+        "size": "small",
+        "shape": "hexagon",
+        "icon": {
+          "name": "software",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M8 7l-5 5 5 5",
+              "mode": "stroke"
+            },
+            {
+              "d": "M16 7l5 5-5 5",
+              "mode": "stroke"
+            },
+            {
+              "d": "M14 4l-4 16",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [],
+        "meta": {}
+      }
+    },
+    {
+      "id": "uds",
+      "type": "software_component",
+      "parentId": "software",
+      "extent": "parent",
+      "position": {
+        "x": 16,
+        "y": 240
+      },
+      "width": 128,
+      "height": 64,
+      "data": {
+        "label": "UDS Server",
+        "category": "software",
+        "importance": "secondary",
+        "size": "small",
+        "shape": "hexagon",
+        "icon": {
+          "name": "software",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M8 7l-5 5 5 5",
+              "mode": "stroke"
+            },
+            {
+              "d": "M16 7l5 5-5 5",
+              "mode": "stroke"
+            },
+            {
+              "d": "M14 4l-4 16",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [],
+        "meta": {}
+      }
+    },
+    {
+      "id": "phy",
+      "type": "ethernet_phy",
+      "parentId": "gateway",
+      "extent": "parent",
+      "position": {
+        "x": 448,
+        "y": 544
+      },
+      "width": 160,
+      "height": 80,
+      "data": {
+        "label": "100BASE-T1 PHY",
+        "category": "communication",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "ethernet",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M5 3h14a1 1 0 0 1 1 1v11a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1v-11a1 1 0 0 1 1 -1Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M9 16v5h6v-5",
+              "mode": "stroke"
+            },
+            {
+              "d": "M8 7v3M12 7v3M16 7v3",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "MII",
+            "label": "MII",
+            "kind": "bus",
+            "side": "left",
+            "offset": 48
+          },
+          {
+            "id": "MDI",
+            "label": "MDI",
+            "kind": "ethernet",
+            "side": "right",
+            "offset": 48
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "can_trx",
+      "type": "can_transceiver",
+      "parentId": "gateway",
+      "extent": "parent",
+      "position": {
+        "x": 640,
+        "y": 528
+      },
+      "width": 160,
+      "height": 112,
+      "data": {
+        "label": "CAN Transceiver",
+        "category": "communication",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "can",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M2 9h20M2 15h20",
+              "mode": "stroke"
+            },
+            {
+              "d": "M7 9v6M17 9v6",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "TXD",
+            "label": "TXD",
+            "kind": "digital",
+            "side": "left",
+            "offset": 48
+          },
+          {
+            "id": "RXD",
+            "label": "RXD",
+            "kind": "digital",
+            "side": "left",
+            "offset": 64
+          },
+          {
+            "id": "STB",
+            "label": "STB",
+            "kind": "digital",
+            "side": "left",
+            "offset": 80
+          },
+          {
+            "id": "CANH",
+            "label": "CANH",
+            "kind": "can",
+            "side": "right",
+            "offset": 64
+          },
+          {
+            "id": "CANL",
+            "label": "CANL",
+            "kind": "can",
+            "side": "right",
+            "offset": 80
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "lin_trx",
+      "type": "lin_transceiver",
+      "parentId": "gateway",
+      "extent": "parent",
+      "position": {
+        "x": 832,
+        "y": 528
+      },
+      "width": 160,
+      "height": 96,
+      "data": {
+        "label": "LIN Transceiver",
+        "category": "communication",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "lin",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M2 12h20",
+              "mode": "stroke"
+            },
+            {
+              "d": "M5 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M15 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0Z",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "TXD",
+            "label": "TXD",
+            "kind": "digital",
+            "side": "left",
+            "offset": 48
+          },
+          {
+            "id": "RXD",
+            "label": "RXD",
+            "kind": "digital",
+            "side": "left",
+            "offset": 64
+          },
+          {
+            "id": "LIN",
+            "label": "LIN",
+            "kind": "lin",
+            "side": "right",
+            "offset": 64
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "gnd",
+      "type": "ground",
+      "position": {
+        "x": 208,
+        "y": 640
+      },
+      "width": 96,
+      "height": 96,
+      "data": {
+        "label": "GND",
+        "category": "power",
+        "importance": "secondary",
+        "size": "small",
+        "shape": "circle",
+        "icon": {
+          "name": "ground",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M12 3v9",
+              "mode": "stroke"
+            },
+            {
+              "d": "M5 12h14",
+              "mode": "stroke"
+            },
+            {
+              "d": "M8 16h8",
+              "mode": "stroke"
+            },
+            {
+              "d": "M11 20h2",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "GND",
+            "label": "GND",
+            "kind": "ground",
+            "side": "top",
+            "offset": 48
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "debugger",
+      "type": "connector",
+      "position": {
+        "x": 1504,
+        "y": 432
+      },
+      "width": 96,
+      "height": 64,
+      "data": {
+        "label": "JTAG",
+        "category": "external",
+        "importance": "secondary",
+        "size": "small",
+        "shape": "rect",
+        "icon": {
+          "name": "connector",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M7 5h8a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-8a1 1 0 0 1 -1 -1v-12a1 1 0 0 1 1 -1Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M16 9h5M16 15h5",
+              "mode": "stroke"
+            },
+            {
+              "d": "M2 12h4",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [],
+        "meta": {}
+      }
+    },
+    {
+      "id": "backbone",
+      "type": "switch",
+      "position": {
+        "x": 1504,
+        "y": 1136
+      },
+      "width": 176,
+      "height": 64,
+      "data": {
+        "label": "Ethernet Backbone",
+        "category": "communication",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "switch",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M4 7h16a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-16a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M6 12h2M11 12h2M16 12h2",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [],
+        "meta": {}
+      }
+    },
+    {
+      "id": "body_can",
+      "type": "bus",
+      "position": {
+        "x": 1712,
+        "y": 1136
+      },
+      "width": 96,
+      "height": 64,
+      "data": {
+        "label": "Body CAN",
+        "category": "communication",
+        "importance": "secondary",
+        "size": "small",
+        "shape": "rect",
+        "icon": {
+          "name": "bus",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M2 9h20M2 15h20",
+              "mode": "stroke"
+            },
+            {
+              "d": "M6 9V4M12 15v5M18 9V4",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [],
+        "meta": {}
+      }
+    },
+    {
+      "id": "seat_lin",
+      "type": "bus",
+      "position": {
+        "x": 1840,
+        "y": 1136
+      },
+      "width": 96,
+      "height": 64,
+      "data": {
+        "label": "Seat LIN",
+        "category": "communication",
+        "importance": "secondary",
+        "size": "small",
+        "shape": "rect",
+        "icon": {
+          "name": "bus",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M2 9h20M2 15h20",
+              "mode": "stroke"
+            },
+            {
+              "d": "M6 9V4M12 15v5M18 9V4",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [],
+        "meta": {}
+      }
+    },
+    {
+      "id": "tcu",
+      "type": "external_ecu",
+      "position": {
+        "x": 688,
+        "y": 1312
+      },
+      "width": 160,
+      "height": 64,
+      "data": {
+        "label": "TCU",
+        "category": "external",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rect",
+        "icon": {
+          "name": "ecu",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M7 9h5",
+              "mode": "stroke"
+            },
+            {
+              "d": "M7 13h10",
+              "mode": "stroke"
+            },
+            {
+              "d": "M7 16h6",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [],
+        "meta": {}
+      }
+    },
+    {
+      "id": "backend",
+      "type": "cloud_backend",
+      "position": {
+        "x": 720,
+        "y": 1440
+      },
+      "width": 96,
+      "height": 64,
+      "data": {
+        "label": "Backend",
+        "category": "external",
+        "importance": "secondary",
+        "size": "small",
+        "shape": "rect",
+        "icon": {
+          "name": "cloud",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M7 19h10a4 4 0 0 0 .6-7.96A6 6 0 0 0 6.1 12.2 3.5 3.5 0 0 0 7 19Z",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [],
+        "meta": {}
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "kl30->fuse.IN#1",
+      "source": "kl30",
+      "sourceHandle": "__body_bottom",
+      "target": "fuse",
+      "targetHandle": "IN",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-supply sa-kind-power",
+      "data": {
+        "kind": "power",
+        "direction": "forward",
+        "points": [
+          [
+            80,
+            144
+          ],
+          [
+            80,
+            192
+          ],
+          [
+            64,
+            192
+          ],
+          [
+            64,
+            288
+          ],
+          [
+            80,
+            288
+          ]
+        ]
+      }
+    },
+    {
+      "id": "fuse.OUT->pmic.VIN#1",
+      "source": "fuse",
+      "sourceHandle": "OUT",
+      "target": "pmic",
+      "targetHandle": "VIN",
+      "type": "step",
+      "label": "12 V",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-supply sa-kind-power",
+      "data": {
+        "kind": "power",
+        "direction": "forward",
+        "points": [
+          [
+            176,
+            288
+          ],
+          [
+            320,
+            288
+          ],
+          [
+            320,
+            464
+          ],
+          [
+            352,
+            464
+          ]
+        ]
+      }
+    },
+    {
+      "id": "pmic.VOUT->soc.VDD#1",
+      "source": "pmic",
+      "sourceHandle": "VOUT",
+      "target": "soc",
+      "targetHandle": "VDD",
+      "type": "step",
+      "label": "1.8 V",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-supply sa-kind-power",
+      "data": {
+        "kind": "power",
+        "direction": "forward",
+        "points": [
+          [
+            512,
+            480
+          ],
+          [
+            672,
+            480
+          ],
+          [
+            672,
+            640
+          ]
+        ]
+      }
+    },
+    {
+      "id": "pmic.GND->gnd.GND#1",
+      "source": "pmic",
+      "sourceHandle": "GND",
+      "target": "gnd",
+      "targetHandle": "GND",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-supply sa-kind-ground",
+      "data": {
+        "kind": "ground",
+        "direction": "forward",
+        "points": [
+          [
+            432,
+            528
+          ],
+          [
+            432,
+            624
+          ],
+          [
+            256,
+            624
+          ],
+          [
+            256,
+            640
+          ]
+        ]
+      }
+    },
+    {
+      "id": "soc.QSPI->flash.SPI#1",
+      "source": "soc",
+      "sourceHandle": "QSPI",
+      "target": "flash",
+      "targetHandle": "SPI",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-bus sa-kind-spi",
+      "data": {
+        "kind": "spi",
+        "direction": "forward",
+        "points": [
+          [
+            768,
+            752
+          ],
+          [
+            768,
+            896
+          ],
+          [
+            1344,
+            896
+          ],
+          [
+            1344,
+            992
+          ],
+          [
+            1360,
+            992
+          ]
+        ]
+      }
+    },
+    {
+      "id": "soc->router#1",
+      "source": "soc",
+      "sourceHandle": "__body_bottom",
+      "target": "router",
+      "targetHandle": "__body_top",
+      "type": "step",
+      "className": "sa-edge sa-group-single sa-kind-signal",
+      "data": {
+        "kind": "signal",
+        "direction": "none",
+        "points": [
+          [
+            656,
+            752
+          ],
+          [
+            656,
+            928
+          ]
+        ]
+      }
+    },
+    {
+      "id": "router->uds#1",
+      "source": "router",
+      "sourceHandle": "__body_bottom",
+      "target": "uds",
+      "targetHandle": "__body_top",
+      "type": "step",
+      "label": "PDU",
+      "markerStart": {
+        "type": "arrowclosed"
+      },
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-signal",
+      "data": {
+        "kind": "signal",
+        "direction": "bidirectional",
+        "points": [
+          [
+            656,
+            992
+          ],
+          [
+            656,
+            1136
+          ]
+        ]
+      }
+    },
+    {
+      "id": "soc.ETH0->phy.MII#1",
+      "source": "soc",
+      "sourceHandle": "ETH0",
+      "target": "phy",
+      "targetHandle": "MII",
+      "type": "step",
+      "markerStart": {
+        "type": "arrowclosed"
+      },
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-bus sa-kind-ethernet",
+      "data": {
+        "kind": "ethernet",
+        "direction": "bidirectional",
+        "points": [
+          [
+            576,
+            752
+          ],
+          [
+            576,
+            880
+          ],
+          [
+            736,
+            880
+          ],
+          [
+            736,
+            912
+          ],
+          [
+            768,
+            912
+          ],
+          [
+            768,
+            976
+          ],
+          [
+            784,
+            976
+          ]
+        ]
+      }
+    },
+    {
+      "id": "phy.MDI->backbone#1",
+      "source": "phy",
+      "sourceHandle": "MDI",
+      "target": "backbone",
+      "targetHandle": "__body_top",
+      "type": "step",
+      "markerStart": {
+        "type": "arrowclosed"
+      },
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-bus sa-kind-ethernet",
+      "data": {
+        "kind": "ethernet",
+        "direction": "bidirectional",
+        "points": [
+          [
+            944,
+            976
+          ],
+          [
+            960,
+            976
+          ],
+          [
+            960,
+            1120
+          ],
+          [
+            1584,
+            1120
+          ],
+          [
+            1584,
+            1136
+          ]
+        ]
+      }
+    },
+    {
+      "id": "soc.CAN0_TX->can_trx.TXD#1",
+      "source": "soc",
+      "sourceHandle": "CAN0_TX",
+      "target": "can_trx",
+      "targetHandle": "TXD",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-digital",
+      "data": {
+        "kind": "digital",
+        "direction": "forward",
+        "points": [
+          [
+            640,
+            752
+          ],
+          [
+            640,
+            864
+          ],
+          [
+            960,
+            864
+          ],
+          [
+            960,
+            960
+          ],
+          [
+            976,
+            960
+          ]
+        ]
+      }
+    },
+    {
+      "id": "can_trx.CANH->body_can#1",
+      "source": "can_trx",
+      "sourceHandle": "CANH",
+      "target": "body_can",
+      "targetHandle": "__body_top",
+      "type": "step",
+      "markerStart": {
+        "type": "arrowclosed"
+      },
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-bus sa-kind-can",
+      "data": {
+        "kind": "can",
+        "direction": "bidirectional",
+        "points": [
+          [
+            1136,
+            976
+          ],
+          [
+            1152,
+            976
+          ],
+          [
+            1152,
+            1104
+          ],
+          [
+            1760,
+            1104
+          ],
+          [
+            1760,
+            1136
+          ]
+        ]
+      }
+    },
+    {
+      "id": "soc.LIN0_TX->lin_trx.TXD#1",
+      "source": "soc",
+      "sourceHandle": "LIN0_TX",
+      "target": "lin_trx",
+      "targetHandle": "TXD",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-digital",
+      "data": {
+        "kind": "digital",
+        "direction": "forward",
+        "points": [
+          [
+            704,
+            752
+          ],
+          [
+            704,
+            848
+          ],
+          [
+            1152,
+            848
+          ],
+          [
+            1152,
+            960
+          ],
+          [
+            1168,
+            960
+          ]
+        ]
+      }
+    },
+    {
+      "id": "lin_trx.LIN->seat_lin#1",
+      "source": "lin_trx",
+      "sourceHandle": "LIN",
+      "target": "seat_lin",
+      "targetHandle": "__body_top",
+      "type": "step",
+      "markerStart": {
+        "type": "arrowclosed"
+      },
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-bus sa-kind-lin",
+      "data": {
+        "kind": "lin",
+        "direction": "bidirectional",
+        "points": [
+          [
+            1328,
+            976
+          ],
+          [
+            1344,
+            976
+          ],
+          [
+            1344,
+            1088
+          ],
+          [
+            1888,
+            1088
+          ],
+          [
+            1888,
+            1136
+          ]
+        ]
+      }
+    },
+    {
+      "id": "debugger->soc.JTAG#1",
+      "source": "debugger",
+      "sourceHandle": "__body_bottom",
+      "target": "soc",
+      "targetHandle": "JTAG",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-diagnostic sa-kind-debug",
+      "data": {
+        "kind": "debug",
+        "direction": "forward",
+        "points": [
+          [
+            1552,
+            496
+          ],
+          [
+            1552,
+            720
+          ],
+          [
+            800,
+            720
+          ]
+        ]
+      }
+    },
+    {
+      "id": "backbone->tcu#1",
+      "source": "backbone",
+      "sourceHandle": "__body_bottom",
+      "target": "tcu",
+      "targetHandle": "__body_top",
+      "type": "step",
+      "markerStart": {
+        "type": "arrowclosed"
+      },
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-bus sa-kind-ethernet",
+      "data": {
+        "kind": "ethernet",
+        "direction": "bidirectional",
+        "points": [
+          [
+            1584,
+            1200
+          ],
+          [
+            1584,
+            1296
+          ],
+          [
+            768,
+            1296
+          ],
+          [
+            768,
+            1312
+          ]
+        ]
+      }
+    },
+    {
+      "id": "tcu->backend#1",
+      "source": "tcu",
+      "sourceHandle": "__body_bottom",
+      "target": "backend",
+      "targetHandle": "__body_top",
+      "type": "step",
+      "label": "OTA",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-diagnostic sa-kind-diagnostic",
+      "data": {
+        "kind": "diagnostic",
+        "direction": "forward",
+        "points": [
+          [
+            768,
+            1376
+          ],
+          [
+            768,
+            1440
+          ]
+        ]
+      }
+    }
+  ],
+  "viewport": {
+    "x": 0,
+    "y": 0,
+    "zoom": 1
+  }
+}

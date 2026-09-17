@@ -39,6 +39,7 @@ sysarch/
 │
 ├─ apps/
 │  ├─ web/                    Vite, statische Seite
+│  ├─ reactflow-test/         Test-App für den React-Flow-Export (React, nur hier)
 │  ├─ obsidian/               Obsidian-Plugin (esbuild)
 │  └─ cli/                    Node-CLI
 │
@@ -65,11 +66,13 @@ apps/*  → beliebige packages
 | `export-png` | keine | Browser (DOM, Canvas) |
 | `editor` | CodeMirror 6 | Browser |
 | `apps/web` | Vite (nur Build) | Browser |
+| `apps/reactflow-test` | React, `@xyflow/react` | Browser (nur Test-App, nicht ausgeliefert) |
 | `apps/obsidian` | `obsidian` (API-Typen) | Obsidian |
 | `apps/cli` | `@resvg/resvg-js` (ab M5, PNG) | Node |
 
 Verboten im gesamten Repo: Mermaid, Graphviz, Dagre, ELK.js, Konva, Fabric.js,
-JointJS, GoJS, React Flow als Laufzeitabhängigkeit.
+JointJS, GoJS, React Flow als Laufzeitabhängigkeit eines Pakets (die Test-App
+`apps/reactflow-test` ist davon ausgenommen — sie spielt die Zielanwendung).
 
 Die Regeln werden per Lint geprüft (Import-Beschränkungen je Paket), nicht nur per
 Konvention.

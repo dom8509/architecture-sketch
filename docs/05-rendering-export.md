@@ -158,14 +158,25 @@ const blob = await canvas.convertToBlob({ type: "image/png" });
 - Die Schrift ist im SVG eingebettet; vor dem Rasterisieren wird `document.fonts.ready`
   abgewartet.
 
+- Umgesetzt als `svgToPng(svg, scale)` in `@sysarch/export-png`; ohne `OffscreenCanvas`
+  fällt es auf ein `<canvas>`-Element zurück.
+
 **CLI** (Node hat kein Canvas): Rasterisierung mit `@resvg/resvg-js`. Das ist die einzige
 Rendering-Abhängigkeit im Projekt und liegt ausschließlich in `apps/cli`.
+
+- resvg unterstützt kein `@font-face`. Die CLI schreibt deshalb dieselben Schrift-Subsets,
+  die das SVG einbettet (`fontSubsets` aus `render-svg`), in ein temporäres Verzeichnis und
+  lädt nur diese (`loadSystemFonts: false`) — PNG aus CLI und Browser zeigen dieselbe Schrift.
 
 ## React-Flow-Export
 
 Ziel ist ein `ReactFlowJsonObject` (`{ nodes, edges, viewport }`), das in eine
 React-Flow-Anwendung mit passenden Custom Nodes geladen werden kann. Der Exporter selbst
 braucht **keine** React-Flow-Abhängigkeit — er erzeugt nur JSON.
+
+`toReactFlow(model, scene)` in `@sysarch/export-reactflow` liest die Geometrie aus dem
+Scene Graph (über `ref`) und die Semantik aus dem Modell; dadurch passt das JSON exakt zum
+SVG. Golden Files: `tests/golden/*.reactflow.json`.
 
 | sysarch | React Flow |
 |---------|------------|
@@ -218,18 +229,28 @@ braucht **keine** React-Flow-Abhängigkeit — er erzeugt nur JSON.
       "label": "PWM",
       "markerEnd": { "type": "arrowclosed" },
       "className": "sa-edge sa-group-single",
-      "data": { "kind": "pwm", "points": [[256, 112], [320, 112], [320, 240], [384, 240]] }
+      "data": { "kind": "pwm", "direction": "forward", "points": [[256, 112], [320, 112], [320, 240], [384, 240]] }
     }
   ],
   "viewport": { "x": 0, "y": 0, "zoom": 1 }
 }
 ```
 
-- Körperanschlüsse erhalten virtuelle Handles `__body_<side>`.
+- Körperanschlüsse erhalten virtuelle Handles `__body_<side>`; die Seite ist die, an der
+  die geroutete Leitung die Hülle erreicht.
+- Eltern stehen in `nodes` vor ihren Kindern (von React Flow verlangt); verschachtelte
+  Systeme hängen an ihrer Zone bzw. ihrem System.
+- `markerEnd` bei `forward`, zusätzlich `markerStart` bei `bidirectional`, keiner bei `none`.
+  Das Massesymbol hat in React Flow keine Entsprechung — die Zielanwendung erkennt es an
+  `data.kind`.
 - `data.icon` enthält die vollständigen Pfaddaten, damit die Zielanwendung das Icon ohne
   Zugriff auf die sysarch-Bibliothek darstellen kann. `data.shape` und `offset` der Pins
   beziehen sich auf die Hülle.
 - `data.points` enthält die geroutete Geometrie, damit eine Custom-Edge den Pfad exakt
   übernehmen kann statt neu zu routen.
+- **Abnahme:** `apps/reactflow-test` (React 19, `@xyflow/react` 12) lädt jedes Beispiel bzw.
+  ein von der CLI exportiertes JSON mit Custom Nodes (Form, Icon, Pins als `<Handle>`) und
+  einer Custom Edge, die `data.points` übernimmt. Die Statusleiste vergleicht gezeichnete
+  Knoten und Kanten mit dem JSON und zeigt jede `onError`-Meldung von React Flow.
 - Zusätzlich wird ein Referenzpaket `@sysarch/reactflow-nodes` (später) die passenden
   Custom Nodes mit Theme-CSS liefern — getrennt vom Core.

@@ -2,7 +2,7 @@
   "name": "@sysarch/web",
   "version": "0.1.0",
   "private": true,
-  "description": "sysarch Web-App: Editor, Live-Vorschau, Diagnosen, SVG-Export",
+  "description": "sysarch Web-App: Editor, Live-Vorschau, Diagnosen, Export (SVG, PNG, React Flow)",
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -12,7 +12,10 @@
   },
   "dependencies": {
     "@sysarch/core": "0.1.0",
-    "@sysarch/editor": "0.1.0"
+    "@sysarch/editor": "0.1.0",
+    "@sysarch/export-png": "0.1.0",
+    "@sysarch/export-reactflow": "0.1.0",
+    "@sysarch/render-svg": "0.1.0"
   },
   "devDependencies": {
     "vite": "^8.3.0"

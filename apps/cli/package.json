@@ -1,15 +1,19 @@
 {
   "name": "@sysarch/cli",
   "version": "0.1.0",
-  "description": "sysarch CLI: render, check, fmt",
+  "description": "sysarch CLI: render (SVG, PNG, React Flow), check, fmt",
   "license": "MIT",
   "type": "module",
   "bin": {
     "sysarch": "dist/main.js"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "dependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@sysarch/core": "0.1.0",
+    "@sysarch/export-reactflow": "0.1.0",
     "@sysarch/layout": "0.1.0",
     "@sysarch/render-svg": "0.1.0",
     "@sysarch/themes": "0.1.0"
