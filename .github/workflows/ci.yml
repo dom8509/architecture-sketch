@@ -18,6 +18,8 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      - name: Dokumentation bauen (Beispiele in der Doku, tote Links)
+        run: npm run docs:build
       - name: sysarch check
         run: node apps/cli/dist/main.js check examples library --max-warnings 0
       - name: sysarch fmt --check
