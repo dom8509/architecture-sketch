@@ -1,7 +1,7 @@
 import type {
   ArchitectureNode, CategoryStmt, ComponentNode, ConnectionNode, DefineNode, DirectionStmt, PinsStmt, StackStmt,
   EndpointNode, CountStmt, GridNode, GridRow, HintStmt, IconStmt, ImportanceStmt, LabelStmt, LayoutStmt,
-  MetaBlock, MetaEntry, ModeStmt, PinStmt, ShapeStmt, SideBlock, SizeStmt, StringLit, SyntaxNode,
+  MetaBlock, MetaEntry, ModeStmt, PinSpacingStmt, PinStmt, ShapeStmt, SideBlock, SizeStmt, StringLit, SyntaxNode,
   SyntaxTree, ThemeStmt, Trivia, TypeStmt, ZoneNode,
 } from "../ast/index.js";
 import { hasErrors, type ParseResult } from "../diagnostics/index.js";
@@ -188,6 +188,7 @@ export function format(source: string): ParseResult<string> {
       case "Pins": return { head: `pins ${(n as PinsStmt).value}` };
       case "Stack": return { head: `stack ${(n as StackStmt).value}` };
       case "Mode": return { head: `mode ${(n as ModeStmt).value}` };
+      case "PinSpacing": return { head: `pin spacing ${(n as PinSpacingStmt).value}` };
       case "Label": return { head: `label ${str((n as LabelStmt).value)}` };
       case "Size": return { head: `size ${(n as SizeStmt).value}` };
       case "Importance": return { head: `importance ${(n as ImportanceStmt).value}` };

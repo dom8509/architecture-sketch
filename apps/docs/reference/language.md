@@ -19,7 +19,7 @@ architecture "Title" {
     pins all                     // all | connected | none
     stack none                   // none | identical
 
-    layout { … }                 // mode, grid
+    layout { … }                 // mode, pin spacing, grid
 
     zone <id> { … }              // label, system, component
     system <id> { … }            // label, system, component
@@ -98,12 +98,17 @@ component lives in a zone. See [Zones and systems](/guides/zones-and-systems).
 ```sysarch code-only
 layout {
     mode strict | assisted
+    pin spacing 2              // distance between pins in grid units (>= 1)
     grid {
         a | b | c
         . | d | d
     }
 }
 ```
+
+Without `pin spacing`, the `pinPitch` of the theme applies. The spacing also holds for
+connections that dock on the body of a component; components grow until every attachment
+point has that much room.
 
 See [Controlling the layout](/guides/layout).
 

@@ -47,6 +47,8 @@ export interface RouteInput {
 /** Phase 7: orthogonal routing via A* on the grid. Returns the corner points per edge. */
 export function routeEdges(input: RouteInput): Map<LEdge, Point[]> {
   const { nodes, grid } = input;
+  // Nothing to route: without nodes and frames the bounds would be infinite.
+  if (input.edges.length === 0 || (nodes.length === 0 && input.frames.length === 0)) return new Map();
   const bounds = {
     minX: Math.min(...nodes.map((n) => n.x), ...input.frames.map((f) => f.rect.x)),
     minY: Math.min(...nodes.map((n) => n.y), ...input.frames.map((f) => f.rect.y)),

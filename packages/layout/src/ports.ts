@@ -3,15 +3,18 @@ import { rankEnd, spans, type Axes, type LEdge, type LNode, type Port } from "./
 import { portPoint } from "./route.js";
 import type { Rect } from "./scene.js";
 
-/**
- * Body ports (a connection without a pin) get a virtual port on the side facing the other
- * end; several ports on one side are spread over free grid points around the middle,
- * sorted by the position of the other end. Feedback edges attach at the bottom (LR) resp.
- * on the right (TB).
- */
-export function assignBodyPorts(edges: readonly LEdge[], axes: Axes, grid: number): void {
-  interface Request { edge: LEdge; end: "source" | "target"; node: LNode; other: LNode; side: Side }
-  const requests: Request[] = [];
+/** One connection end that docks on the body of `node`, on the side facing `other`. */
+export interface BodyPortRequest {
+  edge: LEdge;
+  end: "source" | "target";
+  node: LNode;
+  other: LNode;
+  side: Side;
+}
+
+/** Which connection ends dock on a body, and on which side. */
+export function bodyPortRequests(edges: readonly LEdge[], axes: Axes): BodyPortRequest[] {
+  const requests: BodyPortRequest[] = [];
   for (const edge of edges) {
     for (const end of ["source", "target"] as const) {
       const node = edge[end];
@@ -26,6 +29,47 @@ export function assignBodyPorts(edges: readonly LEdge[], axes: Axes, grid: numbe
       requests.push({ edge, end, node, other, side });
     }
   }
+  return requests;
+}
+
+/**
+ * Minimum hull size per node so that all body ports of a side sit `pitch` apart: the ports
+ * share the side with the pins already there, and one `pitch` stays free at each end.
+ * Without it, several connections would share one grid point on a small component.
+ */
+export function bodyPortSpace(
+  requests: readonly BodyPortRequest[],
+  pitch: number,
+): Map<LNode, { width: number; height: number }> {
+  const perSide = new Map<LNode, Record<Side, number>>();
+  for (const r of requests) {
+    if (!perSide.has(r.node)) {
+      const pins: Record<Side, number> = { left: 0, right: 0, top: 0, bottom: 0 };
+      for (const port of r.node.pinPorts.values()) pins[port.side]++;
+      perSide.set(r.node, pins);
+    }
+    perSide.get(r.node)![r.side]++;
+  }
+  const space = new Map<LNode, { width: number; height: number }>();
+  for (const [node, counts] of perSide) {
+    const need = (n: number) => (n === 0 ? 0 : (n + 1) * pitch);
+    space.set(node, {
+      width: Math.max(need(counts.top), need(counts.bottom)),
+      height: Math.max(need(counts.left), need(counts.right)),
+    });
+  }
+  return space;
+}
+
+/**
+ * Body ports (a connection without a pin) get a virtual port on the side facing the other
+ * end; several ports on one side are spread `pitch` apart around the middle, sorted by the
+ * position of the other end. Feedback edges attach at the bottom (LR) resp. on the right
+ * (TB). `bodyPortSpace` has made the components large enough beforehand.
+ */
+export function assignBodyPorts(edges: readonly LEdge[], axes: Axes, grid: number, pitch = grid): void {
+  type Request = BodyPortRequest;
+  const requests = bodyPortRequests(edges, axes);
 
   const groups = new Map<string, Request[]>();
   for (const r of requests) {
@@ -38,8 +82,13 @@ export function assignBodyPorts(edges: readonly LEdge[], axes: Axes, grid: numbe
     const { node, side } = list[0]!;
     const length = side === "left" || side === "right" ? node.box.height : node.box.width;
     const taken = new Set([...node.pinPorts.values()].filter((p) => p.side === side).map((p) => p.offset));
+    // Free grid points at least `pitch` away from each other and from the pins of the side.
     const candidates: number[] = [];
-    for (let p = grid; p <= length - grid; p += grid) if (!taken.has(p)) candidates.push(p);
+    for (let p = pitch; p <= length - pitch + 1e-9; p += pitch) {
+      const offset = Math.round(p / grid) * grid;
+      const crowded = [...taken].some((t) => Math.abs(t - offset) < pitch - 1e-9);
+      if (!crowded && !candidates.includes(offset)) candidates.push(offset);
+    }
     const center = length / 2;
     candidates.sort((a, b) => Math.abs(a - center) - Math.abs(b - center) || a - b);
     const fallback = Math.max(grid, Math.round(center / grid) * grid);

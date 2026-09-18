@@ -7,7 +7,7 @@ import { applyOverrides, Axes, buildNodes, rankGap, type LEdge, type LNode } fro
 import { placeLabel } from "./labels.js";
 import { orderLayers } from "./order.js";
 import { placeNodes } from "./place.js";
-import { alignSpanPorts, assignBodyPorts } from "./ports.js";
+import { alignSpanPorts, assignBodyPorts, bodyPortRequests, bodyPortSpace } from "./ports.js";
 import { assignRanks } from "./rank.js";
 import { portPoint, routeEdges } from "./route.js";
 import { textBounds, type Point, type Rect, type SceneGraph, type SceneItem, type SceneMarker, type ScenePath, type SceneText } from "./scene.js";
@@ -30,12 +30,14 @@ export function layout(
 ): SceneGraph {
   const model = withVisiblePins(stackIdentical(source));
   const { grid } = theme.spacing;
+  // `layout { pin spacing N }` counts in grid units; without it the theme decides.
+  const pitch = model.pinSpacing !== undefined ? model.pinSpacing * grid : theme.spacing.pinPitch;
   const axes = new Axes(model.direction);
   const font = theme.typography.fontFamily;
 
   // ── Sizes ────────────────────────────────────────────────────
   const boxes = new Map<string, ComponentBox>();
-  for (const c of model.components.values()) boxes.set(c.id, sizeComponent(c, theme, metrics));
+  for (const c of model.components.values()) boxes.set(c.id, sizeComponent(c, theme, metrics, { pitch }));
 
   const { nodes, zones } = buildNodes(model, boxes);
   const byId = new Map(nodes.map((n) => [n.id, n]));
@@ -61,7 +63,7 @@ export function layout(
   // ── Ranks, order, ports, coordinates ─────────────────────────
   assignRanks(nodes, edges, zones.length);
   const layers = orderLayers(nodes, edges, axes);
-  assignBodyPorts(edges, axes, grid);
+  assignBodyPorts(edges, axes, grid, pitch);
   const connectionStyle = style(theme.typography.connection, font);
   const labelSpace: number[] = [];
   for (const e of edges) {
@@ -77,16 +79,36 @@ export function layout(
     labelSpace[r] = Math.max(labelSpace[r] ?? 0, along + 2 * theme.markers.arrow + 2 * grid);
   }
   // Nodes spanning several grid cells: stretch the hull, pins keep their port objects.
+  // `minimum` holds the room the body ports need; it survives every later stretch.
   const stretched = new Map<LNode, { main?: number; cross?: number }>();
+  const minimum = new Map<LNode, { main: number; cross: number }>();
   const stretch = (n: LNode, main: number | undefined, cross: number | undefined) => {
     const current = { ...stretched.get(n), ...(main !== undefined && { main }), ...(cross !== undefined && { cross }) };
     stretched.set(n, current);
+    const floor = minimum.get(n);
+    const size = {
+      main: Math.max(current.main ?? 0, floor?.main ?? 0) || undefined,
+      cross: Math.max(current.cross ?? 0, floor?.cross ?? 0) || undefined,
+    };
     n.box = sizeComponent(n.component, theme, metrics, model.direction === "LR"
-      ? { width: current.main, height: current.cross }
-      : { width: current.cross, height: current.main });
+      ? { width: size.main, height: size.cross, pitch }
+      : { width: size.cross, height: size.main, pitch });
     for (const pin of n.box.pins) Object.assign(n.pinPorts.get(pin.name)!, { side: pin.side, offset: pin.offset });
   };
   const natural = (n: LNode) => boxes.get(n.id)!;
+
+  // Components too small for all their body connections grow, then the ports are spread anew.
+  let grown = false;
+  for (const [node, need] of bodyPortSpace(bodyPortRequests(edges, axes), pitch)) {
+    const main = model.direction === "LR" ? need.width : need.height;
+    const cross = model.direction === "LR" ? need.height : need.width;
+    if (main <= axes.mainSize(node.box) && cross <= axes.crossSize(node.box)) continue;
+    minimum.set(node, { main, cross });
+    stretch(node, undefined, undefined);
+    grown = true;
+  }
+  if (grown) assignBodyPorts(edges, axes, grid, pitch);
+
   const frames = placeNodes({ model, theme, axes, nodes, edges, layers, zones, labelSpace, stretch, natural });
 
   // ── Group labels ─────────────────────────────────────────────

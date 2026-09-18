@@ -1,6 +1,6 @@
 import type {
   ArchitectureNode, CategoryStmt, ComponentNode, ComponentStmt, ConnectionNode, DefineNode,
-  DefineStmt, DirectionStmt, PinsStmt, StackStmt, CountStmt, EndpointNode, GridCell, GridNode, GridRow, GroupStmt, HintStmt,
+  DefineStmt, DirectionStmt, PinsStmt, PinSpacingStmt, StackStmt, CountStmt, EndpointNode, GridCell, GridNode, GridRow, GroupStmt, HintStmt,
   Ident, IconStmt, ImportanceStmt, LabelStmt, LayoutStmt, MetaBlock, MetaEntry, ModeStmt,
   PinStmt, ShapeStmt, SideBlock, SizeStmt, Statement, StringLit, SyntaxNode, SyntaxTree,
   SystemNode, ThemeStmt, Trivia, TypeStmt, ZoneNode,
@@ -28,7 +28,7 @@ const GROUP_KEYWORDS = ["label", "system", "component"];
 const COMPONENT_KEYWORDS = ["label", "size", "importance", "category", "pin", ...SIDES, "hint", "count", "meta"];
 const DEFINE_KEYWORDS = ["label", "size", "category", "shape", "icon", "pin", ...SIDES];
 const CONNECTION_KEYWORDS = ["label", "type"];
-const LAYOUT_KEYWORDS = ["mode", "grid"];
+const LAYOUT_KEYWORDS = ["mode", "pin", "grid"];
 
 /** Thrown after a syntax error has been reported and caught at statement level. */
 const BAIL = Symbol("bail");
@@ -416,14 +416,27 @@ export function parse(source: string): ParseResult<SyntaxTree> {
     return withClosing(node<GridNode>(start, { kind: "Grid", rows }), closingTrivia);
   };
 
+  /** `pin spacing N` — distance between neighbouring pins in grid units. */
+  const pinSpacing = (): PinSpacingStmt => {
+    const start = next();
+    expectWord(["spacing"] as const);
+    const value = expect("int", "a number ≥ 1");
+    const n = Number(value.text);
+    if (n < 1) {
+      report(diagnostic("E001", `Expected a number ≥ 1, found ${value.text}`, value.span));
+    }
+    return node<PinSpacingStmt>(start, { kind: "PinSpacing", value: Math.max(1, n) });
+  };
+
   const layout = (): LayoutStmt => {
     const start = next();
     expect("{", "`{`");
-    const layoutStmt = (): ModeStmt | GridNode => {
+    const layoutStmt = (): ModeStmt | PinSpacingStmt | GridNode => {
       if (atWord("mode")) {
         const modeStart = next();
         return node<ModeStmt>(modeStart, { kind: "Mode", value: expectWord<LayoutMode>(LAYOUT_MODES) });
       }
+      if (atWord("pin")) return pinSpacing();
       if (atWord("grid")) return grid();
       return unknownStatement(LAYOUT_KEYWORDS, "`layout`");
     };

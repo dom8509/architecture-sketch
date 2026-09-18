@@ -24,6 +24,8 @@ export interface ArchitectureModel {
   pins: PinDisplay;
   /** `identical`: layout and exports merge identically wired components (`stackIdentical`). */
   stack: StackMode;
+  /** `layout { pin spacing N }`: pin distance in grid units; without it the theme decides. */
+  pinSpacing?: number;
   grid?: GridSpec;
   /** Insertion order = declaration order. */
   components: Map<ComponentId, Component>;
@@ -155,6 +157,7 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
       case "Layout":
         for (const item of stmt.body) {
           if (item.kind === "Mode") model.layoutMode = item.value;
+          else if (item.kind === "PinSpacing") model.pinSpacing = item.value;
           else gridNode = item;
         }
         break;
