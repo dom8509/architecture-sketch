@@ -17,7 +17,7 @@ architecture "Window lifter" {
     }
 
     zone control {
-        label "Door ECU"
+        label "Processing"
         system ecu {
             label "Door ECU"
             component mcu: microcontroller {

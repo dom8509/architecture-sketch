@@ -908,7 +908,7 @@
       "anchor": "start",
       "baseline": "top",
       "lines": [
-        "Door ECU"
+        "Processing"
       ],
       "style": {
         "size": 12,
@@ -918,7 +918,7 @@
       },
       "lineHeight": 15,
       "ascent": 11.865234375,
-      "width": 56.00390625
+      "width": 64.8046875
     },
     {
       "type": "text",
