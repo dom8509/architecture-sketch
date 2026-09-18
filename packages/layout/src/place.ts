@@ -6,7 +6,7 @@ import type { Rect } from "./scene.js";
 export interface Frame {
   group: Group;
   rect: Rect;
-  /** Verschachtelungstiefe; Zonen 0, Systeme ab 1. */
+  /** Nesting depth; zones 0, systems 1 and up. */
   depth: number;
   members: LNode[];
 }
@@ -21,17 +21,17 @@ interface Context {
   edges: readonly LEdge[];
   layers: LNode[][];
   zones: readonly string[];
-  /** Mindestabstand nach Rang r, damit Verbindungslabels zwischen r und r+1 Platz haben. */
+  /** Minimum spacing after rank r so that connection labels fit between r and r+1. */
   labelSpace: readonly number[];
-  /** Setzt die Hülle eines überspannenden Knotens auf Mindestmaße entlang main bzw. cross (undefined = unverändert). */
+  /** Sets the hull of a spanning node to minimum sizes along main resp. cross (undefined = unchanged). */
   stretch: (n: LNode, main: number | undefined, cross: number | undefined) => void;
-  /** Hülle ohne Streckung. */
+  /** Hull without stretching. */
   natural: (n: LNode) => { width: number; height: number };
 }
 
 const MAX_REPAIRS = 200;
 
-/** Phase 6: Koordinaten. Setzt `x`/`y` aller Knoten und liefert Zonen- und Systemrahmen. */
+/** Phase 6: coordinates. Sets `x`/`y` of all nodes and returns the zone and system frames. */
 export function placeNodes(ctx: Context): Frame[] {
   const { theme, axes, layers } = ctx;
   const { grid } = theme.spacing;
@@ -49,7 +49,7 @@ export function placeNodes(ctx: Context): Frame[] {
 
   const zoneCrossStart = ctx.zones.reduce((m, z) => Math.max(m, insetsOf.get(z)!.crossStart), 0);
 
-  // ── Querkoordinaten ──────────────────────────────────────────
+  // ── Cross coordinates ────────────────────────────────────────
   const commonDepth = (a: LNode, b: LNode) => {
     let k = 0;
     while (k < a.systems.length && k < b.systems.length && a.systems[k] === b.systems[k]) k++;
@@ -75,7 +75,7 @@ export function placeNodes(ctx: Context): Frame[] {
   const portCross = (e: LEdge, node: LNode) =>
     axes.cross(node) + axes.portCrossOffset(node, e.source === node ? e.sourcePort : e.targetPort);
 
-  /** Stapelt einen Rang ab `from` neu, ohne Knoten nach oben zu schieben. */
+  /** Restacks a rank from `from` on without moving any node upwards. */
   const restack = (layer: LNode[], from = 0) => {
     for (let i = Math.max(from, 0); i < layer.length; i++) {
       const n = layer[i]!;
@@ -84,16 +84,16 @@ export function placeNodes(ctx: Context): Frame[] {
     }
   };
 
-  /** Liegt die feste Zeile von `n` innerhalb der Zeilen von `other`? Pin-Ausrichtung darf keine Zeile verlassen. */
+  /** Is the fixed row of `n` inside the rows of `other`? Pin alignment must not leave a row. */
   const sameRow = (n: LNode, other: LNode) =>
     n.fixedSlot === undefined || other.fixedSlot === undefined ||
     (other.fixedSlot <= n.fixedSlot && n.fixedSlot <= other.fixedSlot + other.crossSpan - 1);
   const lastSlot = (n: LNode) => n.fixedSlot! + n.crossSpan - 1;
   const crossSpanners = ctx.nodes.filter((n) => n.crossSpan > 1 && n.fixedSlot !== undefined);
 
-  // Feste Zeilen: gemeinsame Oberkante je Zeile, Durchläufe bis stabil.
+  // Fixed rows: a shared top edge per row, iterate until stable.
   const rowTop = new Map<number, number>();
-  /** Lage ohne Pin-Ausrichtung; nur sie bestimmt die Zeilenoberkante, sonst schaukeln sich Zeilen auf. */
+  /** Position without pin alignment; only this determines the row top, otherwise rows drift apart. */
   const unaligned = new Map<LNode, number>();
   for (let pass = 0; pass < (crossSpanners.length ? 8 : 3); pass++) {
     for (const layer of layers) {
@@ -103,11 +103,11 @@ export function placeNodes(ctx: Context): Frame[] {
           min = Math.max(min, rowTop.get(n.fixedSlot) ?? 0);
           for (const [slot, top] of rowTop) if (slot < n.fixedSlot) min = Math.max(min, top + theme.spacing.nodeGapCross);
         }
-        // Pin-Ausrichtung: genau eine Verbindung zum vorderen Rang.
+        // Pin alignment: exactly one connection to the preceding rank.
         const lower = incident.get(n)!.filter((e) => rankEnd(e.source === n ? e.target : e.source) < n.rank);
         unaligned.set(n, snap(min, grid));
         let value = min;
-        // Überspannende Knoten richten sich nicht aus: ihre Anschlüsse folgen nach der Platzierung der Gegenstelle.
+        // Spanning nodes are not aligned: their ports follow once the other end is placed.
         if (lower.length === 1 && !spans(n) && sameRow(n, lower[0]!.source === n ? lower[0]!.target : lower[0]!.source)) {
           const e = lower[0]!;
           const other = e.source === n ? e.target : e.source;
@@ -118,7 +118,7 @@ export function placeNodes(ctx: Context): Frame[] {
       });
     }
     let changed = false;
-    // Knoten über mehrere Zeilen reichen bis zur Unterkante ihrer letzten Zeile.
+    // Nodes spanning several rows reach down to the bottom edge of their last row.
     for (const n of crossSpanners) {
       const row = ctx.nodes.filter((m) => m !== n && m.fixedSlot !== undefined && lastSlot(m) === lastSlot(n));
       const bottom = Math.max(...row.map(crossEnd), -Infinity);
@@ -135,7 +135,7 @@ export function placeNodes(ctx: Context): Frame[] {
         rowTop.set(n.fixedSlot, top);
         changed = true;
       }
-      // Folgende Zeilen beginnen unterhalb der Unterkante dieser Zeile.
+      // Later rows start below the bottom edge of this row.
       for (const [slot, t] of rowTop) {
         if (slot > lastSlot(n) && t < crossEnd(n) + theme.spacing.nodeGapCross) {
           rowTop.set(slot, crossEnd(n) + theme.spacing.nodeGapCross);
@@ -146,7 +146,7 @@ export function placeNodes(ctx: Context): Frame[] {
     if (!changed) break;
   }
 
-  // Quellen richten sich an ihrem einzigen Nachfolger aus, soweit Platz ist.
+  // Sources align with their single successor as far as there is room.
   for (let r = layers.length - 1; r >= 0; r--) {
     const layer = layers[r]!;
     for (let i = layer.length - 1; i >= 0; i--) {
@@ -167,7 +167,7 @@ export function placeNodes(ctx: Context): Frame[] {
     }
   }
 
-  // Knoten über mehrere Spalten: freie Knoten der überdeckten Ränge weichen quer aus.
+  // Nodes spanning several columns: free nodes of the covered ranks move aside across.
   for (const n of ctx.nodes) {
     for (let r = n.rank + 1; r <= rankEnd(n) && n.mainSpan > 1; r++) {
       const layer = layers[r] ?? [];
@@ -180,7 +180,7 @@ export function placeNodes(ctx: Context): Frame[] {
     }
   }
 
-  // ── Hauptkoordinaten ─────────────────────────────────────────
+  // ── Main coordinates ─────────────────────────────────────────
   const zoneOfRank = layers.map((layer) => layer[0]?.zone ?? 0);
   const systemRanks = new Map<string, { min: number; max: number }>();
   for (const n of ctx.nodes) {
@@ -191,11 +191,11 @@ export function placeNodes(ctx: Context): Frame[] {
       systemRanks.set(s, range);
     }
   }
-  // Leere Ränge (nur durch feste Spalten entstanden) erben die Zone ihres Vorgängers.
+  // Empty ranks (created only by fixed columns) inherit the zone of their predecessor.
   for (let r = 1; r < zoneOfRank.length; r++) if (layers[r]!.length === 0) zoneOfRank[r] = zoneOfRank[r - 1]!;
 
   const placeMain = (channels: number[]) => {
-    // Rangbreiten ohne Knoten über mehrere Spalten; die werden danach über ihre Ränge gestreckt.
+    // Rank widths excluding nodes spanning several columns; those are stretched across their ranks afterwards.
     const widths = layers.map((layer) => layer.reduce((m, n) => (n.mainSpan > 1 ? m : Math.max(m, axes.mainSize(n.box))), 0));
     const gaps = layers.map((_, r) => {
       if (r === layers.length - 1) return 0;
@@ -221,7 +221,7 @@ export function placeNodes(ctx: Context): Frame[] {
         starts[r] = start;
         start += widths[r]! + gaps[r]!;
       });
-      // Reicht die Summe der Ränge nicht, wächst der letzte überspannte Rang.
+      // If the ranks do not add up to enough, the last spanned rank grows.
       const short = spanners.find((n) => extent(n) < axes.mainSize(ctx.natural(n)));
       if (short === undefined) break;
       widths[rankEnd(short)]! += snap(axes.mainSize(ctx.natural(short)) - extent(short), grid);
@@ -284,7 +284,7 @@ export function overlaps(a: Rect, b: Rect, margin = 0): boolean {
   return a.x < b.x + b.width + margin && b.x < a.x + a.width + margin && a.y < b.y + b.height + margin && b.y < a.y + a.height + margin;
 }
 
-/** Systemrahmen von innen nach außen. */
+/** System frames from innermost to outermost. */
 function systemFrames(ctx: Context, insetsOf: Map<string, Insets>): Frame[] {
   const frames = new Map<string, Frame>();
   const systems = [...ctx.model.groups.values()].filter((g) => g.type === "system");
@@ -309,7 +309,7 @@ function systemFrames(ctx: Context, insetsOf: Map<string, Insets>): Frame[] {
   return systems.map((s) => frames.get(s.id)).filter((f): f is Frame => f !== undefined);
 }
 
-/** Schiebt Knoten quer, bis kein Systemrahmen fremde Komponenten oder fremde Rahmen überlappt. */
+/** Shifts nodes across until no system frame overlaps foreign components or foreign frames. */
 function repairFrames(
   ctx: Context,
   insetsOf: Map<string, Insets>,
@@ -351,7 +351,7 @@ function repairFrames(
     }
     if (conflict === undefined) return;
     const [aRect, aMembers, bRect, bMembers] = conflict;
-    // Wer zuerst kommt: bei gemeinsamem Rang die Reihenfolge im Rang, sonst die Mitte.
+    // Which one comes first: within a shared rank the order in that rank, otherwise the center.
     let aFirst: boolean | undefined;
     for (const a of aMembers) {
       const b = bMembers.find((m) => m.rank === a.rank);
@@ -377,7 +377,7 @@ function computeFrames(ctx: Context, insetsOf: Map<string, Insets>): Frame[] {
   const zoneCrossInset = ctx.zones.reduce((m, z) => Math.max(m, insetsOf.get(z)!.crossStart), 0);
   const pad = theme.spacing.groupPadding;
 
-  // Hauptausdehnung je Zone: Ränge plus Rahmen, Grenze in der Mitte des Zonenabstands.
+  // Main extent per zone: ranks plus frames, the boundary sits in the middle of the zone gap.
   const extents = ctx.zones.map((_, z) => {
     const members = ctx.nodes.filter((n) => n.zone === z);
     const rects = [...members.map(hullOf), ...systems.filter((f) => f.members.some((m) => m.zone === z)).map((f) => f.rect)];

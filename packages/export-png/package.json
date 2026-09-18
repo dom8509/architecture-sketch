@@ -1,7 +1,7 @@
 {
   "name": "@sysarch/export-png",
   "version": "0.1.0",
-  "description": "sysarch PNG-Export im Browser: SVG über Canvas rasterisieren, ohne Bibliothek",
+  "description": "sysarch PNG export in the browser: rasterize SVG via canvas, without a library",
   "license": "MIT",
   "type": "module",
   "main": "dist/index.js",

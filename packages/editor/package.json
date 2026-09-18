@@ -1,7 +1,7 @@
 {
   "name": "@sysarch/editor",
   "version": "0.1.0",
-  "description": "sysarch Editor: CodeMirror 6, Live-Vorschau, Diagnosen — framework-frei",
+  "description": "sysarch editor: CodeMirror 6, live preview, diagnostics — framework-free",
   "license": "MIT",
   "type": "module",
   "main": "dist/index.js",

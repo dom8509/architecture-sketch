@@ -2,7 +2,7 @@ import type { Component, Side } from "@sysarch/core";
 import { LINE_HEIGHT, measureLine, measureText, wrapText, type FontMetrics, type TextStyle, type Theme } from "@sysarch/themes";
 import { shapeGeometry, stackedGeometry, type ShapeGeometry } from "./shapes.js";
 
-/** Pin relativ zur Hülle: `offset` läuft entlang der Seite (y für links/rechts, x für oben/unten). */
+/** Pin relative to the hull: `offset` runs along the side (y for left/right, x for top/bottom). */
 export interface PinBox {
   name: string;
   side: Side;
@@ -11,7 +11,7 @@ export interface PinBox {
 }
 
 export interface TextBlock {
-  /** Relativ zur Hülle. */
+  /** Relative to the hull. */
   x: number;
   y: number;
   lines: string[];
@@ -20,17 +20,17 @@ export interface TextBlock {
   style: TextStyle;
 }
 
-/** Größe und innerer Aufbau einer Komponente, alles relativ zur Hülle (0, 0). */
+/** Size and inner structure of a component, all relative to the hull (0, 0). */
 export interface ComponentBox {
   width: number;
   height: number;
   geometry: ShapeGeometry;
-  /** Icon-Quadrat, relativ zur Hülle. */
+  /** Icon square, relative to the hull. */
   icon?: { x: number; y: number; size: number };
   label: TextBlock;
-  /** Anzahl bei Mehrfachelementen („×4“), rechts neben der ersten Labelzeile. */
+  /** Count for multiple elements ("×4"), to the right of the first label line. */
   count?: TextBlock;
-  /** Hintere Karten bei Mehrfachelementen; die vordere Karte ist um `layers × offset` kleiner. */
+  /** Cards behind for multiple elements; the front card is smaller by `layers × offset`. */
   stack?: { layers: number; offset: number };
   pins: PinBox[];
 }
@@ -38,7 +38,7 @@ export interface ComponentBox {
 const ceilTo = (value: number, grid: number) => Math.ceil(value / grid - 1e-9) * grid;
 const roundTo = (value: number, grid: number) => Math.round(value / grid) * grid;
 
-/** `stretch`: Mindestmaße der Hülle, z. B. für Komponenten über mehrere Grid-Zellen. */
+/** `stretch`: minimum hull size, e.g. for components spanning several grid cells. */
 export function sizeComponent(
   component: Component,
   theme: Theme,
@@ -53,9 +53,9 @@ export function sizeComponent(
   const base = shapeGeometry(component.shape, { padding, grid });
   const geometry = stack ? stackedGeometry(base, depth) : base;
 
-  // ── Kopf: Icon + Label ──────────────────────────────────────
+  // ── Header: icon + label ────────────────────────────────────
   const labelStyle = component.importance === "primary" ? theme.typography.componentPrimary : theme.typography.component;
-  // Kreise wachsen in beide Richtungen; ihre Labels brechen schon ab der Mindestbreite um.
+  // Circles grow in both directions; their labels wrap from the minimum width on.
   const maxLabelWidth = (component.shape === "circle" ? 1 : 3) * theme.component.minWidth[component.size] - 2 * padding;
   const lines = wrapText(metrics, component.label, labelStyle.size, labelStyle.weight, maxLabelWidth);
   const labelBox = measureText(metrics, lines, labelStyle.size, labelStyle.weight);
@@ -93,12 +93,12 @@ export function sizeComponent(
     height: topBand + header.height + rowGap + rows * pinPitch + bottomBand,
   };
 
-  // ── Hülle ────────────────────────────────────────────────────
+  // ── Hull ─────────────────────────────────────────────────────
   const hull = geometry.hullFor(content);
   let width = ceilTo(Math.max(hull.width, theme.component.minWidth[component.size], stretch.width ?? 0), grid);
   let height = ceilTo(Math.max(hull.height, theme.component.minHeight[component.size], stretch.height ?? 0), grid);
   if (component.shape === "circle") width = height = Math.max(width, height);
-  // Mindestgrößen und Rundung verändern bei manchen Formen den Innenbereich (Sechseck-Spitzen).
+  // Minimum sizes and rounding change the inner area for some shapes (hexagon tips).
   let inner = geometry.inner({ x: 0, y: 0, width, height });
   while (inner.width < content.width - 1e-9 || inner.height < content.height - 1e-9) {
     if (inner.width < content.width - 1e-9) width += grid;
@@ -107,7 +107,7 @@ export function sizeComponent(
     inner = geometry.inner({ x: 0, y: 0, width, height });
   }
 
-  // ── Pin-Positionen ───────────────────────────────────────────
+  // ── Pin positions ────────────────────────────────────────────
   const pins: PinBox[] = [];
   const regionTop = inner.y + topBand + header.height + rowGap / 2;
   const regionBottom = inner.y + inner.height - bottomBand;
@@ -127,11 +127,11 @@ export function sizeComponent(
     first = Math.max(first, grid);
     list.forEach((pin, k) => pins.push({ name: pin.name, side, offset: first + k * pitch, labelWidth: pin.width }));
   }
-  // Darstellungsreihenfolge = Modellreihenfolge.
+  // Rendering order = model order.
   const order = new Map(component.pins.map((p, i) => [p.name, i]));
   pins.sort((a, b) => order.get(a.name)! - order.get(b.name)!);
 
-  // ── Kopf platzieren ──────────────────────────────────────────
+  // ── Place the header ─────────────────────────────────────────
   const headerX = inner.x + (inner.width - header.width) / 2;
   const headerY = rows
     ? inner.y + topBand

@@ -1,7 +1,7 @@
-// Erzeugt alles, was die Dokumentation aus dem Code ableitet — vor jedem `vitepress dev|build`.
-// Nichts davon wird eingecheckt (.gitignore): Bibliothek, Icons, Themes, Beispiele, CLI-Hilfe,
-// Konzeptseiten und die gerenderten ```sysarch-Blöcke sind damit immer auf dem Stand des Codes.
-// Fehler oder Warnungen in einem Diagramm der Doku brechen den Build.
+// Generates everything the documentation derives from the code — before every `vitepress dev|build`.
+// None of it is checked in (.gitignore): library, icons, themes, examples, CLI help, concept pages
+// and the rendered ```sysarch blocks are therefore always in sync with the code.
+// Errors or warnings in a diagram of the docs break the build.
 import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -20,40 +20,40 @@ const DOCS = fileURLToPath(new URL("..", import.meta.url));
 const ROOT = join(DOCS, "../..");
 const GENERATED = join(DOCS, "_generated");
 const PUBLIC = join(DOCS, "public/generated");
-const CONCEPT = join(DOCS, "konzept");
+const CONCEPT = join(DOCS, "concept");
 export const REPO = "https://github.com/dom8509/sysarch";
 
 const LIGHT = "automotive-light";
 const DARK = "automotive-dark";
 
-// ── Texte, die der Code nicht kennt — jeder neue Wert im Code muss hier ergänzt werden ──
+// ── Texts the code does not know — every new value in the code needs an entry here ──
 
 const CATEGORY_TITLES: Record<Category, string> = {
-  power: "Versorgung & Leistung",
-  controller: "Rechnen & Speicher",
-  communication: "Kommunikation",
-  sensor: "Sensorik",
-  actuator: "Aktorik",
+  power: "Supply & power",
+  controller: "Compute & memory",
+  communication: "Communication",
+  sensor: "Sensors",
+  actuator: "Actuators",
   software: "Software",
-  external: "Extern",
-  generic: "Generisch",
+  external: "External",
+  generic: "Generic",
 };
 
 const THEME_DESCRIPTIONS: Record<string, string> = {
-  "automotive-light": "Standard für Dokumentation und Notizen im hellen Modus.",
-  "automotive-dark": "Für dunkle Oberflächen — Obsidian dunkel, Bildschirmpräsentationen.",
-  presentation: "Größere Schrift, kräftigere Linien, mehr Abstand — für Beamer und Folien.",
-  technical: "Schwarz-weiß und druckoptimiert; Signalgruppen unterscheiden sich nur über die Linienform.",
+  "automotive-light": "The default for documentation and notes in light mode.",
+  "automotive-dark": "For dark surfaces — Obsidian in dark mode, on-screen presentations.",
+  presentation: "Larger type, stronger lines, more spacing — for projectors and slides.",
+  technical: "Black and white, optimized for print; signal groups differ only in line style.",
 };
 
 const GROUP_TITLES: Record<SignalGroup, [title: string, line: string]> = {
-  supply: ["Versorgung", "dicke Linie; `ground` endet mit Masse-Symbol"],
-  single: ["Einzelsignal", "normale Linie"],
-  bus: ["Bus", "Doppellinie"],
-  diagnostic: ["Diagnose", "gestrichelte Linie"],
+  supply: ["Supply", "thick line; `ground` ends with a ground symbol"],
+  single: ["Single signal", "normal line"],
+  bus: ["Bus", "double line"],
+  diagnostic: ["Diagnostic", "dashed line"],
 };
 
-// ── Hilfen ───────────────────────────────────────────────────────
+// ── Helpers ──────────────────────────────────────────────────────
 
 const write = (file: string, content: string) => {
   mkdirSync(dirname(file), { recursive: true });
@@ -71,7 +71,7 @@ function check(where: string, source: string) {
   }
 }
 
-/** Rendert hell und — ohne `theme` in der Quelle — dunkel; liefert die öffentlichen Pfade. */
+/** Renders light and — without `theme` in the source — dark; returns the public paths. */
 function renderVariants(source: string, name: string): { light: string; dark?: string } {
   const { value: model } = compile(source);
   if (hasTheme(source)) {
@@ -90,14 +90,14 @@ function figure(paths: { light: string; dark?: string }, alt: string, cls = "sys
     : `<figure class="${cls}">${img(paths.light, "")}</figure>`;
 }
 
-// ── Konzeptdokumente (docs/*.md) ─────────────────────────────────
+// ── Concept documents (docs/*.md) ────────────────────────────────
 
 function syncConcept() {
   const source = join(ROOT, "docs");
   const pages: { file: string; title: string }[] = [];
   for (const file of readdirSync(source).filter((f) => f.endsWith(".md")).sort()) {
     let text = readFileSync(join(source, file), "utf8");
-    // Verweise aus docs/ hinaus zeigen auf GitHub; Verweise zwischen Konzeptseiten bleiben relativ
+    // links leaving docs/ point to GitHub; links between concept pages stay relative
     text = text.replace(/\]\(\.\.\/([^)\s]+)\)/g, (_, target: string) => {
       const kind = target.endsWith("/") || !/\.[a-z]+(#.*)?$/i.test(target) ? "tree" : "blob";
       return `](${REPO}/${kind}/main/${target})`;
@@ -106,11 +106,11 @@ function syncConcept() {
     pages.push({ file, title: /^# (.+)$/m.exec(text)?.[1] ?? file });
   }
   write(join(CONCEPT, "index.md"), [
-    "# Konzept",
+    "# Concept",
     "",
-    "Die Konzeptdokumente beschreiben, **warum** sysarch so gebaut ist: Sprache, Datenmodell,",
-    "Layout, Rendering und Entscheidungen. Sie liegen im Repository unter",
-    `[\`docs/\`](${REPO}/tree/main/docs) und werden bei jedem Build hierher übernommen.`,
+    "The concept documents describe **why** sysarch is built the way it is: language, data model,",
+    "layout, rendering and decisions. They live in the repository under",
+    `[\`docs/\`](${REPO}/tree/main/docs) and are copied here on every build.`,
     "",
     ...pages.map((p) => `- [${p.title}](./${p.file})`),
     "",
@@ -118,18 +118,18 @@ function syncConcept() {
   return pages;
 }
 
-// ── Bibliothek ───────────────────────────────────────────────────
+// ── Library ──────────────────────────────────────────────────────
 
 function defineSource(name: string): string {
   const start = AUTOMOTIVE_ARCHLIB.search(new RegExp(`^define ${name}\\b`, "m"));
-  if (start < 0) throw new Error(`define ${name} nicht in automotive.archlib gefunden`);
+  if (start < 0) throw new Error(`define ${name} not found in automotive.archlib`);
   let depth = 0;
   for (let i = start; i < AUTOMOTIVE_ARCHLIB.length; i++) {
     const c = AUTOMOTIVE_ARCHLIB[i];
     if (c === "{") depth++;
     if (c === "}" && --depth === 0) return AUTOMOTIVE_ARCHLIB.slice(start, i + 1);
   }
-  throw new Error(`define ${name}: schließende Klammer fehlt`);
+  throw new Error(`define ${name}: closing brace missing`);
 }
 
 function iconSvg(icon: IconDef, size = 24): string {
@@ -146,8 +146,8 @@ function library() {
   const templates = [...lib.templates.values()].sort((a, b) => a.name.localeCompare(b.name));
   const out: string[] = [];
 
-  out.push("## Übersicht", "");
-  out.push("| Template | Label | Kategorie | Form | Icon | Pins |", "|---|---|---|---|---|---|");
+  out.push("## Overview", "");
+  out.push("| Template | Label | Category | Shape | Icon | Pins |", "|---|---|---|---|---|---|");
   for (const t of templates) {
     out.push(`| [\`${t.name}\`](#${t.name.replace(/_/g, "-")}) | ${t.label ?? "—"} | \`${t.category ?? "generic"}\` | \`${t.shape ?? "rounded"}\` | ${t.icon ? `\`${t.icon}\`` : "—"} | ${t.pins.length} |`);
   }
@@ -167,34 +167,34 @@ function library() {
     "</div>",
     "",
   ];
-  write(join(GENERATED, "bibliothek.md"), out.join("\n"));
+  write(join(GENERATED, "library.md"), out.join("\n"));
   write(join(GENERATED, "icons.md"), icon.join("\n"));
   return templates;
 }
 
 function templateSection(t: TemplateDef): string[] {
   const source = `architecture "${t.name}" {\n    component ${t.name}: ${t.name}\n}\n`;
-  check(`Bibliothek ${t.name}`, source);
+  check(`Library ${t.name}`, source);
   const paths = renderVariants(source, `library/${t.name}`);
   const facts = [
-    t.label && `Label „${t.label}“`,
-    `Kategorie \`${t.category ?? "generic"}\``,
-    `Größe \`${t.size ?? "medium"}\``,
-    `Form \`${t.shape ?? "rounded"}\``,
+    t.label && `Label "${t.label}"`,
+    `Category \`${t.category ?? "generic"}\``,
+    `Size \`${t.size ?? "medium"}\``,
+    `Shape \`${t.shape ?? "rounded"}\``,
     t.icon && `Icon \`${t.icon}\``,
-    t.extends && `erweitert [\`${t.extends}\`](#${t.extends.replace(/_/g, "-")})`,
+    t.extends && `extends [\`${t.extends}\`](#${t.extends.replace(/_/g, "-")})`,
   ].filter(Boolean);
   const lines = [`### ${t.name}`, "", facts.join(" · "), "", figure(paths, t.label ?? t.name, "sysarch-figure sa-template"), ""];
   if (t.pins.length > 0) {
-    lines.push("| Pin | Art | Seite |", "|---|---|---|");
-    for (const p of t.pins) lines.push(`| \`${p.name}\` | \`${p.kind}\` | ${p.side ?? "aus Verbindungen"} |`);
+    lines.push("| Pin | Kind | Side |", "|---|---|---|");
+    for (const p of t.pins) lines.push(`| \`${p.name}\` | \`${p.kind}\` | ${p.side ?? "from connections"} |`);
     lines.push("");
   }
   lines.push(fence(`component ${t.name}: ${t.name}`), "::: details Definition in `automotive.archlib`", fence(defineSource(t.name)), ":::", "");
   return lines;
 }
 
-// ── Themes, Signalarten, Beispiele, CLI ──────────────────────────
+// ── Themes, signal kinds, examples, CLI ──────────────────────────
 
 function themes() {
   const source = readFileSync(join(ROOT, "examples/zonal-ecu.arch"), "utf8");
@@ -202,21 +202,21 @@ function themes() {
   const out: string[] = [];
   for (const theme of THEMES) {
     const description = THEME_DESCRIPTIONS[theme];
-    if (!description) throw new Error(`Theme \`${theme}\` hat keine Beschreibung in apps/docs/scripts/generate.ts`);
+    if (!description) throw new Error(`Theme \`${theme}\` has no description in apps/docs/scripts/generate.ts`);
     write(join(PUBLIC, `themes/${theme}.svg`), renderArchitecture(model, theme));
-    out.push(`## ${theme}`, "", description, "", figure({ light: `/generated/themes/${theme}.svg` }, `Zonal ECU im Theme ${theme}`), "");
+    out.push(`## ${theme}`, "", description, "", figure({ light: `/generated/themes/${theme}.svg` }, `Zonal ECU in the ${theme} theme`), "");
   }
   write(join(GENERATED, "themes.md"), out.join("\n"));
 }
 
 function signalKinds() {
-  const out = ["| Gruppe | Arten | Darstellung |", "|---|---|---|"];
+  const out = ["| Group | Kinds | Rendering |", "|---|---|---|"];
   for (const group of Object.keys(GROUP_TITLES) as SignalGroup[]) {
     const kinds = SIGNAL_KINDS.filter((k) => SIGNAL_GROUPS[k] === group);
     const [title, line] = GROUP_TITLES[group];
     out.push(`| ${title} | ${kinds.map((k) => `\`${k}\``).join(" ")} | ${line} |`);
   }
-  write(join(GENERATED, "signalarten.md"), out.join("\n") + "\n");
+  write(join(GENERATED, "signal-kinds.md"), out.join("\n") + "\n");
 }
 
 function examples() {
@@ -229,7 +229,7 @@ function examples() {
       .map((l) => l.replace(/^\/\/\s?/, "")).join(" ").replace(/^.*?—\s*/, "");
     out.push(`## ${title}`, "", `[\`examples/${file}\`](${REPO}/blob/main/examples/${file})${intro ? ` — ${intro}` : ""}`, "", fence(source), "");
   }
-  write(join(GENERATED, "beispiele.md"), out.join("\n"));
+  write(join(GENERATED, "examples.md"), out.join("\n"));
 }
 
 function cliHelp() {
@@ -242,7 +242,7 @@ function diagnosticCodes() {
   write(join(GENERATED, "diagnostic-codes.json"), JSON.stringify(DIAGNOSTIC_CODES) + "\n");
 }
 
-// ── ```sysarch-Blöcke aller Seiten ───────────────────────────────
+// ── ```sysarch blocks of all pages ───────────────────────────────
 
 interface Block {
   html: string;
@@ -285,8 +285,8 @@ function blocks() {
       const key = blockKey(code);
       if (manifest[key]?.light) continue;
       const block: Block = { html: highlight(code) };
-      // `sysarch nur-code`: absichtlich fehlerhafte oder unvollständige Beispiele
-      if (isDiagram(code) && !flags.includes("nur-code")) {
+      // `sysarch code-only`: deliberately broken or incomplete examples
+      if (isDiagram(code) && !flags.includes("code-only")) {
         check(`${where}:${(token.map?.[0] ?? 0) + 2}`, code);
         Object.assign(block, renderVariants(code, `diagrams/${key}`), { share: shareFragment(code) });
       }
@@ -297,7 +297,7 @@ function blocks() {
   return Object.keys(manifest).length;
 }
 
-// ── Ablauf ───────────────────────────────────────────────────────
+// ── Run ──────────────────────────────────────────────────────────
 
 for (const dir of [GENERATED, PUBLIC, CONCEPT]) rmSync(dir, { recursive: true, force: true });
 const concept = syncConcept();
@@ -310,7 +310,7 @@ diagnosticCodes();
 const count = blocks();
 
 if (failures.length > 0) {
-  console.error("Diagramme in der Dokumentation haben Diagnosen:\n" + failures.map((f) => `  ${f}`).join("\n"));
+  console.error("Diagrams in the documentation have diagnostics:\n" + failures.map((f) => `  ${f}`).join("\n"));
   process.exit(1);
 }
-console.log(`docs: ${concept.length} Konzeptseiten, ${templates.length} Templates, ${THEMES.length} Themes, ${count} sysarch-Blöcke`);
+console.log(`docs: ${concept.length} concept pages, ${templates.length} templates, ${THEMES.length} themes, ${count} sysarch blocks`);

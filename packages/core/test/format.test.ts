@@ -16,7 +16,7 @@ const fmt = (source: string) => {
   return value;
 };
 
-/** Semantisches Modell ohne Quellbereiche — muss vor und nach dem Formatieren gleich sein. */
+/** Semantic model without source ranges — must be the same before and after formatting. */
 function semantics(source: string): unknown {
   const strip = (value: unknown): unknown => {
     if (value instanceof Map) return [...value].map(([k, v]) => [k, strip(v)]);
@@ -32,15 +32,15 @@ function semantics(source: string): unknown {
   return strip({ model: result.value, codes: result.diagnostics.map((d) => d.code) });
 }
 
-describe("format: Beispiele und Bibliothek", () => {
-  it.each(sources)("%s ist kanonisch formatiert", (file) => {
+describe("format: examples and library", () => {
+  it.each(sources)("%s is formatted canonically", (file) => {
     const source = read(file);
     expect(fmt(source)).toBe(source);
   });
 
-  it.each(sources)("%s: Kommentare vor jedem Token bleiben erhalten, Ergebnis ist idempotent", (file) => {
-    // Blockkommentare ohne Zeilenumbruch ändern die Bedeutung nicht, landen aber an jeder
-    // denkbaren Stelle — auch mitten in Anweisungen, Endpunkten und Grid-Zeilen.
+  it.each(sources)("%s: comments before every token are preserved, the result is idempotent", (file) => {
+    // Block comments without a line break do not change the meaning, but end up in every
+    // conceivable place — including inside statements, endpoints and grid rows.
     const source = read(file);
     let noisy = "";
     let pos = 0;
@@ -59,7 +59,7 @@ describe("format: Beispiele und Bibliothek", () => {
 describe("format", () => {
   const arch = (body: string) => `architecture "A" {\n${body}\n}\n`;
 
-  it("ordnet theme › direction › pins › stack › layout › Struktur › Verbindungen, Rest in Quelltextreihenfolge", () => {
+  it("orders theme › direction › pins › stack › layout › structure › connections, rest in source order", () => {
     const source = arch([
       "a -> b",
       "pins none",
@@ -92,12 +92,12 @@ describe("format", () => {
     expect(semantics(fmt(source))).toEqual(semantics(source));
   });
 
-  it("schreibt count wie hint, einzeln als Einzeiler", () => {
+  it("writes count like hint, on its own as a single line", () => {
     expect(fmt(arch("component a {\n count   3\n}"))).toBe(arch("    component a { count 3 }"));
     expect(fmt(arch("component a { label \"A\" count 3 }"))).toBe(arch("    component a {\n        label \"A\"\n        count 3\n    }"));
   });
 
-  it("schreibt Einzeiler nur für einfache Blöcke", () => {
+  it("writes single lines only for simple blocks", () => {
     const source = arch([
       'component a: block {   label "A"   }',
       "component b { size small importance primary }",
@@ -128,7 +128,7 @@ describe("format", () => {
     ].join("\n")));
   });
 
-  it("richtet Inline-Blöcke von Verbindungen bündig aus, Leerzeilen und mehrzeilige Blöcke trennen Gruppen", () => {
+  it("aligns inline blocks of connections, blank lines and multi-line blocks separate groups", () => {
     const source = arch([
       'a -> b { label "1" }',
       "long_name.PIN -> b",
@@ -148,7 +148,7 @@ describe("format", () => {
     expect(fmt(aligned)).toBe(aligned);
   });
 
-  it("schreibt Seitenblöcke mit bis zu drei Pins ohne Label einzeilig und richtet sie aus", () => {
+  it("writes side blocks with up to three unlabelled pins on one line and aligns them", () => {
     const source = [
       "define t {",
       "    left { pin power VIN pin digital EN }",
@@ -176,12 +176,12 @@ describe("format", () => {
     ].join("\n"));
   });
 
-  it("bricht Seitenblöcke um, die breiter als 80 Zeichen würden", () => {
+  it("wraps side blocks that would be wider than 80 characters", () => {
     const source = "define t {\n    left { pin analog CURRENT_SENSE_A pin analog CURRENT_SENSE_B pin analog CURRENT_SENSE_C }\n}\n";
     expect(fmt(source)).toContain("    left {\n        pin analog CURRENT_SENSE_A\n");
   });
 
-  it("richtet Grid-Spalten aus", () => {
+  it("aligns grid columns", () => {
     const source = arch("layout {\ngrid {\nbattery|.|mcu\n.   |   regulator   |  wdg\n}\n}");
     expect(fmt(source)).toBe(arch([
       "    layout {",
@@ -193,63 +193,63 @@ describe("format", () => {
     ].join("\n")));
   });
 
-  it("normalisiert Leerzeilen, Einrückung, Zeilenenden und Strings", () => {
+  it("normalises blank lines, indentation, line endings and strings", () => {
     const source = '\n\n\r\narchitecture   "A \\"B\\"\\n\\\\"{\r\n\r\n\r\n\tcomponent a\r\n\r\n\r\n\r\n\tcomponent b\r\n\r\n}\r\n\r\n';
     expect(fmt(source)).toBe('architecture "A \\"B\\"\\n\\\\" {\n    component a\n\n    component b\n}\n');
   });
 
-  it("schreibt leere Blöcke kompakt", () => {
+  it("writes empty blocks compactly", () => {
     expect(fmt('define t {}\narchitecture "A" { zone z { } }')).toBe('define t {}\n\narchitecture "A" {\n    zone z {}\n}\n');
   });
 
-  it("lässt Quelltext mit Syntaxfehlern unverändert", () => {
+  it("leaves source with syntax errors unchanged", () => {
     const source = 'architecture "A" {\n  component a {\n';
     const { value, diagnostics } = format(source);
     expect(value).toBe(source);
     expect(diagnostics.map((d) => d.code)).toContain("E001");
   });
 
-  it("formatiert Dateien, deren Resolver Fehler meldet", () => {
+  it("formats files whose resolver reports errors", () => {
     expect(fmt('architecture "A" {\na -> unknown.X\n}')).toBe('architecture "A" {\n    a -> unknown.X\n}\n');
   });
 });
 
-describe("format: Kommentare", () => {
+describe("format: comments", () => {
   const cases: [string, string, string][] = [
     [
-      "Kommentare auf eigenen Zeilen wandern mit ihrer Anweisung",
-      '// Datei\n\narchitecture "A" {\n    a -> b\n\n    // Komponente\n    component a\n}\n',
-      '// Datei\n\narchitecture "A" {\n    // Komponente\n    component a\n\n    a -> b\n}\n',
+      "comments on their own lines move with their statement",
+      '// file\n\narchitecture "A" {\n    a -> b\n\n    // component\n    component a\n}\n',
+      '// file\n\narchitecture "A" {\n    // component\n    component a\n\n    a -> b\n}\n',
     ],
     [
-      "Kommentare am Zeilenende bleiben an ihrer Zeile, auch nach dem Umsortieren",
-      'architecture "A" { // Titel\n    a -> b // Verbindung\n    theme technical // Theme\n}\n',
-      'architecture "A" { // Titel\n    theme technical // Theme\n\n    a -> b // Verbindung\n}\n',
+      "comments at the end of a line stay on their line, even after reordering",
+      'architecture "A" { // title\n    a -> b // connection\n    theme technical // theme\n}\n',
+      'architecture "A" { // title\n    theme technical // theme\n\n    a -> b // connection\n}\n',
     ],
     [
-      "ein Kommentar im Block verhindert den Einzeiler",
-      'architecture "A" {\n    component a { label "A" // Label\n    }\n    a -> b { /* x */ type can }\n}\n',
-      'architecture "A" {\n    component a {\n        label "A" // Label\n    }\n\n    a -> b { /* x */\n        type can\n    }\n}\n',
+      "a comment inside the block prevents the single line",
+      'architecture "A" {\n    component a { label "A" // label\n    }\n    a -> b { /* x */ type can }\n}\n',
+      'architecture "A" {\n    component a {\n        label "A" // label\n    }\n\n    a -> b { /* x */\n        type can\n    }\n}\n',
     ],
     [
-      "Kommentar am Ende eines Blocks und der Datei",
-      'architecture "A" {\n    component a {\n        label "A"\n\n        // Ende\n\n    }\n}\n// Datei-Ende\n',
-      'architecture "A" {\n    component a {\n        label "A"\n\n        // Ende\n    }\n}\n// Datei-Ende\n',
+      "comment at the end of a block and of the file",
+      'architecture "A" {\n    component a {\n        label "A"\n\n        // end\n\n    }\n}\n// end of file\n',
+      'architecture "A" {\n    component a {\n        label "A"\n\n        // end\n    }\n}\n// end of file\n',
     ],
     [
-      "leerer Block mit Kommentar",
-      'architecture "A" {\n    component a { // nichts\n    }\n    zone z {\n        // leer\n    }\n}\n',
-      'architecture "A" {\n    component a { // nichts\n    }\n    zone z {\n        // leer\n    }\n}\n',
+      "empty block with a comment",
+      'architecture "A" {\n    component a { // nothing\n    }\n    zone z {\n        // empty\n    }\n}\n',
+      'architecture "A" {\n    component a { // nothing\n    }\n    zone z {\n        // empty\n    }\n}\n',
     ],
     [
-      "Kommentare mitten in einer Anweisung wandern davor",
-      'architecture "A" {\n    component /* id */ a: /* t */ block\n    a.X /* pfeil */ -> b\n}\n',
-      'architecture "A" {\n    /* id */\n    /* t */\n    component a: block\n\n    /* pfeil */\n    a.X -> b\n}\n',
+      "comments in the middle of a statement move in front of it",
+      'architecture "A" {\n    component /* id */ a: /* t */ block\n    a.X /* arrow */ -> b\n}\n',
+      'architecture "A" {\n    /* id */\n    /* t */\n    component a: block\n\n    /* arrow */\n    a.X -> b\n}\n',
     ],
     [
-      "Kommentare in Grid-Zeilen",
-      'architecture "A" {\n    layout {\n        grid {\n            a | /* leer */ . // Zeile 1\n            // Zeile 2\n            b | c\n        }\n    }\n}\n',
-      'architecture "A" {\n    layout {\n        grid {\n            /* leer */\n            a | . // Zeile 1\n            // Zeile 2\n            b | c\n        }\n    }\n}\n',
+      "comments in grid rows",
+      'architecture "A" {\n    layout {\n        grid {\n            a | /* empty */ . // row 1\n            // row 2\n            b | c\n        }\n    }\n}\n',
+      'architecture "A" {\n    layout {\n        grid {\n            /* empty */\n            a | . // row 1\n            // row 2\n            b | c\n        }\n    }\n}\n',
     ],
   ];
 

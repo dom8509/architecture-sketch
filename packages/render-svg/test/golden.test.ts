@@ -18,8 +18,8 @@ function build(file: string) {
   return { scene, svg: renderSvg(scene) };
 }
 
-// Aktualisieren: `npx vitest run -u` — Änderungen sind im Review als Diff sichtbar.
-describe("Golden Files", () => {
+// Update with `npx vitest run -u` — changes show up as a diff in review.
+describe("golden files", () => {
   for (const file of examples) {
     const name = basename(file, ".arch");
     it(name, async () => {
@@ -29,9 +29,9 @@ describe("Golden Files", () => {
     });
   }
 
-  it("enthalten jede Form und jedes mitgelieferte Icon mindestens einmal", () => {
+  it("cover every shape and every bundled icon at least once", () => {
     const svgs = examples.map((f) => build(f).svg).join("\n");
-    for (const shape of SHAPES) expect(svgs, `Form ${shape}`).toContain(`sa-shape-${shape}`);
-    for (const icon of standardLibrary().icons.keys()) expect(svgs, `Icon ${icon}`).toContain(`<symbol id="sa-icon-${icon}"`);
+    for (const shape of SHAPES) expect(svgs, `shape ${shape}`).toContain(`sa-shape-${shape}`);
+    for (const icon of standardLibrary().icons.keys()) expect(svgs, `icon ${icon}`).toContain(`<symbol id="sa-icon-${icon}"`);
   });
 });

@@ -1,7 +1,7 @@
 {
   "name": "@sysarch/themes",
   "version": "0.1.0",
-  "description": "sysarch Design-Tokens und eingebettete Font-Metriken",
+  "description": "sysarch design tokens and embedded font metrics",
   "license": "MIT",
   "type": "module",
   "main": "dist/index.js",

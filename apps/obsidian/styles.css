@@ -1,4 +1,4 @@
-/* sysarch — Farben ausschließlich über Obsidian-Variablen, damit hell/dunkel und Themes passen */
+/* sysarch — colours come exclusively from Obsidian variables, so light/dark and themes match */
 
 /* ── Codeblock ──────────────────────────────────────────────── */
 
@@ -14,7 +14,7 @@
   height: auto;
 }
 
-/* ── Diagnosen ──────────────────────────────────────────────── */
+/* ── diagnostics ────────────────────────────────────────────── */
 
 .sysarch-diagnostics {
   list-style: none;
@@ -63,7 +63,7 @@
 .sysarch-workbench .sa-warning .sa-diagnostic-code { color: var(--color-orange); }
 .sysarch-workbench .sa-info .sa-diagnostic-code { color: var(--color-blue); }
 
-/* ── Editor, Vorschau (.arch-Ansicht und Modal) ─────────────── */
+/* ── editor, preview (.arch view and modal) ─────────────────── */
 
 .sysarch-workbench {
   display: grid;
@@ -114,7 +114,7 @@
 .sysarch-workbench .sa-preview-canvas > svg { display: block; box-shadow: var(--shadow-s); }
 .sysarch-workbench .sa-preview.sa-stale .sa-preview-canvas { opacity: 0.55; filter: grayscale(0.6); }
 .sysarch-workbench .sa-preview.sa-stale::after {
-  content: "Fehler im Quelltext — letzter gültiger Stand";
+  content: "Error in the source — showing the last valid state";
   position: absolute;
   left: 12px;
   bottom: 12px;
@@ -164,7 +164,7 @@
   .sysarch-editor-pane { border-right: 0; border-bottom: 1px solid var(--background-modifier-border); }
 }
 
-/* ── Bibliothek (Seitenleiste) ──────────────────────────────── */
+/* ── library (sidebar) ──────────────────────────────────────── */
 
 .sysarch-library-search {
   width: 100%;

@@ -1,6 +1,6 @@
-// Zonal ECU — Fensterheber mit Stromrückmeldung
+// Zonal ECU — window lift with current feedback
 
-// Lokales Template: Form und Icon kommen immer aus einem Template, nie aus der Instanz.
+// Local template: shape and icon always come from a template, never from the instance.
 define window_motor extends motor {
     label "Window Motor"
     icon window

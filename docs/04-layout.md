@@ -1,178 +1,175 @@
 # 04 — Layout & Routing
 
-Das Layout ist der schwierigste Teil. Deshalb löst sysarch **kein allgemeines
-Graph-Layout**, sondern ein eng umrissenes Problem: technische Architekturdiagramme mit
-Hauptflussrichtung, Zonen, Systemgrenzen, Pins und orthogonalen Verbindungen.
+Layout is the hardest part. sysarch therefore does **not** solve general graph layout, but
+a narrowly defined problem: technical architecture diagrams with a main flow direction,
+zones, system boundaries, pins and orthogonal connections.
 
-Leitlinie: Lieber 80 % durch klare Regeln plus deklarative Overrides (`grid`, `hint`)
-als ein Forschungsprojekt.
+Guiding principle: 80 % from clear rules plus declarative overrides (`grid`, `hint`)
+beats a research project.
 
-Alle Algorithmen sind eigener Code ohne Dagre, ELK oder Graphviz. Alle Iterationen haben
-eine feste Reihenfolge (Deklarationsreihenfolge als Tie-Breaker) — **keine Zufallszahlen,
-keine Hash-Map-Iteration über unsortierte Schlüssel**.
+All algorithms are our own code, without Dagre, ELK or Graphviz. Every iteration has a
+fixed order (declaration order as the tie-breaker) — **no random numbers, no hash-map
+iteration over unsorted keys**.
 
 ---
 
-## Phasen
+## Phases
 
 ```
 ArchitectureModel
-   │ 1. Ränge          Komponente → Spalte entlang der Flussrichtung
-   │ 2. Zonen          Ränge je Zone zusammenhängend machen
-   │ 3. Reihenfolge    Position quer zur Flussrichtung, Kreuzungen reduzieren
-   │ 4. Overrides      grid / hint anwenden
-   │ 5. Größen         Text messen, Pins zählen, Box-Größe auf Grid runden
-   │ 6. Koordinaten    Ränge und Reihen in Pixel, Gruppenrahmen berechnen
-   │ 7. Routing        orthogonale Pfade von Pin zu Pin
-   │ 8. Labels         Verbindungslabels platzieren
+   │ 1. Ranks          component → column along the flow direction
+   │ 2. Zones          make the ranks of each zone contiguous
+   │ 3. Order          position across the flow, reduce crossings
+   │ 4. Overrides      apply grid / hint
+   │ 5. Sizes          measure text, count pins, round box size to the grid
+   │ 6. Coordinates    ranks and rows to pixels, compute group frames
+   │ 7. Routing        orthogonal paths from pin to pin
+   │ 8. Labels         place connection labels
    ▼
 SceneGraph
 ```
 
-Im Folgenden gilt `direction LR`. Für `TB` werden x und y am Ende vertauscht; alle
-Phasen rechnen in abstrakten Achsen *main* (Fluss) und *cross* (quer).
+The following assumes `direction LR`. For `TB`, x and y are swapped at the end; all
+phases work in the abstract axes *main* (flow) and *cross*.
 
 ---
 
-## 1. Ränge
+## 1. Ranks
 
-- Graph: Komponenten als Knoten, Verbindungen als Kanten.
-  `forward` zeigt von Quelle nach Ziel. `bidirectional` und `none` zählen als Kante in
-  Deklarationsrichtung, aber mit halbem Gewicht.
-- **Zyklen brechen** (z. B. Rückmeldung `hb1.IS -> mcu`): Tiefensuche in
-  Deklarationsreihenfolge; Rückwärtskanten werden für die Rangberechnung umgedreht und
-  später als Rückführung geroutet.
-- **Rang** = längster Pfad von einer Quelle. Danach Kompaktierung: Knoten ohne
-  Vorgänger rücken so nah wie möglich an ihren ersten Nachfolger.
-- Unverbundene Komponenten erhalten einen **eigenen Rang am Ende ihrer Zone**. Rang 0
-  würde die Rangbreite und damit alle folgenden Positionen verändern und den
-  Stabilitätstest (siehe unten) verletzen. Ränge werden quer von oben aufgefüllt, nicht
-  zentriert — aus demselben Grund.
+- Graph: components as nodes, connections as edges.
+  `forward` points from source to target. `bidirectional` and `none` count as an edge in
+  declaration direction, but with half the weight.
+- **Break cycles** (e.g. the feedback `hb1.IS -> mcu`): depth-first search in declaration
+  order; back edges are reversed for the rank computation and later routed as feedback
+  paths.
+- **Rank** = longest path from a source. Then compaction: nodes without predecessors move
+  as close as possible to their first successor.
+- Unconnected components get a **rank of their own at the end of their zone**. Rank 0
+  would change the rank width and thus every following position, violating the stability
+  test (see below). Ranks are filled across from the top, not centred — for the same
+  reason.
 
-## 2. Zonen
+## 2. Zones
 
-Zonen sind zusammenhängende Rangbereiche in Deklarationsreihenfolge:
+Zones are contiguous rank ranges in declaration order:
 
 ```
 Zone supply    │ Zone processing │ Zone actuation
-Rang 0 … 1     │ Rang 2          │ Rang 3 … 4
+Rank 0 … 1     │ Rank 2          │ Rank 3 … 4
 ```
 
-- Ränge werden **pro Zone** berechnet (nur zoneninterne Kanten zählen) und dann
-  hintereinander gereiht.
-- Kanten zwischen Zonen gegen die Zonenreihenfolge sind zulässig und werden als
-  Rückführung geroutet.
+- Ranks are computed **per zone** (only intra-zone edges count) and then chained one
+  after another.
+- Edges between zones that run against the zone order are allowed and are routed as
+  feedback paths.
 
-## 3. Reihenfolge innerhalb eines Rangs
+## 3. Order within a rank
 
-- Startreihenfolge: Deklarationsreihenfolge.
-- **Barycenter-Heuristik**, feste Anzahl Durchläufe (4× vorwärts/rückwärts). Position
-  eines Knotens = Mittelwert der Positionen seiner Nachbarn im Nachbarrang — auf
-  **Pin-Ebene**, nicht Knoten-Ebene: Ein Pin weiter unten an der MCU zieht den
-  Nachbarn nach unten.
-- **Systeme als Cluster:** Mitglieder eines Systems bleiben in jedem Rang
-  zusammenhängend. Sortiert wird zuerst innerhalb der innersten Gruppe, dann die Gruppen
-  als Blöcke nach ihrem mittleren Barycenter.
-- Gleichstände → Deklarationsreihenfolge. Das Ergebnis ändert sich dadurch nicht, wenn
-  jemand eine unverbundene Komponente am Dateiende hinzufügt.
+- Initial order: declaration order.
+- **Barycenter heuristic**, fixed number of passes (4× forward/backward). A node's
+  position = the mean of the positions of its neighbours in the adjacent rank — at
+  **pin level**, not node level: a pin further down on the MCU pulls the neighbour down.
+- **Systems as clusters:** the members of a system stay contiguous in every rank. Sorting
+  happens first within the innermost group, then the groups are ordered as blocks by
+  their mean barycenter.
+- Ties → declaration order. As a result, adding an unconnected component at the end of
+  the file does not change the result.
 
 ## 4. Overrides
 
-- `grid`: Zeile/Spalte im fertigen Bild. Spalten bestimmen den Rang (bei `LR`),
-  Zeilen die Reihenfolge. Aufgeführte Komponenten sind fixiert, die übrigen werden in
-  Phase 1–3 um sie herum eingefügt.
-- **Überspannte Zellen** (dieselbe ID in einem Rechteck aus Zellen): Die Komponente belegt
-  die Ränge `rank … rank + n − 1` bzw. die Zeilen `slot … slot + n − 1`.
-  - Rangbreiten zählen nur Komponenten ohne Span; reicht die Summe der überspannten Ränge
-    samt Abständen nicht für die natürliche Breite, wächst der letzte überspannte Rang.
-    Danach wird die Hülle auf die volle Ausdehnung gestreckt, Pins oben/unten verteilen
-    sich über die neue Breite.
-  - Quer reicht die Komponente bis zur Unterkante ihrer letzten Zeile; nur diese letzte
-    Zeile schiebt folgende Zeilen nach unten.
-  - Freie Komponenten in überdeckten Rängen weichen quer aus.
-  - Nach der Platzierung werden Körperanschlüsse an Verbindungen mit einer überspannenden
-    Komponente nach der tatsächlichen Lage neu gesetzt: Die Gegenstelle nimmt ihre
-    Seitenmitte (und weicht Gruppenlabels aus), die überspannende Komponente den Punkt
-    genau gegenüber. So laufen Leitungen zu Nachbarn darüber und darunter ohne Knick.
-- Feste Zeilen haben Vorrang vor der Pin-Ausrichtung: Ein Knoten richtet sich nur an einer
-  Verbindung aus, deren Gegenstelle in derselben Zeile liegt. Die gemeinsame Oberkante einer
-  Zeile entsteht aus den Mindestlagen, nicht aus ausgerichteten Lagen (sonst schaukeln sich
-  Zeilen über die Durchläufe auf).
-- `hint row|column`: wie ein Grid-Eintrag für eine einzelne Komponente.
-- Konflikte (zwei Komponenten in derselben Zelle) → Fehler, Layout fällt für die
-  betroffenen Komponenten auf automatisch zurück.
+- `grid`: row/column in the final image. Columns determine the rank (with `LR`), rows the
+  order. Listed components are fixed, the rest are inserted around them in phases 1–3.
+- **Spanned cells** (the same ID in a rectangle of cells): the component occupies ranks
+  `rank … rank + n − 1` or rows `slot … slot + n − 1`.
+  - Rank widths only count components without a span; if the sum of the spanned ranks
+    plus their spacing is not enough for the natural width, the last spanned rank grows.
+    The hull is then stretched to the full extent, and pins on the top/bottom are spread
+    over the new width.
+  - Across the flow, the component reaches down to the bottom edge of its last row; only
+    that last row pushes the following rows down.
+  - Free components in covered ranks move aside across the flow.
+  - After placement, body attachments on connections involving a spanning component are
+    recomputed from the actual geometry: the counterpart takes the centre of its side
+    (avoiding group labels), and the spanning component takes the point exactly opposite.
+    Lines to neighbours above and below therefore run without a bend.
+- Fixed rows take precedence over pin alignment: a node aligns only to a connection whose
+  counterpart lies in the same row. The shared top edge of a row is derived from the
+  minimum positions, not from aligned ones (otherwise rows drift further with every pass).
+- `hint row|column`: like a grid entry for a single component.
+- Conflicts (two components in the same cell) → error; layout falls back to automatic for
+  the affected components.
 
-## 5. Größen
+## 5. Sizes
 
-- Textbreiten kommen aus **eingebetteten Font-Metriken** (Advance-Widths + Kerning-Paare
-  der Theme-Schrift als generierte Tabelle), nicht aus `canvas.measureText`. Nur so ist die
-  Geometrie in Browser, Obsidian und Node identisch.
-- Komponentenbreite = max(`minWidth[size]`, Icon + Abstand + Labelbreite + Padding,
-  breiteste Pin-Label-Kombination links + rechts + Mindestabstand).
-- Komponentenhöhe = max(`minHeight[size]`, Label + Padding, Pins pro Seite × `pinPitch`).
-- Alle Größen werden **auf das Grid aufgerundet** (Standard 16 px).
-- Pins sitzen auf Grid-Punkten. Pins links/rechts werden unterhalb des Kopfs (Icon + Label)
-  gleichmäßig um die Mitte des verbleibenden Bereichs verteilt, Pins oben/unten um die
-  Seitenmitte; ihre Labels liegen im Innenbereich an der jeweiligen Seite.
-- Die Größenberechnung erfolgt für den **Innenbereich** der Form (siehe unten); die Hülle
-  wird daraus zurückgerechnet.
-- Labels, die breiter als die dreifache `minWidth` wären (bei `circle`: die einfache, weil
-  Kreise in beide Richtungen wachsen), werden an Wortgrenzen umbrochen; kein Abschneiden,
-  keine Schriftverkleinerung.
-- Nach Mindestgröße und Rundung wird geprüft, ob der Innenbereich den Inhalt noch aufnimmt
-  (beim Sechseck wächst die Spitzentiefe mit der Höhe); sonst wächst die Hülle weiter.
+- Text widths come from **embedded font metrics** (advance widths + kerning pairs of the
+  theme font as a generated table), not from `canvas.measureText`. Only this way is the
+  geometry identical in the browser, in Obsidian and in Node.
+- Component width = max(`minWidth[size]`, icon + spacing + label width + padding, widest
+  combination of pin labels left + right + minimum spacing).
+- Component height = max(`minHeight[size]`, label + padding, pins per side × `pinPitch`).
+- All sizes are **rounded up to the grid** (16 px by default).
+- Pins sit on grid points. Pins on the left/right are distributed evenly around the centre
+  of the area below the header (icon + label), pins on the top/bottom around the centre of
+  the side; their labels sit inside, along the respective side.
+- Sizing is computed for the **inner area** of the shape (see below); the hull is derived
+  back from it.
+- Labels wider than three times `minWidth` (for `circle`: one times, because circles grow
+  in both directions) are wrapped at word boundaries; no truncation, no font shrinking.
+- After the minimum size and rounding, a check verifies that the inner area still holds
+  the content (for the hexagon, the tip depth grows with the height); otherwise the hull
+  grows further.
 
-### Formen und Pins
+### Shapes and pins
 
-Jede Form liefert drei Funktionen, die Layout und Renderer gemeinsam nutzen:
+Every shape provides three functions shared by layout and renderer:
 
 ```ts
 interface ShapeGeometry {
-  /** Innenbereich für Icon + Label, relativ zur Hülle. */
+  /** Inner area for icon + label, relative to the hull. */
   inner(hull: Rect): Rect;
-  /** Kleinste Hülle, deren Innenbereich `content` aufnimmt. */
+  /** Smallest hull whose inner area holds `content`. */
   hullFor(content: Size, pinsPerSide: Record<Side, number>): Size;
-  /** Punkt auf der Kontur für einen Pin an Seite `side` und Querkoordinate `t`. */
+  /** Point on the contour for a pin on side `side` at cross coordinate `t`. */
   contour(hull: Rect, side: Side, t: number): Point;
 }
 ```
 
-| Form | Innenbereich | Hülle | Pins |
+| Shape | Inner area | Hull | Pins |
 |------|--------------|-------|------|
-| `rounded`, `rect` | Hülle minus Padding | frei | auf dem Rand |
-| `circle` | einbeschriebenes Quadrat (≈ 0,71 × Durchmesser) | quadratisch | Schnittpunkt der Pin-Geraden mit dem Kreis |
-| `hexagon` | Mittelrechteck zwischen den Spitzen | frei, Spitzen = ¼ Höhe | links/rechts auf den Schrägen, oben/unten auf den Kanten |
-| `cylinder` | Rumpf zwischen den Ellipsen | frei, Ellipsenhöhe = 1 Grid-Einheit | oben/unten auf der Ellipse, links/rechts auf dem Rand |
+| `rounded`, `rect` | hull minus padding | free | on the border |
+| `circle` | inscribed square (≈ 0.71 × diameter) | square | intersection of the pin line with the circle |
+| `hexagon` | centre rectangle between the tips | free, tips = ¼ height | left/right on the slopes, top/bottom on the edges |
+| `cylinder` | body between the ellipses | free, ellipse height = 1 grid unit | top/bottom on the ellipse, left/right on the border |
 
-- **Pin-Positionen bleiben auf der Hülle.** Liegt die Kontur innerhalb der Hülle (Kreis,
-  Sechseck), zeichnet der Renderer einen kurzen Anschlussstummel von der Kontur bis zur
-  Hüllkante. Routing und Kanalzuteilung sehen dadurch für alle Formen gleich aus und
-  müssen keine Sonderfälle kennen.
-- Bei `circle` mit mehr als drei Pins pro Seite wird der Durchmesser vergrößert, bis die
-  Stummel höchstens eine halbe Hüllbreite lang sind.
-- Icon und Label werden im Innenbereich zentriert: Icon links vom Label, bei `size small`
-  und `circle` Icon über dem Label.
-- **Mehrfachelemente** (`count` > 1): Die Hülle wächst um eine halbe Grid-Einheit nach oben
-  und rechts. Darin liegen unten links die vordere Karte und dahinter eine (bei 2) bzw. zwei
-  Karten (ab 3), je nach oben rechts versetzt. Innenbereich und Kontur gehören zur vorderen
-  Karte, Pins bleiben wie bei allen Formen auf der Hülle; oben und rechts überbrückt ein
-  Stummel den Stapel. Die Anzahl „×n“ gehört zum Kopf und wird bei der Breite mitgemessen.
+- **Pin positions stay on the hull.** If the contour lies inside the hull (circle,
+  hexagon), the renderer draws a short stub from the contour to the hull edge. Routing and
+  channel allocation therefore look the same for all shapes and need no special cases.
+- For `circle` with more than three pins per side, the diameter grows until the stubs are
+  at most half a hull width long.
+- Icon and label are centred in the inner area: icon to the left of the label, with
+  `size small` and `circle` the icon above the label.
+- **Multiple elements** (`count` > 1): the hull grows by half a grid unit towards the top
+  and the right. Inside it, the front card sits at the bottom left, with one card behind it
+  (for 2) or two (from 3), each offset towards the top right. The inner area and the
+  contour belong to the front card, pins stay on the hull as with all shapes; at the top
+  and on the right a stub bridges the stack. The count "×n" belongs to the header and is
+  included in the width measurement.
 
-## 6. Koordinaten
+## 6. Coordinates
 
-- Rangbreite = breiteste Komponente des Rangs; Komponenten innerhalb des Rangs zentriert.
-- Abstände: `nodeGapMain` zwischen Rängen, `nodeGapCross` zwischen Komponenten,
-  `zoneGap` zwischen Zonen. Der Abstand zwischen zwei Rängen wächst um eine
-  Grid-Einheit je Verbindung, die dort vertikal geführt werden muss (Kanalbreite).
-- **Pin-Ausrichtung:** Hat ein Knoten genau eine Verbindung zum Vorgängerrang, wird er
-  quer so verschoben, dass die Verbindung gerade verläuft — sofern dadurch keine
-  Überlappung entsteht.
-- Gruppenrahmen = Hülle der Mitglieder + `groupPadding` + Platz für das Gruppenlabel.
-  Verschachtelte Systeme addieren ihr Padding.
+- Rank width = the widest component of the rank; components are centred within the rank.
+- Spacing: `nodeGapMain` between ranks, `nodeGapCross` between components, `zoneGap`
+  between zones. The gap between two ranks grows by one grid unit for every connection
+  that has to run vertically there (channel width).
+- **Pin alignment:** if a node has exactly one connection to the preceding rank, it is
+  shifted across the flow so that the connection runs straight — provided this causes no
+  overlap.
+- Group frame = the hull of its members + `groupPadding` + room for the group label.
+  Nested systems add their own padding.
 
-## 7. Orthogonales Routing
+## 7. Orthogonal routing
 
-Keine Bézier-Kurven. Nur horizontale und vertikale Segmente:
+No Bézier curves. Only horizontal and vertical segments:
 
 ```
 mcu ●─────────┐
@@ -180,58 +177,58 @@ mcu ●─────────┐
               └───────▶● hb1
 ```
 
-**Verfahren:**
+**Procedure:**
 
-1. Geroutet wird auf dem **Layout-Grid** selbst (alle Koordinaten sind Grid-Vielfache,
-   Diagramme bis ~100 Komponenten bleiben klein genug). Komponenten sperren ihre
-   Grid-Punkte; Rahmenlinien, Gruppenlabels und fremde Pin-Stummel kosten zusätzlich.
-   Ein spärliches Gitter bleibt eine mögliche Optimierung.
-2. Jede Verbindung startet mit einem Stummel senkrecht aus der Pin-Seite
-   (mindestens eine Grid-Einheit).
-3. **A\*** auf dem Gitter mit Kosten = Länge + Knickstrafe (hoch) + Kreuzungsstrafe
-   (mittel) + Strafe für Segmente parallel und deckungsgleich zu bereits gerouteten
-   Verbindungen (sehr hoch).
-4. Reihenfolge der Verbindungen: Versorgung zuerst, dann Busse, Einzelsignale, Diagnose;
-   innerhalb der Gruppe Deklarationsreihenfolge.
-5. **Kanal-Zuteilung:** Parallele Segmente im selben Zwischenraum erhalten über die
-   Überdeckungsstrafe eigene Spuren im Grid-Abstand. Verbindungen, die sich einen Pin
-   teilen, dürfen sich überdecken. Eine explizite Sortierung nach Ziel-Position ist in
-   v0.1 nicht umgesetzt.
-6. **Rückführungen** (gebrochene Zyklen) laufen außen um die beteiligten Komponenten
-   herum — unterhalb bei `LR`, rechts bei `TB`.
-7. **Brücken:** Kreuzt ein waagerechtes Segment ein senkrechtes einer anderen Verbindung,
-   springt das waagerechte mit einem Halbkreis (`markers.hop`) darüber. So bleibt jede
-   Leitung und ihre Pfeilrichtung eindeutig verfolgbar. Keine Brücke zwischen Verbindungen
-   am selben Anschluss und nicht direkt an Knicken.
-8. Körperanschlüsse (Verbindung ohne Pin) erhalten einen virtuellen Port auf der Seite
-   zur Gegenstelle, mehrere Ports auf einer Seite werden verteilt.
+1. Routing happens on the **layout grid** itself (all coordinates are multiples of the
+   grid; diagrams of up to ~100 components stay small enough). Components block their grid
+   points; frame lines, group labels and foreign pin stubs add extra cost. A sparse grid
+   remains a possible optimisation.
+2. Every connection starts with a stub perpendicular to the pin side (at least one grid
+   unit).
+3. **A\*** on the grid with cost = length + bend penalty (high) + crossing penalty
+   (medium) + penalty for segments parallel to and coincident with already routed
+   connections (very high).
+4. Order of the connections: supply first, then buses, single signals, diagnostics; within
+   a group, declaration order.
+5. **Channel allocation:** parallel segments in the same gap get their own lanes one grid
+   unit apart, enforced by the coincidence penalty. Connections that share a pin may
+   overlap. Explicit sorting by target position is not implemented in v0.1.
+6. **Feedback paths** (broken cycles) run around the outside of the components involved —
+   below with `LR`, to the right with `TB`.
+7. **Hops:** where a horizontal segment crosses a vertical one belonging to another
+   connection, the horizontal one jumps over it with a semicircle (`markers.hop`). Every
+   line and its arrow direction therefore stays unambiguously traceable. No hop between
+   connections at the same attachment point and none directly at a bend.
+8. Body attachments (a connection without a pin) get a virtual port on the side facing the
+   counterpart; several ports on one side are distributed.
 
-## 8. Verbindungslabels
+## 8. Connection labels
 
-- Kandidaten: Mitte des längsten Segments, dann Segment am Quell-Pin, dann am Ziel-Pin.
-- Gewählt wird der erste Kandidat ohne Überlappung mit Komponenten, Pins oder anderen Labels.
-- Label bekommt einen Halo in Hintergrundfarbe.
-- Der Abstand zwischen zwei benachbarten Rängen wird schon in Phase 6 so bemessen, dass
-  Labels direkter Verbindungen samt Endmarkern hineinpassen. Weitere Kandidaten liegen
-  im Grid-Abstand entlang aller Segmente; findet sich trotzdem kein freier Platz, wird der
-  erste Kandidat genommen (kein erneuter Layoutlauf).
+- Candidates: the middle of the longest segment, then the segment at the source pin, then
+  the one at the target pin.
+- The first candidate without overlap with components, pins or other labels wins.
+- The label gets a halo in the background colour.
+- The gap between two adjacent ranks is already sized in phase 6 so that the labels of
+  direct connections fit in, end markers included. Further candidates lie one grid unit
+  apart along all segments; if no free spot is found even then, the first candidate is
+  used (no second layout pass).
 
 ---
 
-## Grenzen v0.1 (bewusst)
+## Limits of v0.1 (deliberate)
 
-- Keine Optimalität. Kreuzungen werden reduziert, nicht minimiert.
-- Keine Verbindungen, die durch Systemrahmen „tunneln“; sie laufen über den Rahmenrand.
-- Keine Bündelung von Busleitungen zu Sammelschienen (Kandidat für v0.2: Komponente
-  `bus` als horizontale Schiene).
-- Große Diagramme (> 100 Komponenten) sind nicht Zielgruppe; dafür gibt es später Views.
+- No optimality. Crossings are reduced, not minimised.
+- No connections that "tunnel" through system frames; they run over the frame border.
+- No bundling of bus lines into a shared rail (candidate for v0.2: a `bus` component as a
+  horizontal rail).
+- Large diagrams (> 100 components) are not the target; views will cover that later.
 
-## Testbarkeit
+## Testability
 
-- **Golden Files:** `examples/*.arch` → Scene-Graph-JSON und SVG werden eingecheckt;
-  jede Layoutänderung ist im Review als Diff sichtbar.
-- **Eigenschaftstests:** keine überlappenden Komponenten, alle Pfade orthogonal, alle
-  Koordinaten auf dem Grid, Pfade schneiden keine fremden Komponenten, Label und Icon
-  liegen vollständig im Innenbereich ihrer Form.
-- **Stabilitätstest:** Unverbundene Komponente am Dateiende hinzufügen darf keine
-  bestehende Position ändern.
+- **Golden files:** `examples/*.arch` → scene graph JSON and SVG are checked in; every
+  layout change is visible as a diff in review.
+- **Property tests:** no overlapping components, all paths orthogonal, all coordinates on
+  the grid, paths do not intersect foreign components, label and icon lie completely
+  inside the inner area of their shape.
+- **Stability test:** adding an unconnected component at the end of the file must not
+  change any existing position.

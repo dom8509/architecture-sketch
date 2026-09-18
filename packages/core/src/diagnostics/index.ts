@@ -2,7 +2,7 @@ import type { Span } from "../types.js";
 
 export type Severity = "error" | "warning" | "info";
 
-/** Stabile Codes, dokumentiert in docs/02-dsl.md §5. */
+/** Stable codes, documented in docs/02-dsl.md §5. */
 export const DIAGNOSTIC_CODES = [
   "E001", "E101", "E102", "E103", "E104", "E105", "E106",
   "E107", "E108", "E109", "E110", "E111",
@@ -23,12 +23,12 @@ export interface Diagnostic {
   severity: Severity;
   message: string;
   span: Span;
-  /** Vorschläge für Quick-Fixes im Editor, z. B. Tippfehler bei Pin-Namen. */
+  /** Suggestions for quick fixes in the editor, e.g. typos in pin names. */
   suggestions?: Suggestion[];
 }
 
 export interface ParseResult<T> {
-  /** Immer vorhanden, ggf. unvollständig. */
+  /** Always present, possibly incomplete. */
   value: T;
   diagnostics: Diagnostic[];
 }
@@ -70,7 +70,7 @@ export function levenshtein(a: string, b: string): number {
   return prev[b.length]!;
 }
 
-/** Nächstliegender Kandidat, falls er nah genug am Eingabewert liegt. */
+/** Closest candidate, if it is near enough to the input value. */
 export function closest(input: string, candidates: Iterable<string>): string | undefined {
   const limit = Math.max(2, Math.floor(input.length / 3));
   let best: string | undefined;
@@ -88,7 +88,7 @@ export function closest(input: string, candidates: Iterable<string>): string | u
   return bestDistance <= limit ? best : undefined;
 }
 
-/** Diagnose mit Vorschlag „meintest du …?“, falls ein naher Kandidat existiert. */
+/** Diagnostic with a "did you mean …?" suggestion, if a near candidate exists. */
 export function withSuggestion(
   code: DiagnosticCode,
   message: string,
@@ -98,7 +98,7 @@ export function withSuggestion(
 ): Diagnostic {
   const match = closest(input, candidates);
   if (match === undefined) return diagnostic(code, message, span);
-  return diagnostic(code, `${message} — meintest du \`${match}\`?`, span, [
-    { label: `Ersetzen durch \`${match}\``, replacement: match, span },
+  return diagnostic(code, `${message} — did you mean \`${match}\`?`, span, [
+    { label: `Replace with \`${match}\``, replacement: match, span },
   ]);
 }

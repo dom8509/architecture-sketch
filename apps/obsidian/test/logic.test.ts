@@ -5,7 +5,7 @@ import {
 } from "../src/logic.js";
 
 describe("NEW_SOURCE", () => {
-  it("ist fehlerfrei, formatiert und folgt dem Obsidian-Modus", () => {
+  it("is error-free, formatted and follows the Obsidian mode", () => {
     expect(compile(NEW_SOURCE).diagnostics).toEqual([]);
     expect(format(NEW_SOURCE).value).toBe(NEW_SOURCE);
     expect(effectiveTheme(NEW_SOURCE, "auto", true)).toBe("automotive-dark");
@@ -15,16 +15,16 @@ describe("NEW_SOURCE", () => {
 describe("effectiveTheme", () => {
   const plain = `architecture "A" {\n    component mcu: microcontroller\n}\n`;
 
-  it("folgt ohne theme dem Obsidian-Modus", () => {
+  it("follows the Obsidian mode without a theme", () => {
     expect(effectiveTheme(plain, "auto", false)).toBe("automotive-light");
     expect(effectiveTheme(plain, "auto", true)).toBe("automotive-dark");
   });
 
-  it("nimmt ein festes Theme aus den Einstellungen", () => {
+  it("takes a fixed theme from the settings", () => {
     expect(effectiveTheme(plain, "technical", true)).toBe("technical");
   });
 
-  it("lässt ein theme in der Quelle gewinnen", () => {
+  it("lets a theme in the source win", () => {
     const source = `architecture "A" {\n    theme presentation\n    component mcu: microcontroller\n}\n`;
     expect(effectiveTheme(source, "auto", true)).toBeUndefined();
     expect(effectiveTheme(source, "technical", false)).toBeUndefined();
@@ -32,56 +32,56 @@ describe("effectiveTheme", () => {
 });
 
 describe("exportBaseName", () => {
-  it("bildet einen Slug aus dem Titel", () => {
-    expect(exportBaseName("Door ECU", "Notiz")).toBe("door-ecu");
-    expect(exportBaseName("Zonen-Steuergerät (vorne) ", "Notiz")).toBe("zonen-steuergerät-vorne");
+  it("builds a slug from the title", () => {
+    expect(exportBaseName("Door ECU", "Note")).toBe("door-ecu");
+    expect(exportBaseName("Zone ECU (front) ", "Note")).toBe("zone-ecu-front");
   });
 
-  it("fällt auf den Notiznamen zurück", () => {
-    expect(exportBaseName("", "Meine Notiz")).toBe("Meine Notiz");
-    expect(exportBaseName("—", "")).toBe("architektur");
+  it("falls back to the note name", () => {
+    expect(exportBaseName("", "My note")).toBe("My note");
+    expect(exportBaseName("—", "")).toBe("architecture");
   });
 });
 
 describe("replaceBlock", () => {
-  const note = ["# Titel", "", "```sysarch", "architecture \"A\" {", "}", "```", "", "Text"].join("\n");
+  const note = ["# Title", "", "```sysarch", "architecture \"A\" {", "}", "```", "", "Text"].join("\n");
   const expected = "architecture \"A\" {\n}\n";
 
-  it("ersetzt genau den Inhalt zwischen den Zäunen", () => {
+  it("replaces exactly the content between the fences", () => {
     const result = replaceBlock(note, 2, 5, expected, "architecture \"B\" {\n    direction TB\n}\n");
-    expect(result).toBe(["# Titel", "", "```sysarch", "architecture \"B\" {", "    direction TB", "}", "```", "", "Text"].join("\n"));
+    expect(result).toBe(["# Title", "", "```sysarch", "architecture \"B\" {", "    direction TB", "}", "```", "", "Text"].join("\n"));
   });
 
-  it("überschreibt nichts, wenn sich der Block geändert hat", () => {
-    expect(replaceBlock(note, 2, 5, "architecture \"X\" {\n}", "neu")).toBeUndefined();
-    expect(replaceBlock(note, 0, 5, expected, "neu")).toBeUndefined();
-    expect(replaceBlock(note, 2, 9, expected, "neu")).toBeUndefined();
+  it("overwrites nothing when the block changed", () => {
+    expect(replaceBlock(note, 2, 5, "architecture \"X\" {\n}", "new")).toBeUndefined();
+    expect(replaceBlock(note, 0, 5, expected, "new")).toBeUndefined();
+    expect(replaceBlock(note, 2, 9, expected, "new")).toBeUndefined();
   });
 
-  it("behält CRLF-Zeilenenden bei", () => {
+  it("keeps CRLF line endings", () => {
     const crlf = note.replace(/\n/g, "\r\n");
     expect(replaceBlock(crlf, 2, 5, expected, "architecture \"B\" {\n}")).toBe(
-      ["# Titel", "", "```sysarch", "architecture \"B\" {", "}", "```", "", "Text"].join("\r\n"),
+      ["# Title", "", "```sysarch", "architecture \"B\" {", "}", "```", "", "Text"].join("\r\n"),
     );
   });
 });
 
-describe("Bibliothek", () => {
+describe("library", () => {
   const library = standardLibrary();
 
-  it("zeigt jedes Template genau einmal, gruppiert nach Kategorie", () => {
+  it("shows every template exactly once, grouped by category", () => {
     const names = libraryGroups(library).flatMap((g) => g.templates.map((t) => t.name));
     expect(names.sort()).toEqual([...library.templates.keys()].sort());
   });
 
-  it("filtert über Name, Label und Pins", () => {
+  it("filters over name, label and pins", () => {
     const names = (query: string) => libraryGroups(library, query).flatMap((g) => g.templates.map((t) => t.name));
     expect(names("CANH")).toEqual(["can_transceiver"]);
     expect(names("Battery")).toContain("battery");
-    expect(libraryGroups(library, "gibt-es-nicht")).toEqual([]);
+    expect(libraryGroups(library, "does-not-exist")).toEqual([]);
   });
 
-  it("rendert für jedes Template eine fehlerfreie Vorschau", () => {
+  it("renders an error-free preview for every template", () => {
     for (const template of library.templates.values()) {
       expect(hasErrors(compile(templatePreviewSource(template)).diagnostics), template.name).toBe(false);
       expect(compile(`architecture "A" {\n    ${componentSnippet(template)}\n}\n`).diagnostics.filter((d) => d.severity === "error")).toEqual([]);

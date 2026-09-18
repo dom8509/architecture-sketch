@@ -1,4 +1,4 @@
-// Door ECU — Beispiel für deklarative Layout-Overrides ohne Zonen
+// Door ECU — example of declarative layout overrides without zones
 
 architecture "Door ECU" {
     theme presentation

@@ -9,8 +9,8 @@ import { isDark } from "./workbench.js";
 export const LIBRARY_VIEW = "sysarch-library";
 
 /**
- * Seitenleiste mit allen Templates der Standardbibliothek: Vorschau, Label, Pins. Klick fügt
- * `component …` an der Cursorposition der zuletzt aktiven Notiz bzw. `.arch`-Datei ein.
+ * Sidebar with every template of the standard library: preview, label, pins. A click inserts
+ * `component …` at the cursor of the most recently active note or `.arch` file.
  */
 export class LibraryView extends ItemView {
   private query = "";
@@ -25,7 +25,7 @@ export class LibraryView extends ItemView {
   }
 
   getDisplayText() {
-    return "sysarch-Bibliothek";
+    return "sysarch library";
   }
 
   override getIcon() {
@@ -37,7 +37,7 @@ export class LibraryView extends ItemView {
     this.contentEl.addClass("sysarch-library");
     const search = this.contentEl.createEl("input", {
       cls: "sysarch-library-search",
-      attr: { type: "search", placeholder: "Templates filtern …", spellcheck: "false" },
+      attr: { type: "search", placeholder: "Filter templates …", spellcheck: "false" },
     });
     search.value = this.query;
     this.registerDomEvent(search, "input", () => {
@@ -53,14 +53,14 @@ export class LibraryView extends ItemView {
     this.contentEl.empty();
   }
 
-  /** Nach einem Moduswechsel oder geänderten Einstellungen. */
+  /** After a mode switch or changed settings. */
   render() {
     const list = this.listEl;
     if (!list) return;
     list.empty();
     const groups = libraryGroups(standardLibrary(), this.query);
     if (groups.length === 0) {
-      list.createDiv({ cls: "sysarch-library-empty", text: "Kein Template gefunden" });
+      list.createDiv({ cls: "sysarch-library-empty", text: "No template found" });
       return;
     }
     let index = 0;
@@ -78,7 +78,7 @@ export class LibraryView extends ItemView {
 
     const item = parent.createDiv({
       cls: "sysarch-library-item",
-      attr: { tabindex: "0", "aria-label": `${componentSnippet(template)} einfügen` },
+      attr: { tabindex: "0", "aria-label": `Insert ${componentSnippet(template)}` },
     });
     if (svg !== undefined) item.createDiv({ cls: "sysarch-library-preview" }).innerHTML = scopeSvg(svg, prefix);
     const text = item.createDiv({ cls: "sysarch-library-text" });
@@ -102,13 +102,13 @@ export class LibraryView extends ItemView {
     this.registerDomEvent(item, "contextmenu", (event) => {
       event.preventDefault();
       const menu = new Menu();
-      menu.addItem((i) => i.setTitle("Einfügen").setIcon("plus").onClick(() => this.insert(template)));
-      menu.addItem((i) => i.setTitle("Kopieren").setIcon("copy").onClick(() => this.copy(template)));
+      menu.addItem((i) => i.setTitle("Insert").setIcon("plus").onClick(() => this.insert(template)));
+      menu.addItem((i) => i.setTitle("Copy").setIcon("copy").onClick(() => this.copy(template)));
       menu.showAtMouseEvent(event);
     });
   }
 
-  /** Fügt in die zuletzt aktive Notiz oder `.arch`-Datei ein; ohne Ziel in die Zwischenablage. */
+  /** Inserts into the most recently active note or `.arch` file; without a target, onto the clipboard. */
   private insert(template: TemplateDef) {
     const snippet = componentSnippet(template);
     const view = this.app.workspace.getMostRecentLeaf()?.view;
@@ -126,11 +126,11 @@ export class LibraryView extends ItemView {
 
   private async copy(template: TemplateDef) {
     await navigator.clipboard.writeText(componentSnippet(template));
-    new Notice(`sysarch: „${componentSnippet(template)}“ kopiert`);
+    new Notice(`sysarch: "${componentSnippet(template)}" copied`);
   }
 }
 
-/** Öffnet die Bibliothek in der rechten Seitenleiste bzw. holt sie nach vorn. */
+/** Opens the library in the right sidebar or brings it to the front. */
 export async function revealLibrary(plugin: SysarchPlugin) {
   const { workspace } = plugin.app;
   let leaf = workspace.getLeavesOfType(LIBRARY_VIEW)[0];

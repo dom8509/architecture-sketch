@@ -1,7 +1,7 @@
 {
   "name": "@sysarch/layout",
   "version": "0.1.0",
-  "description": "sysarch Layout: Ränge, Zonen, Formen, Größen, orthogonales Routing → Scene Graph",
+  "description": "sysarch layout: ranks, zones, shapes, sizes, orthogonal routing → scene graph",
   "license": "MIT",
   "type": "module",
   "main": "dist/index.js",

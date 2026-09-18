@@ -1,37 +1,37 @@
 # 08 — Roadmap
 
-## Meilensteine v0.1
+## Milestones for v0.1
 
-Jeder Meilenstein ist für sich nutzbar und endet mit grünen Tests.
+Every milestone is usable on its own and ends with green tests.
 
-| # | Meilenstein | Ergebnis | Abnahme |
+| # | Milestone | Result | Acceptance |
 |---|-------------|----------|---------|
-| M0 | Konzept | dieses Repository | Konzept reviewt |
-| M1 | Sprache | `core`: Lexer, Parser, AST, Resolver, Diagnosen, `library/automotive.archlib`, Icon-Build für `library/icons/` | alle `examples/*.arch` parsen fehlerfrei; jede Diagnose `E…`/`W…` hat einen Test; Parser liefert bei kaputtem Input ein Teil-AST |
-| M2 | Layout & SVG | `themes`, `layout` inkl. fünf Formen, `render-svg` inkl. Icons | Golden Files für alle Beispiele, jede Form und jedes mitgelieferte Icon in mindestens einem Golden File; Eigenschaftstests aus [04](04-layout.md#testbarkeit) grün |
-| M3 | CLI | `apps/cli` mit `render --format svg`, `check`, `fmt` | CI rendert Beispiele; `fmt` ist idempotent |
-| M4 | Web-App | Editor + Live-Vorschau + Diagnosen + SVG-Export | Vorschau-SVG == CLI-SVG (byte-gleich) |
-| M5 | Exporte | PNG (Browser + CLI), React Flow JSON | React-Flow-Export lädt in einer Test-App mit Custom Nodes |
-| M6 | Obsidian | Codeblock-Rendering, Kontextmenü-Exporte, Hell/Dunkel | Release über GitHub; manueller Test im Vault |
-| M7 | Visuelles Editieren | Auswahl, Eigenschaftenpanel, EditCommands aus [06](06-anwendungen.md#visuelles-editieren) | jede Aktion erzeugt minimalen Text-Diff; Undo funktioniert |
+| M0 | Concept | this repository | concept reviewed |
+| M1 | Language | `core`: lexer, parser, AST, resolver, diagnostics, `library/automotive.archlib`, icon build for `library/icons/` | all `examples/*.arch` parse without errors; every `E…`/`W…` diagnostic has a test; the parser returns a partial AST for broken input |
+| M2 | Layout & SVG | `themes`, `layout` including the five shapes, `render-svg` including icons | golden files for all examples, every shape and every bundled icon in at least one golden file; property tests from [04](04-layout.md#testability) green |
+| M3 | CLI | `apps/cli` with `render --format svg`, `check`, `fmt` | CI renders the examples; `fmt` is idempotent |
+| M4 | Web app | editor + live preview + diagnostics + SVG export | preview SVG == CLI SVG (byte-identical) |
+| M5 | Exports | PNG (browser + CLI), React Flow JSON | the React Flow export loads in a test app with custom nodes |
+| M6 | Obsidian | code block rendering, context menu exports, light/dark | released via GitHub; manual test in a vault |
+| M7 | Visual editing | selection, properties panel, EditCommands from [06](06-applications.md#visual-editing) | every action produces a minimal text diff; undo works |
 
-## Ausdrücklich nicht in v0.1
+## Explicitly not in v0.1
 
-- Frei verschiebbarer Canvas als primäres Layout
-- Perfektes automatisches Layout
-- Views / Abstraktionsebenen
-- `use` externer Bibliotheken
-- Frei gezeichnete Formen, Raster-Bilder oder pro Diagramm eingebettete Grafiken
-- Plausibilitätsprüfungen
-- VS-Code-Extension
-- Kollaboration, Backend, Accounts
+- A freely movable canvas as the primary layout
+- Perfect automatic layout
+- Views / levels of abstraction
+- `use` for external libraries
+- Freely drawn shapes, raster images or graphics embedded per diagram
+- Plausibility checks
+- A VS Code extension
+- Collaboration, backend, accounts
 
-## Danach
+## After that
 
-### v0.2 — Wiederverwendung und Sichten
+### v0.2 — Reuse and views
 
-- `use "nxp-s32k.archlib"` — projektspezifische Bibliotheken, auflösbar relativ zur
-  Datei bzw. im Obsidian-Vault
+- `use "nxp-s32k.archlib"` — project-specific libraries, resolvable relative to the file
+  or within the Obsidian vault
 - Views:
   ```sysarch
   view overview
@@ -43,16 +43,16 @@ Jeder Meilenstein ist für sich nutzbar und endet mit grünen Tests.
       pin spi SPI_CLK { show in detailed }
   }
   ```
-  → `architecture-overview.svg`, `architecture-interface.svg`, `architecture-detailed.svg`
-  aus einer Quelle
-- `sysarch render` für Markdown-Dateien mit mehreren Codeblöcken
-- Bus als Sammelschiene (`component can0: bus`), an die mehrere Teilnehmer andocken
-- Icons aus projektspezifischen Bibliotheken per `use`
-- Verbindungen innerhalb von `system`-Blöcken
+  → `architecture-overview.svg`, `architecture-interface.svg`,
+  `architecture-detailed.svg` from a single source
+- `sysarch render` for Markdown files with several code blocks
+- Bus as a shared rail (`component can0: bus`) that several participants attach to
+- Icons from project-specific libraries via `use`
+- Connections inside `system` blocks
 
-### v0.3 — Engineering-Semantik
+### v0.3 — Engineering semantics
 
-- Bausteine mit Metadaten und Schnittstellen:
+- Building blocks with metadata and interfaces:
   ```sysarch
   define S32K344 extends microcontroller {
       meta { manufacturer "NXP"  family "S32K3"  voltage "3.3 V" }
@@ -61,22 +61,24 @@ Jeder Meilenstein ist für sich nutzbar und endet mit grünen Tests.
       interface spi SPI0
   }
   ```
-- Plausibilitätsregeln, z. B.:
+- Plausibility rules, e.g.:
   ```
-  E401 mcu.CAN0_TX ist direkt mit can_bus verbunden.
-       Erwartet: MCU → CAN-Transceiver → CAN-Bus
+  E401 mcu.CAN0_TX is connected directly to can_bus.
+       Expected: MCU → CAN transceiver → CAN bus
   ```
-- Regeln selbst deklarativ in Bibliotheken (`rule`)
-- Export für Requirements-/System-Engineering-Toolchain (Schnittstellenliste als CSV/JSON)
+- Rules declared in libraries themselves (`rule`)
+- Export for the requirements/system engineering toolchain (interface list as CSV/JSON)
 
-### Später
+### Later
 
-- VS-Code-Extension (Language Server auf Basis von `core` + Vorschau-Webview)
-- Weitere Exporte: PDF, PPTX-Shapes, draw.io
-- Themes als DSL (`theme … { }`), sobald Teams eigene Corporate Styles brauchen ([D20](entscheidungen.md))
+- VS Code extension (language server based on `core` + a preview webview)
+- Further exports: PDF, PPTX shapes, draw.io
+- Themes as a DSL (`theme … { }`), once teams need their own corporate styles
+  ([D20](decisions.md))
 
 ---
 
-## Offene Fragen
+## Open questions
 
-Derzeit keine. Beantwortete Fragen stehen in den [Entscheidungen](entscheidungen.md) D18–D22.
+None at the moment. Answered questions are recorded in the
+[decisions](decisions.md) D18–D22.

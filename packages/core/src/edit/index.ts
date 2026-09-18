@@ -3,20 +3,20 @@ import type { Diagnostic } from "../diagnostics/index.js";
 import type { ArchitectureModel } from "../resolve/index.js";
 import { SIGNAL_KINDS, isOneOf, type SignalKind } from "../types.js";
 
-/** Ersetzt `source[start, end)` durch `newText`; `start === end` ist ein Einfügen. */
+/** Replaces `source[start, end)` with `newText`; `start === end` is an insertion. */
 export interface TextEdit {
   start: number;
   end: number;
   newText: string;
 }
 
-/** Quick-Fix im Editor: eine Beschriftung und die Textänderungen, die ihn umsetzen. */
+/** Quick fix in the editor: a label and the text edits that apply it. */
 export interface CodeAction {
   label: string;
   edits: TextEdit[];
 }
 
-/** Wendet nicht überlappende Edits an; die Reihenfolge im Array spielt keine Rolle. */
+/** Applies non-overlapping edits; the order within the array does not matter. */
 export function applyEdits(source: string, edits: readonly TextEdit[]): string {
   let result = source;
   for (const edit of [...edits].sort((a, b) => b.start - a.start || b.end - a.end)) {
@@ -26,8 +26,8 @@ export function applyEdits(source: string, edits: readonly TextEdit[]): string {
 }
 
 /**
- * Quick-Fixes zu einer Diagnose: die Vorschläge der Diagnose als Ersetzung und für `E103`
- * zusätzlich „Pin anlegen“ (D18) — der Pin landet als Textänderung in der Komponente.
+ * Quick fixes for a diagnostic: the diagnostic's suggestions as a replacement and, for `E103`,
+ * additionally "create pin" (D18) — the pin is inserted into the component as a text edit.
  */
 export function codeActions(
   source: string,
@@ -64,7 +64,7 @@ function createPinAction(source: string, tree: SyntaxTree, model: ArchitectureMo
     : otherPin?.kind ?? "signal";
   const pin = `pin ${kind} ${endpoint.pin.name}`;
   return {
-    label: `Pin \`${endpoint.pin.name}\` (${kind}) in \`${component.id.name}\` anlegen`,
+    label: `Create pin \`${endpoint.pin.name}\` (${kind}) in \`${component.id.name}\``,
     edits: [insertIntoComponent(source, component, pin)],
   };
 }
@@ -80,7 +80,7 @@ function findComponent(body: readonly (Statement | GroupStmt)[], id: string): Co
   return undefined;
 }
 
-/** Fügt eine Anweisung als letzte in den Rumpf ein und folgt dabei dessen Form (ohne, ein- oder mehrzeilig). */
+/** Inserts a statement as the last one in the body, following its shape (none, single-line or multi-line). */
 function insertIntoComponent(source: string, component: ComponentNode, stmt: string): TextEdit {
   const end = component.span.end;
   if (component.body === undefined || source[end - 1] !== "}") {
@@ -90,7 +90,7 @@ function insertIntoComponent(source: string, component: ComponentNode, stmt: str
   const lineStart = source.lastIndexOf("\n", close - 1) + 1;
   const beforeClose = source.slice(lineStart, close);
   if (beforeClose.trim() !== "") {
-    // Einzeiler `{ label "A" }` bzw. `{}`
+    // Single line `{ label "A" }` or `{}`
     const open = source.lastIndexOf("{", close);
     const empty = source.slice(open + 1, close).trim() === "";
     const at = source.slice(0, close).trimEnd().length;

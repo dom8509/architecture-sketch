@@ -3,7 +3,7 @@ import type { LEdge, LNode, Port } from "./graph.js";
 import type { Frame } from "./place.js";
 import type { Point, Rect } from "./scene.js";
 
-/** Kosten in Grid-Einheiten. */
+/** Costs in grid units. */
 const COST = {
   step: 1,
   bend: 4,
@@ -12,14 +12,14 @@ const COST = {
   foreignStub: 20,
   frameLine: 2,
   groupLabel: 8,
-  /** Rückführungen laufen außen herum: Schritte zur Querstart-Seite kosten mehr. */
+  /** Feedback edges run around the outside: steps towards the cross-start side cost more. */
   feedbackDrift: 0.5,
 };
 
 const MARGIN = 4;
 const ROUTE_ORDER: readonly SignalGroup[] = ["supply", "bus", "single", "diagnostic"];
 
-/** Richtung: 0 = +x, 1 = +y, 2 = −x, 3 = −y. */
+/** Direction: 0 = +x, 1 = +y, 2 = −x, 3 = −y. */
 const DX = [1, 0, -1, 0] as const;
 const DY = [0, 1, 0, -1] as const;
 const OUTWARD: Record<Side, number> = { right: 0, bottom: 1, left: 2, top: 3 };
@@ -37,14 +37,14 @@ export interface RouteInput {
   nodes: readonly LNode[];
   edges: readonly LEdge[];
   frames: readonly Frame[];
-  /** Rechtecke der Gruppenlabels. */
+  /** Bounding boxes of the group labels. */
   groupLabels: readonly Rect[];
   grid: number;
-  /** Querstart-Richtung für Rückführungen (LR: −y, TB: −x). */
+  /** Cross-start direction for feedback edges (LR: −y, TB: −x). */
   crossStartDirection: number;
 }
 
-/** Phase 7: orthogonales Routing per A* auf dem Grid. Liefert je Kante die Eckpunkte. */
+/** Phase 7: orthogonal routing via A* on the grid. Returns the corner points per edge. */
 export function routeEdges(input: RouteInput): Map<LEdge, Point[]> {
   const { nodes, grid } = input;
   const bounds = {
@@ -75,7 +75,7 @@ export function routeEdges(input: RouteInput): Map<LEdge, Point[]> {
       for (let i = a.i; i <= b.i; i++) if (i >= 0 && j >= 0 && i < cols && j < rows) extraCost[index(i, j)] = extraCost[index(i, j)]! + COST.groupLabel;
     }
   }
-  /** Rahmenlinien: waagerechte (Bit 1) und senkrechte (Bit 2) Kanten. */
+  /** Frame lines: horizontal (bit 1) and vertical (bit 2) edges. */
   const frameLines = new Uint8Array(cols * rows);
   for (const f of input.frames) {
     const a = toCell({ x: f.rect.x, y: f.rect.y });
@@ -94,7 +94,7 @@ export function routeEdges(input: RouteInput): Map<LEdge, Point[]> {
     return port.pin !== undefined ? `${node.id}.${port.pin}` : `${node.id}#${port.side}${port.offset}`;
   };
 
-  /** Stummelpunkte aller Ports mit Besitzer. */
+  /** Stub points of all ports, with their owner. */
   const stubOwner = new Map<number, string>();
   for (const e of input.edges) {
     for (const end of ["source", "target"] as const) {
@@ -114,7 +114,7 @@ export function routeEdges(input: RouteInput): Map<LEdge, Point[]> {
     }
   }
 
-  /** Belegung: Kante (Punkt + Achse) → Endpunkt-Schlüssel der Pfade; Punkte → Achsenbits. */
+  /** Occupancy: edge (point + axis) → endpoint keys of the paths; points → axis bits. */
   const edgeUse = new Map<number, string[][]>();
   const pointUse = new Map<number, { axis: number; keys: string[] }[]>();
   const edgeId = (k: number, axis: number) => k * 2 + axis;
@@ -198,7 +198,7 @@ export function routeEdges(input: RouteInput): Map<LEdge, Point[]> {
 
     let cells: { i: number; j: number }[];
     if (found < 0) {
-      // Kein Weg (eingeschlossener Port): L-Form als Rückfall, bleibt orthogonal.
+      // No path (enclosed port): fall back to an L shape, still orthogonal.
       cells = [sc, s, { i: t.i, j: s.j }, t, gc];
     } else {
       cells = [];
@@ -210,7 +210,7 @@ export function routeEdges(input: RouteInput): Map<LEdge, Point[]> {
       cells.reverse();
     }
 
-    // Belegung eintragen.
+    // Record the occupancy.
     for (let n = 1; n < cells.length; n++) {
       const a = cells[n - 1]!;
       const b = cells[n]!;
@@ -238,7 +238,7 @@ export function routeEdges(input: RouteInput): Map<LEdge, Point[]> {
   return result;
 }
 
-/** Entfernt doppelte und kollineare Zwischenpunkte. */
+/** Removes duplicate and collinear intermediate points. */
 export function simplify(points: Point[]): Point[] {
   const out: Point[] = [];
   for (const p of points) {
@@ -254,7 +254,7 @@ export function simplify(points: Point[]): Point[] {
   return out;
 }
 
-/** Binärer Min-Heap über (Priorität, Einfügezähler) — deterministische Gleichstände. */
+/** Binary min heap over (priority, insertion counter) — deterministic tie-breaking. */
 interface Heap {
   priority: number[];
   order: number[];

@@ -1,9 +1,9 @@
 /**
- * Macht ein SVG für die Einbettung in ein HTML-Dokument mit mehreren Diagrammen eindeutig:
- * `@font-face` und `id` gelten dort dokumentweit. Ohne Präfix überschriebe das eingebettete
- * Schrift-Subset „Inter“ eine gleichnamige Oberflächenschrift (Web-App, Obsidian), und
- * Icon-Symbole zweier Diagramme verwiesen aufeinander. Nur für die Anzeige im DOM — Exporte
- * und `Analysis.svg` bleiben unverändert (byte-gleich mit der CLI).
+ * Makes an SVG unique for embedding into an HTML document that holds several diagrams:
+ * `@font-face` and `id` are document-wide there. Without a prefix the embedded font subset
+ * "Inter" would override a UI font of the same name (web app, Obsidian), and icon symbols of
+ * two diagrams would reference each other. For display in the DOM only — exports and
+ * `Analysis.svg` stay unchanged (byte-identical with the CLI).
  */
 export function scopeSvg(svg: string, prefix: string): string {
   const families = new Set([...svg.matchAll(/@font-face\{font-family:"([^"]+)"/g)].map((m) => m[1]!));

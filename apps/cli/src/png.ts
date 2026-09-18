@@ -6,8 +6,8 @@ import type { SceneGraph } from "@sysarch/layout";
 import { fontSubsets, renderSvg } from "@sysarch/render-svg";
 
 /**
- * SceneGraph → PNG über resvg. resvg kennt kein `@font-face`, deshalb lädt es dieselben
- * Schrift-Subsets, die das SVG einbettet, aus temporären Dateien; Systemschriften bleiben aus.
+ * SceneGraph → PNG via resvg. resvg does not understand `@font-face`, so it loads the same
+ * font subsets the SVG embeds from temporary files; system fonts stay disabled.
  */
 export function renderPng(scene: SceneGraph, scale: number): Uint8Array {
   const dir = mkdtempSync(join(tmpdir(), "sysarch-fonts-"));

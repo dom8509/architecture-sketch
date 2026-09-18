@@ -18,7 +18,7 @@ function exportSource(source: string): ReactFlowExport {
 
 const exportExample = (file: string) => exportSource(readFileSync(join(root, "examples", file), "utf8"));
 
-/** Absolute Position eines Knotens über die Elternkette. */
+/** Absolute position of a node via the parent chain. */
 function absolute(flow: ReactFlowExport, id: string): { x: number; y: number } {
   const node = flow.nodes.find((n) => n.id === id)!;
   const parent = node.parentId === undefined ? { x: 0, y: 0 } : absolute(flow, node.parentId);
@@ -28,16 +28,16 @@ function absolute(flow: ReactFlowExport, id: string): { x: number; y: number } {
 const size = (n: ReactFlowExport["nodes"][number]) =>
   "style" in n ? n.style : { width: n.width, height: n.height };
 
-describe("React-Flow-Export", () => {
-  // Aktualisieren: `npx vitest run -u`
+describe("React Flow export", () => {
+  // Update with: `npx vitest run -u`
   for (const file of examples) {
     const name = basename(file, ".arch");
-    it(`${name} entspricht dem Golden File`, async () => {
+    it(`${name} matches the golden file`, async () => {
       await expect(JSON.stringify(exportExample(file), null, 2) + "\n")
         .toMatchFileSnapshot(join(root, "tests", "golden", `${name}.reactflow.json`));
     });
 
-    it(`${name} ist ladbar: Eltern zuerst, Handles vorhanden, Geometrie passt`, () => {
+    it(`${name} is loadable: parents first, handles present, geometry fits`, () => {
       const flow = exportExample(file);
       const ids = flow.nodes.map((n) => n.id);
       expect(new Set(ids).size).toBe(ids.length);
@@ -46,7 +46,7 @@ describe("React-Flow-Export", () => {
       flow.nodes.forEach((node, index) => {
         if (node.parentId === undefined) return;
         const parentIndex = ids.indexOf(node.parentId);
-        expect(parentIndex, `${node.id}: Elternknoten vor dem Kind`).toBeGreaterThanOrEqual(0);
+        expect(parentIndex, `${node.id}: parent node before the child`).toBeGreaterThanOrEqual(0);
         expect(parentIndex).toBeLessThan(index);
         const parent = size(flow.nodes[parentIndex]!);
         const own = size(node);
@@ -69,7 +69,7 @@ describe("React-Flow-Export", () => {
               : pin.side === "right" ? [at.x + node!.width, at.y + pin.offset]
               : pin.side === "top" ? [at.x + pin.offset, at.y]
               : [at.x + pin.offset, at.y + node!.height];
-            expect([px, py], `${edge.id}: Route endet am Pin ${handle}`).toEqual(expected);
+            expect([px, py], `${edge.id}: route ends at pin ${handle}`).toEqual(expected);
           } else {
             expect(SIDES.map(bodyHandle), `${edge.id}: Handle ${handle}`).toContain(handle);
           }
@@ -78,7 +78,7 @@ describe("React-Flow-Export", () => {
     });
   }
 
-  it("exportiert bei stack identical dieselbe Sicht wie das Bild", () => {
+  it("exports the same view as the image when stack identical is set", () => {
     const flow = exportSource(`architecture "A" {
     stack identical
     component mcu: microcontroller
@@ -93,7 +93,7 @@ describe("React-Flow-Export", () => {
     expect(flow.edges).toHaveLength(1);
   });
 
-  it("exportiert count nur bei Mehrfachelementen", () => {
+  it("exports count only for multiple elements", () => {
     const flow = exportSource(`architecture "A" {
     component a { count 3 }
     component b
@@ -104,7 +104,7 @@ describe("React-Flow-Export", () => {
     expect("count" in b!.data).toBe(false);
   });
 
-  it("hängt Kanten an ausgeblendeten Pins an den Körper", () => {
+  it("attaches edges to the body when pins are hidden", () => {
     const flow = exportSource(`architecture "A" {
     pins none
     component psu: power_supply
@@ -118,7 +118,7 @@ describe("React-Flow-Export", () => {
     for (const node of flow.nodes as ComponentNode[]) expect(node.data.pins).toEqual([]);
   });
 
-  it("bildet Körperanschlüsse, Richtungen und Metadaten ab", () => {
+  it("maps body connection points, directions and metadata", () => {
     const flow = exportSource(`architecture "A" {
     zone z {
         label "Zone"

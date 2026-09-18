@@ -1,6 +1,6 @@
-// MCU-Hub — Präsentationssicht: SBC links, breite MCU in der Mitte, Co-MCU rechts,
-// gruppierte Peripherie darüber und darunter. Die MCU überspannt drei Grid-Spalten,
-// `pins none` blendet die Pins der Bibliotheks-Templates aus.
+// MCU hub — presentation view: SBC on the left, wide MCU in the middle, co-MCU on the
+// right, grouped peripherals above and below. The MCU spans three grid columns and
+// `pins none` hides the pins coming from the library templates.
 
 architecture "MCU Hub" {
     theme presentation

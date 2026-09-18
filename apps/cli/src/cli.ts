@@ -16,36 +16,36 @@ export interface Io {
   stderr(text: string): void;
 }
 
-/** Exit-Codes: 0 ok, 1 Diagnosen/Prüfung fehlgeschlagen, 2 Aufruf- oder Dateifehler. */
+/** Exit codes: 0 ok, 1 diagnostics/check failed, 2 usage or file error. */
 const OK = 0;
 const FAILED = 1;
 const USAGE = 2;
 
-const HELP = `sysarch ${VERSION} — Architecture-as-Code für Systemarchitekturen
+const HELP = `sysarch ${VERSION} — Architecture-as-Code for system architectures
 
-Aufruf:
-  sysarch render <dateien…> [--out <verzeichnis|datei|->] [--theme <name>]
+Usage:
+  sysarch render <files…> [--out <directory|file|->] [--theme <name>]
                  [--format svg|png|reactflow] [--scale 1|2|3]
-  sysarch check  <dateien…> [--max-warnings <n>] [--format text|json] [--verbose]
-  sysarch fmt    <dateien…> [--check]
+  sysarch check  <files…> [--max-warnings <n>] [--format text|json] [--verbose]
+  sysarch fmt    <files…> [--check]
 
-Dateien:  .arch-Dateien (render) bzw. .arch/.archlib (check, fmt); Verzeichnisse werden
-          rekursiv durchsucht. \`fmt -\` liest von stdin und schreibt nach stdout.
+Files:    .arch files (render) or .arch/.archlib (check, fmt); directories are
+          searched recursively. \`fmt -\` reads from stdin and writes to stdout.
 
-render    Rendert nach SVG (.svg), PNG (.png, Standard --scale 2) oder React-Flow-JSON
-          (.reactflow.json). Ohne --out neben die Quelle, mit --out - nach stdout
-          (nicht für PNG).
-check     Meldet Diagnosen als datei:zeile:spalte: stufe CODE: meldung.
-          Exit 1 bei Fehlern oder mehr Warnungen als --max-warnings.
-          Hinweise (I…) nur mit --verbose bzw. immer im JSON-Format.
-fmt       Formatiert in-place; --check meldet nur unformatierte Dateien (Exit 1).
+render    Renders to SVG (.svg), PNG (.png, default --scale 2) or React Flow JSON
+          (.reactflow.json). Without --out next to the source, with --out - to stdout
+          (not for PNG).
+check     Reports diagnostics as file:line:column: severity CODE: message.
+          Exit 1 on errors or on more warnings than --max-warnings.
+          Infos (I…) only with --verbose, always in the JSON format.
+fmt       Formats in place; --check only reports unformatted files (exit 1).
 
-Exit-Codes: 0 ok · 1 Diagnosen bzw. Prüfung fehlgeschlagen · 2 Aufruffehler
+Exit codes: 0 ok · 1 diagnostics or check failed · 2 usage error
 `;
 
 class UsageError extends Error {}
 
-/** Führt die CLI aus und liefert den Exit-Code. */
+/** Runs the CLI and returns the exit code. */
 export function run(argv: readonly string[], io: Io): number {
   const [command, ...args] = argv;
   try {
@@ -60,11 +60,11 @@ export function run(argv: readonly string[], io: Io): number {
         io.stdout(HELP);
         return command === undefined ? USAGE : OK;
       default:
-        throw new UsageError(`Unbekannter Befehl \`${command}\``);
+        throw new UsageError(`Unknown command \`${command}\``);
     }
   } catch (e) {
     if (e instanceof UsageError || isArgError(e)) {
-      io.stderr(`sysarch: ${(e as Error).message}\nHilfe: sysarch --help\n`);
+      io.stderr(`sysarch: ${(e as Error).message}\nHelp: sysarch --help\n`);
       return USAGE;
     }
     throw e;
@@ -92,24 +92,24 @@ function render(args: readonly string[], io: Io): number {
   });
   const outputFormat = values.format as OutputFormat;
   if (!Object.hasOwn(EXTENSIONS, outputFormat)) {
-    throw new UsageError(`Format \`${values.format}\` wird nicht unterstützt; verfügbar: ${Object.keys(EXTENSIONS).join(", ")}`);
+    throw new UsageError(`Format \`${values.format}\` is not supported; available: ${Object.keys(EXTENSIONS).join(", ")}`);
   }
   let scale = 2;
   if (values.scale !== undefined) {
-    if (outputFormat !== "png") throw new UsageError("--scale gilt nur für --format png");
+    if (outputFormat !== "png") throw new UsageError("--scale only applies to --format png");
     scale = Number(values.scale);
-    if (![1, 2, 3].includes(scale)) throw new UsageError(`--scale erwartet 1, 2 oder 3, gefunden \`${values.scale}\``);
+    if (![1, 2, 3].includes(scale)) throw new UsageError(`--scale expects 1, 2 or 3, found \`${values.scale}\``);
   }
   if (values.theme !== undefined && !THEMES.includes(values.theme)) {
-    throw new UsageError(`Unbekanntes Theme \`${values.theme}\`; verfügbar: ${THEMES.join(", ")}`);
+    throw new UsageError(`Unknown theme \`${values.theme}\`; available: ${THEMES.join(", ")}`);
   }
   const extension = EXTENSIONS[outputFormat];
   const files = expandInputs(positionals, [".arch"]);
   const out = values.out;
-  if (out === "-" && outputFormat === "png") throw new UsageError("PNG kann nicht nach stdout geschrieben werden; --out <datei.png> angeben");
+  if (out === "-" && outputFormat === "png") throw new UsageError("PNG cannot be written to stdout; pass --out <file.png>");
   const singleTarget = out === "-" || out?.endsWith(extension);
   if (singleTarget && files.length !== 1) {
-    throw new UsageError(`--out ${out} verlangt genau eine Eingabedatei, gefunden ${files.length}`);
+    throw new UsageError(`--out ${out} requires exactly one input file, found ${files.length}`);
   }
 
   let failed = false;
@@ -131,7 +131,7 @@ function render(args: readonly string[], io: Io): number {
       continue;
     }
     const target = singleTarget ? out! : join(out ?? dirname(file), basename(file, extname(file)) + extension);
-    if (written.has(target)) throw new UsageError(`Mehrere Eingaben schreiben nach ${target}`);
+    if (written.has(target)) throw new UsageError(`Several inputs write to ${target}`);
     written.add(target);
     mkdirSync(dirname(target), { recursive: true });
     writeFileSync(target, output);
@@ -153,13 +153,13 @@ function check(args: readonly string[], io: Io): number {
     },
   });
   if (values.format !== "text" && values.format !== "json") {
-    throw new UsageError(`Unbekanntes Ausgabeformat \`${values.format}\`; verfügbar: text, json`);
+    throw new UsageError(`Unknown output format \`${values.format}\`; available: text, json`);
   }
   let maxWarnings: number | undefined;
   if (values["max-warnings"] !== undefined) {
     maxWarnings = Number(values["max-warnings"]);
     if (!Number.isInteger(maxWarnings) || maxWarnings < 0) {
-      throw new UsageError(`--max-warnings erwartet eine Zahl ≥ 0, gefunden \`${values["max-warnings"]}\``);
+      throw new UsageError(`--max-warnings expects a number ≥ 0, found \`${values["max-warnings"]}\``);
     }
   }
 
@@ -177,10 +177,10 @@ function check(args: readonly string[], io: Io): number {
   }
 
   if (values.format === "json") io.stdout(JSON.stringify(json, null, 2) + "\n");
-  const checked = files.length === 1 ? "1 Datei" : `${files.length} Dateien`;
-  io.stderr(`${checked} geprüft: ${count.error} Fehler, ${count.warning} Warnungen, ${count.info} Hinweise\n`);
+  const checked = files.length === 1 ? "1 file" : `${files.length} files`;
+  io.stderr(`${checked} checked: ${count.error} errors, ${count.warning} warnings, ${count.info} infos\n`);
   const tooManyWarnings = maxWarnings !== undefined && count.warning > maxWarnings;
-  if (tooManyWarnings) io.stderr(`Mehr als ${maxWarnings} Warnungen erlaubt\n`);
+  if (tooManyWarnings) io.stderr(`More than ${maxWarnings} warnings allowed\n`);
   return count.error > 0 || tooManyWarnings ? FAILED : OK;
 }
 
@@ -221,20 +221,20 @@ function fmt(args: readonly string[], io: Io): number {
       failed = true;
     } else {
       writeFileSync(file, value);
-      io.stderr(`formatiert: ${file}\n`);
+      io.stderr(`formatted: ${file}\n`);
     }
   }
   if (values.check && changed > 0) {
-    io.stderr(`${changed} von ${files.length} Dateien sind nicht formatiert — \`sysarch fmt\` ausführen\n`);
+    io.stderr(`${changed} of ${files.length} files are not formatted — run \`sysarch fmt\`\n`);
   }
   return failed ? FAILED : OK;
 }
 
-// ── Eingaben ───────────────────────────────────────────────────
+// ── inputs ─────────────────────────────────────────────────────
 
-/** Dateien direkt, Verzeichnisse rekursiv nach Endung (sortiert, ohne versteckte und node_modules). */
+/** Files directly, directories recursively by extension (sorted, skipping hidden entries and node_modules). */
 function expandInputs(inputs: readonly string[], extensions: readonly string[]): string[] {
-  if (inputs.length === 0) throw new UsageError("Keine Eingabedateien angegeben");
+  if (inputs.length === 0) throw new UsageError("No input files given");
   const files: string[] = [];
   const walk = (dir: string) => {
     for (const entry of readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
@@ -245,20 +245,20 @@ function expandInputs(inputs: readonly string[], extensions: readonly string[]):
     }
   };
   for (const input of inputs) {
-    if (!existsSync(input)) throw new UsageError(`Datei nicht gefunden: ${input}`);
+    if (!existsSync(input)) throw new UsageError(`File not found: ${input}`);
     if (statSync(input).isDirectory()) {
       walk(input);
     } else if (extensions.includes(extname(input))) {
       files.push(input);
     } else {
-      throw new UsageError(`Erwartet ${extensions.join(" oder ")}, gefunden ${input}`);
+      throw new UsageError(`Expected ${extensions.join(" or ")}, found ${input}`);
     }
   }
-  if (files.length === 0) throw new UsageError(`Keine ${extensions.join("/")}-Dateien in ${inputs.join(", ")}`);
+  if (files.length === 0) throw new UsageError(`No ${extensions.join("/")} files in ${inputs.join(", ")}`);
   return files;
 }
 
-// ── Diagnosen ──────────────────────────────────────────────────
+// ── diagnostics ────────────────────────────────────────────────
 
 interface JsonDiagnostic {
   file: string;
@@ -272,7 +272,7 @@ interface JsonDiagnostic {
   suggestions?: { label: string; replacement: string }[];
 }
 
-/** 1-basierte Zeile/Spalte eines Offsets. */
+/** 1-based line/column of an offset. */
 function position(source: string, offset: number): { line: number; column: number } {
   let line = 1;
   let lineStart = 0;
@@ -295,7 +295,7 @@ function toJson(file: string, source: string, d: Diagnostic): JsonDiagnostic {
   return result;
 }
 
-/** Compiler-Format `datei:zeile:spalte: error E103: …`, das Editoren und CI-Annotationen erkennen. */
+/** Compiler format `file:line:column: error E103: …` that editors and CI annotations recognise. */
 function printDiagnostics(
   write: (text: string) => void,
   file: string,

@@ -27,14 +27,14 @@ export function render(source: string, theme?: Theme): SceneGraph {
   return layout(value, theme ?? getTheme(value.theme));
 }
 
-/** Stellt die Flussrichtung um (grid und hint bleiben Bildkoordinaten). */
+/** Switches the flow direction (grid and hint stay in image coordinates). */
 export function withDirection(source: string, direction: "LR" | "TB"): string {
   return source.replace(/direction (LR|TB)/, `direction ${direction}`);
 }
 
-/** Fügt eine unverbundene Komponente am Ende ein — in der letzten Zone, falls Zonen verwendet werden. */
+/** Appends an unconnected component at the end — inside the last zone if zones are used. */
 export function appendUnconnected(source: string): string {
-  const component = "        component stability_probe { label \"Nachtrag\" }\n";
+  const component = "        component stability_probe { label \"Addendum\" }\n";
   const zone = [...source.matchAll(/\n\s*zone \w+ \{/g)].pop();
   let at: number;
   if (zone) {

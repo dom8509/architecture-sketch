@@ -1,10 +1,10 @@
 import type { ArchitectureModel, Component, Connection, Direction, Side } from "@sysarch/core";
 import type { ComponentBox } from "./size.js";
 
-/** Anschlusspunkt an der Hülle: echter Pin oder virtueller Port am Körper. */
+/** Attachment point on the hull: a real pin or a virtual port on the body. */
 export interface Port {
   side: Side;
-  /** Entlang der Seite, relativ zur Hülle (y für links/rechts, x für oben/unten). */
+  /** Along the side, relative to the hull (y for left/right, x for top/bottom). */
   offset: number;
   pin?: string;
 }
@@ -15,17 +15,17 @@ export interface LNode {
   component: Component;
   box: ComponentBox;
   zone: number;
-  /** Systeme von außen nach innen (ohne Zone). */
+  /** Systems from outermost to innermost (zone excluded). */
   systems: string[];
   rank: number;
   fixedRank?: number;
   fixedSlot?: number;
-  /** Überspannte Ränge bzw. Zeilen aus `grid`, mindestens 1. */
+  /** Ranks resp. rows spanned from `grid`, at least 1. */
   mainSpan: number;
   crossSpan: number;
-  /** Position innerhalb des Rangs. */
+  /** Position within the rank. */
   order: number;
-  /** Hülle, absolute Koordinaten. */
+  /** Hull, absolute coordinates. */
   x: number;
   y: number;
   pinPorts: Map<string, Port>;
@@ -38,15 +38,15 @@ export interface LEdge {
   target: LNode;
   sourcePort: Port;
   targetPort: Port;
-  /** Rückwärtskante eines gebrochenen Zyklus oder gegen die Zonenreihenfolge. */
+  /** Back edge of a broken cycle, or one running against the zone order. */
   feedback: boolean;
-  /** 1 für gerichtete, 0,5 für bidirektionale und ungerichtete Verbindungen. */
+  /** 1 for directed, 0.5 for bidirectional and undirected connections. */
   weight: number;
 }
 
 export type AbstractSide = "mainStart" | "mainEnd" | "crossStart" | "crossEnd";
 
-/** Rechnet in abstrakten Achsen: main = Flussrichtung, cross = quer dazu. */
+/** Works in abstract axes: main = flow direction, cross = perpendicular to it. */
 export class Axes {
   constructor(readonly direction: Direction) {}
 
@@ -81,7 +81,7 @@ export class Axes {
     }
   }
 
-  /** Querkoordinate eines Ports relativ zur Hülle. */
+  /** Cross coordinate of a port relative to the hull. */
   portCrossOffset(node: LNode, port: Port): number {
     const side = this.side(port.side);
     if (side === "mainStart" || side === "mainEnd") return port.offset;
@@ -114,20 +114,20 @@ export function buildNodes(model: ArchitectureModel, boxes: Map<string, Componen
   return { nodes, zones };
 }
 
-/** Letzter belegter Rang eines Knotens. */
+/** Last rank occupied by a node. */
 export const rankEnd = (n: LNode) => n.rank + n.mainSpan - 1;
 
-/** Zwischenraum zwischen zwei Knoten entlang der Flussrichtung: nach Rang `after`, `width` Ränge weit. Überlappende Ränge → undefined. */
+/** Gap between two nodes along the flow direction: after rank `after`, `width` ranks wide. Overlapping ranks → undefined. */
 export function rankGap(a: LNode, b: LNode): { after: number; width: number } | undefined {
   if (rankEnd(a) < b.rank) return { after: rankEnd(a), width: b.rank - rankEnd(a) };
   if (rankEnd(b) < a.rank) return { after: rankEnd(b), width: a.rank - rankEnd(b) };
   return undefined;
 }
 
-/** Überspannt der Knoten mehr als eine Grid-Zelle? */
+/** Does the node span more than one grid cell? */
 export const spans = (n: LNode) => n.mainSpan > 1 || n.crossSpan > 1;
 
-/** Feste Ränge und Querpositionen aus `grid` und `hint`. Belegte Zellen → späterer Eintrag fällt auf automatisch zurück. */
+/** Fixed ranks and cross positions from `grid` and `hint`. Occupied cells → the later entry falls back to automatic. */
 export function applyOverrides(model: ArchitectureModel, byId: Map<string, LNode>): void {
   const lr = model.direction === "LR";
   const cells = new Map<string, string>();
@@ -143,7 +143,7 @@ export function applyOverrides(model: ArchitectureModel, byId: Map<string, LNode
     node.mainSpan = mainSpan;
     node.crossSpan = crossSpan;
   };
-  // Überspannte Zellen: Rechteck je Komponente (der Resolver garantiert die Form).
+  // Spanned cells: one rectangle per component (the resolver guarantees the shape).
   const area = new Map<string, { top: number; bottom: number; left: number; right: number }>();
   model.grid?.rows.forEach((row, r) => {
     row.forEach((id, c) => {

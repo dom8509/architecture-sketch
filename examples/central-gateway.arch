@@ -1,5 +1,5 @@
-// Central Gateway — Flussrichtung von oben nach unten, Busse, Diagnose, Masse,
-// verschachtelte Systeme und Software-Komponenten
+// Central Gateway — top-to-bottom flow direction, buses, diagnostics, ground,
+// nested systems and software components
 
 define cloud_backend {
     label "Backend"

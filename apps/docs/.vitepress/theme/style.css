@@ -10,7 +10,7 @@
   --vp-c-brand-3: #3b82f6;
 }
 
-/* ── Diagramme ──────────────────────────────────────────────── */
+/* ── Diagrams ───────────────────────────────────────────────── */
 
 .sysarch-figure {
   margin: 16px 0 0;
@@ -21,7 +21,7 @@
   text-align: center;
   overflow-x: auto;
 }
-.dark .sysarch-figure:has(.sa-dark) { background: #111418; } /* Canvas von automotive-dark */
+.dark .sysarch-figure:has(.sa-dark) { background: #111418; } /* canvas of automotive-dark */
 .sysarch-figure img { display: inline-block; max-width: 100%; height: auto; }
 .sysarch-figure .sa-dark { display: none; }
 .dark .sysarch-figure .sa-dark { display: inline-block; }
@@ -31,7 +31,7 @@
 .sysarch-example .sysarch-figure + div[class*="language-"] { margin-top: 0; border-radius: 0 0 8px 8px; }
 .sysarch-figure.sa-template { display: inline-block; border-radius: 8px; margin: 8px 0; padding: 12px; }
 
-/* ── Highlighting (Farben wie im Editor, packages/editor/src/highlight.ts) ── */
+/* ── Highlighting (colors as in the editor, packages/editor/src/highlight.ts) ── */
 
 .vp-doc .language-sysarch code { color: var(--vp-c-text-1); }
 html:not(.dark) .vp-doc .vp-code span.sa-tok-keyword { color: #7c3aed; }

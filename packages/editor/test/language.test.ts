@@ -4,11 +4,11 @@ import { describe, expect, it } from "vitest";
 import { analyze, classify, sysarchCompletion } from "../src/index.js";
 
 describe("classify", () => {
-  it("unterscheidet Schlüsselwörter, Werte, Namen, Templates, Pins und Kommentare", () => {
-    const source = `// Kopf\narchitecture "A" {\n    component pin: mcu { pin can size }\n    pin.size -> x\n}`;
+  it("distinguishes keywords, values, names, templates, pins and comments", () => {
+    const source = `// Head\narchitecture "A" {\n    component pin: mcu { pin can size }\n    pin.size -> x\n}`;
     const classes = classify(source).map((r) => `${source.slice(r.start, r.end)}:${r.class}`);
     expect(classes).toEqual([
-      "// Kopf:comment", "architecture:keyword", `"A":string`, "{:punctuation",
+      "// Head:comment", "architecture:keyword", `"A":string`, "{:punctuation",
       "component:keyword", "pin:definition", "::punctuation", "mcu:template", "{:punctuation",
       "pin:keyword", "can:value", "size:keyword", "}:punctuation",
       ".:punctuation", "size:pin", "->:operator", "}:punctuation",
@@ -36,17 +36,17 @@ describe("Autocomplete", () => {
   };
   const labels = (r: CompletionResult | null) => r?.options.map((o) => o.label) ?? [];
 
-  it("Template-Namen nach `:` inklusive lokaler defines", () => {
+  it("template names after `:` including local defines", () => {
     const names = labels(at("component mcu: "));
     expect(names).toContain("microcontroller");
     expect(names).toContain("local_part");
   });
 
-  it("Pin-Namen nach `komponente.`", () => {
+  it("pin names after `component.`", () => {
     expect(labels(at("trx."))).toEqual(analysis.model.components.get("trx")!.pins.map((p) => p.name));
   });
 
-  it("Signalarten nach `pin` und `type`, Themes nach `theme`", () => {
+  it("signal kinds after `pin` and `type`, themes after `theme`", () => {
     expect(labels(at("pin  }", 4))).toContain("can");
     const type = at("type e");
     expect(type?.from).toBe(source.indexOf("type e") + 5);
@@ -54,7 +54,7 @@ describe("Autocomplete", () => {
     expect(labels(at("theme "))).toContain("automotive-dark");
   });
 
-  it("sonst keine Vorschläge", () => {
+  it("no suggestions otherwise", () => {
     expect(at("architecture")).toBeNull();
   });
 });

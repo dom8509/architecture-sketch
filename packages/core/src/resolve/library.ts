@@ -4,11 +4,11 @@ import { parse } from "../parser/index.js";
 import { CATEGORIES, SHAPES, isOneOf, type Category, type Shape, type Side, type SignalKind, type Size, type Span } from "../types.js";
 import { declarePin, type PinDraft } from "./pins.js";
 
-/** Bereinigtes, einfarbiges Symbol im 24×24-Raster. */
+/** Cleaned-up, single-colour symbol on a 24×24 grid. */
 export interface IconDef {
   name: string;
   viewBox: "0 0 24 24";
-  /** Nur Pfaddaten; gezeichnet mit currentColor als Strich oder Fläche. */
+  /** Path data only; drawn with currentColor as stroke or fill. */
   elements: { d: string; mode: "stroke" | "fill" }[];
 }
 
@@ -19,7 +19,7 @@ export interface TemplatePin {
   side?: Side;
 }
 
-/** Aufgelöstes Template: Vererbung ist eingemischt, alle Werte sind geprüft. */
+/** Resolved template: inheritance is merged in, all values are validated. */
 export interface TemplateDef {
   name: string;
   extends?: string;
@@ -37,21 +37,21 @@ export interface Library {
   icons: Map<string, IconDef>;
 }
 
-/** Lädt eine `.archlib`-Quelle. Diagnosen beziehen sich auf diese Quelle. */
+/** Loads an `.archlib` source. Diagnostics refer to that source. */
 export function loadLibrary(source: string, icons: readonly IconDef[]): ParseResult<Library> {
   const parsed = parse(source);
   const diagnostics = [...parsed.diagnostics];
   const iconMap = new Map(icons.map((icon) => [icon.name, icon]));
   if (parsed.value.architecture) {
-    diagnostics.push(diagnostic("E001", "Eine Bibliothek enthält nur `define`s, keine `architecture`", parsed.value.architecture.span));
+    diagnostics.push(diagnostic("E001", "A library contains only `define`s, no `architecture`", parsed.value.architecture.span));
   }
   const templates = resolveDefines(parsed.value.defines, new Map(), iconMap, diagnostics);
   return { value: { templates, icons: iconMap }, diagnostics };
 }
 
 /**
- * Löst `define`s gegen eine Basis (z. B. die Standardbibliothek) auf. Ein `extends` auf den
- * eigenen Namen erweitert das gleichnamige Basis-Template.
+ * Resolves `define`s against a base (e.g. the standard library). An `extends` on its own name
+ * extends the base template of the same name.
  */
 export function resolveDefines(
   defines: readonly DefineNode[],
@@ -62,7 +62,7 @@ export function resolveDefines(
   const raw = new Map<string, DefineNode>();
   for (const define of defines) {
     if (raw.has(define.name.name)) {
-      diagnostics.push(diagnostic("E101", `Template \`${define.name.name}\` ist doppelt definiert`, define.name.span));
+      diagnostics.push(diagnostic("E101", `Template \`${define.name.name}\` is defined twice`, define.name.span));
       continue;
     }
     raw.set(define.name.name, define);
@@ -81,7 +81,7 @@ export function resolveDefines(
     const done = resolved.get(name);
     if (done) return done;
     if (inProgress.has(name)) {
-      diagnostics.push(diagnostic("E104", `Template \`${name}\` erbt zyklisch von sich selbst`, define.name.span));
+      diagnostics.push(diagnostic("E104", `Template \`${name}\` inherits from itself in a cycle`, define.name.span));
       return undefined;
     }
     inProgress.add(name);
@@ -92,7 +92,7 @@ export function resolveDefines(
       if (parent === undefined && !inProgress.has(define.extends.name)) {
         const candidates = new Set([...raw.keys(), ...base.keys()]);
         candidates.delete(name);
-        diagnostics.push(withSuggestion("E104", `Unbekanntes Template \`${define.extends.name}\``, define.extends.name, define.extends.span, candidates));
+        diagnostics.push(withSuggestion("E104", `Unknown template \`${define.extends.name}\``, define.extends.name, define.extends.span, candidates));
       }
     }
 
@@ -121,11 +121,11 @@ export function resolveDefines(
           break;
         case "Category":
           if (isOneOf(CATEGORIES, stmt.value.name)) def.category = stmt.value.name;
-          else diagnostics.push(withSuggestion("E109", `Unbekannte Kategorie \`${stmt.value.name}\``, stmt.value.name, stmt.value.span, CATEGORIES));
+          else diagnostics.push(withSuggestion("E109", `Unknown category \`${stmt.value.name}\``, stmt.value.name, stmt.value.span, CATEGORIES));
           break;
         case "Shape":
           if (isOneOf(SHAPES, stmt.value.name)) def.shape = stmt.value.name;
-          else diagnostics.push(withSuggestion("E111", `Unbekannte Form \`${stmt.value.name}\``, stmt.value.name, stmt.value.span, SHAPES));
+          else diagnostics.push(withSuggestion("E111", `Unknown shape \`${stmt.value.name}\``, stmt.value.name, stmt.value.span, SHAPES));
           break;
         case "Icon":
           if (stmt.value.name === "none") {
@@ -134,7 +134,7 @@ export function resolveDefines(
             def.icon = stmt.value.name;
           } else {
             delete def.icon;
-            diagnostics.push(withSuggestion("E111", `Unbekanntes Icon \`${stmt.value.name}\``, stmt.value.name, stmt.value.span, icons.keys()));
+            diagnostics.push(withSuggestion("E111", `Unknown icon \`${stmt.value.name}\``, stmt.value.name, stmt.value.span, icons.keys()));
           }
           break;
         case "Pin":

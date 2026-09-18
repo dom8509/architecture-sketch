@@ -14,7 +14,7 @@ const context = await esbuild.context({
   format: "cjs",
   platform: "browser",
   target: "es2022",
-  // Obsidian stellt diese Module zur Laufzeit bereit
+  // Obsidian provides these modules at runtime
   external: [
     "obsidian", "electron",
     "@codemirror/autocomplete", "@codemirror/collab", "@codemirror/commands", "@codemirror/language",
@@ -22,7 +22,7 @@ const context = await esbuild.context({
     "@lezer/common", "@lezer/highlight", "@lezer/lr",
     ...builtinModules,
   ],
-  // Pakete direkt aus den Quellen wie in Vite und Vitest
+  // packages straight from the sources, as in Vite and Vitest
   alias: {
     "@sysarch/core": src("core"),
     "@sysarch/themes": src("themes"),
@@ -45,7 +45,7 @@ if (watch) {
   await context.dispose();
 }
 
-// dist/ ist ein installierbarer Plugin-Ordner: main.js, manifest.json, styles.css
+// dist/ is an installable plugin folder: main.js, manifest.json, styles.css
 mkdirSync(fileURLToPath(new URL("dist", import.meta.url)), { recursive: true });
 for (const file of ["manifest.json", "styles.css"]) {
   copyFileSync(fileURLToPath(new URL(file, import.meta.url)), fileURLToPath(new URL(`dist/${file}`, import.meta.url)));

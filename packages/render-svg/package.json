@@ -1,7 +1,7 @@
 {
   "name": "@sysarch/render-svg",
   "version": "0.1.0",
-  "description": "sysarch SVG-Renderer: Scene Graph → eigenständiges SVG",
+  "description": "sysarch SVG renderer: scene graph → standalone SVG",
   "license": "MIT",
   "type": "module",
   "main": "dist/index.js",

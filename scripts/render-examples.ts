@@ -1,4 +1,4 @@
-// Rendert examples/*.arch nach <Zielverzeichnis> (Standard: tmp/examples) — Hilfe beim Entwickeln.
+// Renders examples/*.arch into <target directory> (default: tmp/examples) — a development helper.
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { compile } from "../packages/core/src/index.js";

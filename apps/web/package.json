@@ -2,7 +2,7 @@
   "name": "@sysarch/web",
   "version": "0.1.0",
   "private": true,
-  "description": "sysarch Web-App: Editor, Live-Vorschau, Diagnosen, Export (SVG, PNG, React Flow)",
+  "description": "sysarch web app: editor, live preview, diagnostics, export (SVG, PNG, React Flow)",
   "license": "MIT",
   "type": "module",
   "scripts": {

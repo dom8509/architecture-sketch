@@ -1,19 +1,19 @@
 # 02 — DSL v0.1
 
-Die DSL ist bewusst klein. v0.1 kennt genau diese Konstrukte:
+The DSL is deliberately small. v0.1 knows exactly these constructs:
 
 `architecture` · `theme` · `direction` · `pins` · `stack` · `component` · `pin` · `zone` · `system` ·
-Verbindungen · `layout` · `define` (inkl. `shape` und `icon`)
+connections · `layout` · `define` (including `shape` and `icon`)
 
-Alles andere (Views, `use`, Metadaten-Vererbung, Plausibilitätsregeln) ist für spätere
-Versionen reserviert — siehe [Roadmap](08-roadmap.md).
+Everything else (views, `use`, metadata inheritance, consistency rules) is reserved for
+later versions — see [Roadmap](08-roadmap.md).
 
-Dateiendungen: `.arch` für Architekturen, `.archlib` für Bibliotheken.
-Obsidian-Codeblock-Sprache: `sysarch`.
+File extensions: `.arch` for architectures, `.archlib` for libraries.
+Obsidian code block language: `sysarch`.
 
 ---
 
-## 1. Überblick an einem Beispiel
+## 1. Overview by example
 
 ```sysarch
 architecture "Body Control Module" {
@@ -63,26 +63,26 @@ architecture "Body Control Module" {
 
 ---
 
-## 2. Lexikalik
+## 2. Lexical structure
 
-| Element | Regel |
-|---------|-------|
-| Kommentare | `// bis Zeilenende` und `/* Block */` |
-| Bezeichner | `[A-Za-z_][A-Za-z0-9_]*`, zusätzlich `-` wenn direkt ein Buchstabe folgt (`automotive-light`). Groß-/Kleinschreibung zählt. |
-| Strings | `"…"` mit Escapes `\"`, `\\`, `\n` (Zeilenumbruch im Label) |
-| Ganzzahlen | `[0-9]+` (nur für `hint`) |
-| Operatoren | `->` `<-` `<->` `--` `.` `:` `\|` `{` `}` |
-| Zeilenumbrüche | bedeutungslos — außer innerhalb von `grid { }`, dort trennen sie Zeilen |
+| Element | Rule |
+|---------|------|
+| Comments | `// to end of line` and `/* block */` |
+| Identifiers | `[A-Za-z_][A-Za-z0-9_]*`, plus `-` when a letter follows directly (`automotive-light`). Case-sensitive. |
+| Strings | `"…"` with the escapes `\"`, `\\`, `\n` (line break inside the label) |
+| Integers | `[0-9]+` (only for `hint`) |
+| Operators | `->` `<-` `<->` `--` `.` `:` `\|` `{` `}` |
+| Line breaks | insignificant — except inside `grid { }`, where they separate rows |
 
-Schlüsselwörter sind **kontextabhängig**: `power` ist Signalart nach `pin`, darf aber
-trotzdem als Komponenten-ID verwendet werden. Der Parser entscheidet mit maximal zwei
-Token Lookahead.
+Keywords are **context-sensitive**: `power` is a signal kind after `pin`, but may still be
+used as a component id. The parser decides with at most two tokens of lookahead.
 
-Die Regel für `-` in Bezeichnern macht `a--b` eindeutig (`a`, `--`, `b`), ebenso `a->b`.
+The rule for `-` in identifiers makes `a--b` unambiguous (`a`, `--`, `b`), and likewise
+`a->b`.
 
 ---
 
-## 3. Grammatik (EBNF)
+## 3. Grammar (EBNF)
 
 ```ebnf
 document      = { define } architecture ;
@@ -101,7 +101,7 @@ system        = "system" IDENT "{" { label | system | component } "}" ;
 component     = "component" IDENT [ ":" IDENT ] [ "{" { comp_stmt } "}" ] ;
 comp_stmt     = label | size | importance | category | pin | side_block | hint | count | meta ;
 
-pin           = "pin" IDENT IDENT [ STRING ] ;          (* Art, Name, optionales Label *)
+pin           = "pin" IDENT IDENT [ STRING ] ;          (* kind, name, optional label *)
 side_block    = ( "left" | "right" | "top" | "bottom" ) "{" { pin } "}" ;
 
 label         = "label" STRING ;
@@ -126,137 +126,136 @@ cell          = IDENT | "." ;
 define        = "define" IDENT [ "extends" IDENT ] "{" { def_stmt } "}" ;
 def_stmt      = label | size | category | shape | icon | pin | side_block ;
 shape         = "shape" ( "rect" | "rounded" | "circle" | "hexagon" | "cylinder" ) ;
-icon          = "icon" IDENT ;                          (* "none" entfernt ein geerbtes Icon *)
+icon          = "icon" IDENT ;                          (* "none" removes an inherited icon *)
 ```
 
 ---
 
-## 4. Semantik
+## 4. Semantics
 
-### 4.1 Komponenten
+### 4.1 Components
 
 ```sysarch
 component <id>[: <template>] { … }
 ```
 
-- `id` ist im gesamten Dokument eindeutig — auch über Zonen und Systeme hinweg.
-- Ohne Template ist der Typ `block` (abgerundetes Rechteck, Kategorie `generic`, kein Icon).
-- **Form und Icon** kommen ausschließlich aus dem Template (siehe 4.6). Eine Instanz kann
-  sie nicht setzen; wer für eine Komponente eine andere Darstellung will, leitet ein
-  lokales Template ab (`define window_motor extends motor { icon window }`).
-- **Label-Vorrang:** Instanz-`label` › Template-`label` › `id`.
-- `size` und `importance` sind die **einzigen** Größen-/Gewichtungsstellschrauben.
-  Das Theme übersetzt sie in Mindestbreite, Rahmenstärke und Schriftschnitt.
-- `category` wählt die Farbfamilie im Theme (`power`, `controller`, `communication`,
-  `sensor`, `actuator`, `software`, `external`, `generic`). Templates setzen eine Vorgabe.
-- `count 4` steht für mehrere gleiche Elemente (z. B. vier Halbbrücken). Die Komponente wird
-  als Stapel gezeichnet — bei 2 eine, ab 3 zwei versetzte Karten dahinter — und zeigt die
-  Anzahl als „×4“ rechts neben dem Label. Pins, Verbindungen und Layout bleiben die einer
-  einzelnen Komponente; im React-Flow-Export steht die Anzahl in `data.count`.
-- **Automatisch stapeln:** `stack identical` (Architektur-Ebene, Standard `none`) fasst
-  gleich verschaltete Komponenten zu einem Mehrfachelement zusammen, ohne dass `count`
-  geschrieben werden muss. Zusammengefasst werden Komponenten mit
-  - gleichem **Namensstamm**: Label ohne laufende Nummer („Half Bridge 1“ … „Half Bridge 4“ →
-    „Half Bridge“, „HB1“ → „HB“, „Strom A“ → „Strom“). Als Nummer gelten höchstens zwei Ziffern
-    oder ein Einzelbuchstabe nach Trennzeichen; „Temperatur“ und „Strom“ bleiben immer getrennt,
-    „S32K344“ bleibt ganz.
-  - gleichem Template, gleicher Gruppe (Zone/System), gleichen Pins, Eigenschaften und `meta`,
-  - gleichen Verbindungen: gleiche Pins, Signalart, Richtung und Beschriftung zu Gegenstellen,
-    die ihrerseits gleich verschaltet sind. Dadurch fassen sich auch Ketten zusammen
-    (`hb1 → m1` … `hb4 → m4` ergibt „Half Bridge ×4 → Motor ×4“).
+- `id` is unique across the whole document — across zones and systems too.
+- Without a template the type is `block` (rounded rectangle, category `generic`, no icon).
+- **Shape and icon** come from the template only (see 4.6). An instance cannot set them;
+  if a component needs a different appearance, derive a local template
+  (`define window_motor extends motor { icon window }`).
+- **Label precedence:** instance `label` › template `label` › `id`.
+- `size` and `importance` are the **only** knobs for size and weight. The theme turns them
+  into a minimum width, a border width and a font weight.
+- `category` picks the color family in the theme (`power`, `controller`, `communication`,
+  `sensor`, `actuator`, `software`, `external`, `generic`). Templates set a default.
+- `count 4` stands for several identical elements (e.g. four half bridges). The component
+  is drawn as a stack — one offset card behind it at 2, two from 3 on — and shows the count
+  as "×4" to the right of the label. Pins, connections and layout stay those of a single
+  component; in the React Flow export the count is in `data.count`.
+- **Stack automatically:** `stack identical` (architecture level, default `none`) merges
+  identically wired components into one multi-element without `count` having to be written.
+  Components are merged when they share
+  - the same **name stem**: the label without its running number ("Half Bridge 1" …
+    "Half Bridge 4" → "Half Bridge", "HB1" → "HB", "Current A" → "Current"). A number is at
+    most two digits or a single letter after a separator; "Temperature" and "Current" always
+    stay apart, "S32K344" stays whole.
+  - the same template, the same group (zone/system), the same pins, properties and `meta`,
+  - the same connections: same pins, signal kind, direction and label towards peers that are
+    themselves wired identically. Chains therefore merge as well (`hb1 → m1` … `hb4 → m4`
+    gives "Half Bridge ×4 → Motor ×4").
 
-  Die erste Komponente bleibt stehen (ID, Grid-Platz), erhält den Namensstamm als Label und die
-  Summe der Anzahlen; Verbindungen der übrigen entfallen als Duplikate, ihre Grid-Zellen werden
-  leer. Das Semantic Model bleibt vollständig, `check` sieht alle Komponenten; die Sicht gilt für
-  Layout, SVG/PNG und React-Flow-Export.
-- `meta { voltage "12 V" }` speichert Freitext-Metadaten. Sie werden in v0.1 **nicht**
-  gerendert, aber exportiert (React Flow `data.meta`). Metadaten stehen bewusst in einem
-  eigenen Block, damit Tippfehler wie `lable "x"` ein Fehler bleiben und nicht still als
-  Metadatum durchgehen.
+  The first component stays (id, grid slot), takes the name stem as its label and the sum of
+  the counts; the connections of the others drop out as duplicates and their grid cells go
+  empty. The semantic model stays complete, `check` sees every component; the view applies to
+  layout, SVG/PNG and the React Flow export.
+- `meta { voltage "12 V" }` stores free-text metadata. In v0.1 it is **not** rendered, but
+  it is exported (React Flow `data.meta`). Metadata sits in a block of its own on purpose,
+  so that a typo like `lable "x"` stays an error instead of silently passing as metadata.
 
 ### 4.2 Pins
 
 ```sysarch
-pin <art> <NAME> ["Anzeigelabel"]
+pin <kind> <NAME> ["Display Label"]
 ```
 
-- Adresse eines Pins: `<komponente>.<NAME>` — z. B. `mcu.CAN_TX`.
-- Pin-Namen sind pro Komponente eindeutig.
-- **Seite:**
-  1. Pin steht in einem `left`/`right`/`top`/`bottom`-Block → diese Seite.
-  2. sonst: Seite aus dem Template.
-  3. sonst: aus den Verbindungen abgeleitet. Bei `direction LR` wandern Pins mit
-     überwiegend eingehenden Verbindungen nach links, mit ausgehenden nach rechts
-     (bei `TB` entsprechend oben/unten). Gleichstand und unverbundene Pins → links bzw. oben.
-- **Reihenfolge** auf einer Seite = Deklarationsreihenfolge (Template-Pins zuerst).
-- Eine Instanz darf einen Template-Pin gleicher Art neu deklarieren, um ihn auf eine
-  andere Seite zu legen. Neudeklaration mit anderer Art ist ein Fehler.
+- A pin's address: `<component>.<NAME>` — e.g. `mcu.CAN_TX`.
+- Pin names are unique per component.
+- **Side:**
+  1. The pin sits in a `left`/`right`/`top`/`bottom` block → that side.
+  2. Otherwise: the side from the template.
+  3. Otherwise: derived from the connections. With `direction LR`, pins with mostly
+     incoming connections move left, those with outgoing connections right (with `TB`,
+     top/bottom accordingly). A tie and unconnected pins → left, or top.
+- **Order** on a side = declaration order (template pins first).
+- An instance may redeclare a template pin of the same kind in order to move it to another
+  side. Redeclaring it with a different kind is an error.
 
-**Signalarten** (gemeinsamer Wertevorrat für Pins und Verbindungen, fest in v0.1):
+**Signal kinds** (one shared set of values for pins and connections, fixed in v0.1):
 
-| Gruppe | Arten |
+| Group | Kinds |
 |--------|-------|
-| Versorgung | `power`, `ground` |
-| Einzelsignal | `signal`, `digital`, `analog`, `pwm` |
+| Supply | `power`, `ground` |
+| Single signal | `signal`, `digital`, `analog`, `pwm` |
 | Bus | `bus`, `can`, `lin`, `spi`, `i2c`, `uart`, `ethernet` |
-| Diagnose | `diagnostic`, `debug` |
+| Diagnostics | `diagnostic`, `debug` |
 
-**Pin-Darstellung** (`pins`, auf Architektur-Ebene, Standard `all`):
+**Pin rendering** (`pins`, at architecture level, default `all`):
 
-| Wert | gezeichnet |
+| Value | drawn |
 |------|------------|
-| `all` | alle Pins |
-| `connected` | nur Pins, an denen eine Verbindung hängt |
-| `none` | keine Pins |
+| `all` | every pin |
+| `connected` | only pins that have a connection |
+| `none` | no pins |
 
-Gedacht für Präsentationssichten mit Bibliotheks-Templates. Ausgeblendete Pins bleiben im
-Semantic Model (Adressierung, Typableitung, Seitenwahl funktionieren unverändert); das Layout
-misst die Komponente ohne sie, und Verbindungen an einen ausgeblendeten Pin docken wie
-Körperanschlüsse an. Im React-Flow-Export fehlen ausgeblendete Pins als Handles, die Kante
-hängt am Körper-Handle. `I301` entfällt bei `connected` und `none`.
+Meant for presentation views built on library templates. Hidden pins stay in the semantic
+model (addressing, kind inference and side selection work unchanged); the layout measures
+the component without them, and connections to a hidden pin dock like body connections. In
+the React Flow export hidden pins are missing as handles and the edge hangs on the body
+handle. `I301` does not apply with `connected` and `none`.
 
-Die Gruppe bestimmt die Linienform (siehe [05 Rendering](05-rendering-export.md#linienformen)),
-die konkrete Art bestimmt Label-Vorgaben und später Plausibilitätsregeln.
+The group determines the line style (see [05 Rendering](05-rendering-export.md#line-styles)),
+the concrete kind determines label defaults and, later, consistency rules.
 
-### 4.3 Verbindungen
+### 4.3 Connections
 
-| Syntax | Bedeutung | Semantic Model |
+| Syntax | Meaning | Semantic model |
 |--------|-----------|----------------|
-| `a -> b` | gerichtet a nach b | `source=a, target=b, direction=forward` |
-| `a <- b` | gerichtet b nach a | normalisiert zu `source=b, target=a, direction=forward` |
-| `a <-> b` | bidirektional | `direction=bidirectional` |
-| `a -- b` | ungerichtet | `direction=none` |
+| `a -> b` | directed, a to b | `source=a, target=b, direction=forward` |
+| `a <- b` | directed, b to a | normalized to `source=b, target=a, direction=forward` |
+| `a <-> b` | bidirectional | `direction=bidirectional` |
+| `a -- b` | undirected | `direction=none` |
 
-- Endpunkt ohne Pin (`motor`) verbindet an den **Körper** der Komponente. Das Layout
-  wählt dafür einen virtuellen Port auf der zur Flussrichtung passenden Seite.
-- **Typableitung**, wenn `type` fehlt:
-  1. beide Endpunkte Pins gleicher Art → diese Art,
-  2. beide Pins, verschiedene Arten derselben Gruppe → Art des Quell-Pins,
-  3. genau ein Endpunkt ist ein Pin → dessen Art,
-  4. sonst `signal`.
-- Pins aus verschiedenen Gruppen (z. B. `power` → `can`) ergeben `W201`, außer die
-  Verbindung setzt `type` explizit.
-- Verbindungen stehen in v0.1 nur auf `architecture`-Ebene.
-- Mehrere Verbindungen zwischen denselben Endpunkten sind erlaubt und werden parallel geführt.
+- An endpoint without a pin (`motor`) connects to the **body** of the component. The layout
+  picks a virtual port for it on the side that matches the flow direction.
+- **Kind inference** when `type` is missing:
+  1. both endpoints are pins of the same kind → that kind,
+  2. both are pins of different kinds in the same group → the kind of the source pin,
+  3. exactly one endpoint is a pin → its kind,
+  4. otherwise `signal`.
+- Pins from different groups (e.g. `power` → `can`) produce `W201`, unless the connection
+  sets `type` explicitly.
+- In v0.1, connections only exist at `architecture` level.
+- Several connections between the same endpoints are allowed and are routed in parallel.
 
-### 4.4 Zonen und Systeme
+### 4.4 Zones and systems
 
-Beide gruppieren Komponenten, haben aber unterschiedliche Aufgaben:
+Both group components, but they serve different purposes:
 
 | | `zone` | `system` |
 |---|---|---|
-| Zweck | **Layout**-Band entlang der Flussrichtung | **semantische** Grenze (ECU, Domäne, Fahrzeug) |
-| Verschachtelung | nur auf oberster Ebene | beliebig, auch innerhalb von Zonen |
-| Darstellung | beschriftetes Band mit dezentem Hintergrund | beschrifteter Rahmen |
+| Purpose | **layout** band along the flow direction | **semantic** boundary (ECU, domain, vehicle) |
+| Nesting | top level only | anywhere, including inside zones |
+| Appearance | labeled band with a subtle background | labeled frame |
 
-- Die Struktur ist ein Baum: `architecture › zone › system* › component`.
-- Zonen werden in Deklarationsreihenfolge entlang `direction` angeordnet
-  (LR: Spalten von links nach rechts, TB: Zeilen von oben nach unten).
-- Werden Zonen verwendet, muss **jede** Komponente in einer Zone liegen.
-- Eine Komponente gehört dem innersten Block, in dem sie definiert ist. Referenzen auf
-  anderswo definierte Komponenten gibt es in v0.1 nicht.
+- The structure is a tree: `architecture › zone › system* › component`.
+- Zones are arranged in declaration order along `direction` (LR: columns left to right,
+  TB: rows top to bottom).
+- If zones are used, **every** component must sit in a zone.
+- A component belongs to the innermost block it is defined in. There are no references to
+  components defined elsewhere in v0.1.
 
-### 4.5 Layout-Steuerung
+### 4.5 Layout control
 
 ```sysarch
 layout {
@@ -268,16 +267,17 @@ layout {
 }
 ```
 
-- `direction LR | TB` — Hauptflussrichtung, Standard `LR`.
-- `mode strict` (Standard): Der Renderer entscheidet alles; `hint`s erzeugen eine Warnung
-  und werden ignoriert; der visuelle Editor erlaubt kein Verschieben.
-- `mode assisted`: Komponenten dürfen im Editor verschoben werden. Das Ergebnis wird als
-  `hint row N` / `hint column N` in die DSL geschrieben — nie als Pixel.
-- `grid` legt Spalte und Zeile im **fertigen Bild** fest (unabhängig von `direction`).
-  `.` ist eine leere Zelle. Nicht aufgeführte Komponenten platziert das Layout automatisch.
-- **Überspannen:** Steht dieselbe ID in mehreren benachbarten Zellen, belegt die Komponente
-  alle diese Zellen und wird auf ihre Breite bzw. Höhe gestreckt. Die Zellen müssen ein
-  lückenloses Rechteck bilden. Typisch für Präsentationssichten mit einem zentralen Baustein:
+- `direction LR | TB` — main flow direction, default `LR`.
+- `mode strict` (default): the renderer decides everything; `hint`s raise a warning and are
+  ignored; the visual editor allows no dragging.
+- `mode assisted`: components may be dragged in the editor. The result is written back into
+  the DSL as `hint row N` / `hint column N` — never as pixels.
+- `grid` fixes column and row in the **finished image** (independently of `direction`).
+  `.` is an empty cell. Components that are not listed are placed automatically by the
+  layout.
+- **Spanning:** if the same id appears in several adjacent cells, the component occupies all
+  of them and is stretched to their width or height. The cells must form a gapless
+  rectangle. Typical for presentation views with one central building block:
 
   ```sysarch
   layout {
@@ -289,10 +289,10 @@ layout {
   }
   ```
 
-  Verbindungen ohne Pin zu Komponenten darüber und darunter docken genau gegenüber an und
-  laufen gerade (vollständiges Beispiel: [`examples/mcu-hub.arch`](../examples/mcu-hub.arch)).
-- `hint row|column` (1-basiert) hat dieselbe Bedeutung für eine einzelne Komponente.
-- Grid und Hints dürfen Zonen-Zusammenhang nicht verletzen (sonst Fehler `E108`).
+  Pinless connections to the components above and below dock exactly opposite each other and
+  run straight (full example: [`examples/mcu-hub.arch`](../examples/mcu-hub.arch)).
+- `hint row|column` (1-based) means the same for a single component.
+- Grid and hints must not break zone cohesion (otherwise error `E108`).
 
 ### 4.6 Templates (`define`)
 
@@ -307,30 +307,30 @@ define half_bridge {
 }
 ```
 
-- Templates beschreiben Vorgaben für Label, Kategorie, Größe, Form, Icon und Pins —
-  **keine Geometrie**.
-- `extends` erbt Pins und Vorgaben; Pins werden angehängt, Vorgaben überschrieben.
+- Templates describe defaults for label, category, size, shape, icon and pins —
+  **no geometry**.
+- `extends` inherits pins and defaults; pins are appended, defaults are overridden.
 
-#### Formen
+#### Shapes
 
-`shape` wählt aus einer **festen Liste**. Jede Form hat eine definierte Kontur, an der
-Pins andocken, und einen Innenbereich für Label und Icon
-(Details in [04 Layout](04-layout.md#formen-und-pins)).
+`shape` picks from a **fixed list**. Every shape has a defined outline for pins to dock on
+and an inner area for label and icon
+(details in [04 Layout](04-layout.md#shapes-and-pins)).
 
-| Form | Darstellung | typische Verwendung |
+| Shape | Appearance | typical use |
 |------|-------------|---------------------|
-| `rounded` | Rechteck mit Theme-Radius (Standard) | Steuergeräte, Controller, Treiber |
-| `rect` | Rechteck ohne Radius | externe Systeme, Stecker |
-| `circle` | Kreis (quadratische Hülle) | Motoren, Sensoren, Masse |
-| `hexagon` | Sechseck, Spitzen links/rechts | Software-Komponenten, Gateways |
-| `cylinder` | Zylinder | Speicher, Datenablagen |
+| `rounded` | rectangle with the theme radius (default) | ECUs, controllers, drivers |
+| `rect` | rectangle without radius | external systems, connectors |
+| `circle` | circle (square bounding box) | motors, sensors, ground |
+| `hexagon` | hexagon, points left/right | software components, gateways |
+| `cylinder` | cylinder | memory, data stores |
 
 #### Icons
 
-`icon <name>` referenziert ein Icon aus der **Icon-Bibliothek** (`library/icons/`).
-Icons sind einfarbige Symbole, das Theme färbt sie in der Textfarbe der Kategorie.
-Das Diagramm kann keine Bilddateien, URLs oder eigene Grafiken einbinden
-(siehe [05 Rendering](05-rendering-export.md#icons)).
+`icon <name>` references an icon from the **icon library** (`library/icons/`). Icons are
+single-color symbols; the theme paints them in the text color of the category. The diagram
+cannot embed image files, URLs or custom graphics
+(see [05 Rendering](05-rendering-export.md#icons)).
 
 ```sysarch
 define motor extends actuator {
@@ -343,76 +343,78 @@ define window_motor extends motor {
     icon window
 }
 ```
-- Die mitgelieferte Bibliothek ([`library/automotive.archlib`](../library/automotive.archlib))
-  ist selbst in dieser Syntax geschrieben und wird vor jedem Dokument geladen.
-- Dokument-lokale `define`s stehen vor `architecture` und überschreiben Bibliotheksnamen
-  mit einer Warnung.
+- The bundled library ([`library/automotive.archlib`](../library/automotive.archlib)) is
+  itself written in this syntax and is loaded before every document.
+- Document-local `define`s go before `architecture` and override library names with a
+  warning.
 
-### 4.7 Reservierte Konstrukte (Parser meldet „ab v0.x verfügbar“)
+### 4.7 Reserved constructs (the parser reports "available from v0.x")
 
-`use "datei.archlib"` · `view <id>` · `show in <view>` · `interface` · `rule`
+`use "file.archlib"` · `view <id>` · `show in <view>` · `interface` · `rule`
 
 ---
 
-## 5. Diagnosen
+## 5. Diagnostics
 
-Jede Diagnose hat Code, Schweregrad, Meldung und Quellbereich (Zeile/Spalte von–bis).
-Codes sind stabil und dokumentiert, damit CI-Filter und Tests darauf aufbauen können.
+Every diagnostic has a code, a severity, a message and a source range (line/column, from–to).
+Codes are stable and documented so that CI filters and tests can build on them.
 
-| Code | Stufe | Auslöser |
+| Code | Level | Trigger |
 |------|-------|----------|
-| `E001` | Fehler | Syntaxfehler (erwartetes Token, gefundenes Token) |
-| `E101` | Fehler | doppelte ID (Komponente, Zone, System) oder doppelt definiertes Template |
-| `E102` | Fehler | unbekannte Komponente in Verbindung, Grid oder Hint |
-| `E103` | Fehler | unbekannter Pin — mit Vorschlag per Levenshtein („meintest du `CAN_TX`?“) |
-| `E104` | Fehler | unbekanntes Template oder zyklisches `extends` |
-| `E105` | Fehler | doppelter Pin-Name bzw. Neudeklaration mit anderer Art |
-| `E106` | Fehler | Komponente außerhalb einer Zone, obwohl Zonen verwendet werden |
-| `E107` | Fehler | Grid-Zellen einer Komponente bilden kein lückenloses Rechteck oder Grid-Zeilen unterschiedlich breit |
-| `E108` | Fehler | Grid/Hint verletzt Zonen-Zusammenhang |
-| `E109` | Fehler | unbekannte Signalart, Kategorie oder unbekanntes Theme |
-| `E110` | Fehler | reserviertes Konstrukt aus späterer Version |
-| `E111` | Fehler | unbekannte Form oder unbekanntes Icon — mit Vorschlag per Levenshtein |
-| `W201` | Warnung | Verbindung zwischen Pins unverträglicher Gruppen (z. B. `power` → `can`) |
-| `W202` | Warnung | `hint` in `mode strict` |
-| `W203` | Warnung | lokales `define` überschreibt Bibliotheks-Template |
-| `I301` | Hinweis | Pin ohne Verbindung |
+| `E001` | error | syntax error (expected token, found token) |
+| `E101` | error | duplicate id (component, zone, system) or template defined twice |
+| `E102` | error | unknown component in a connection, grid or hint |
+| `E103` | error | unknown pin — with a Levenshtein suggestion ("did you mean `CAN_TX`?") |
+| `E104` | error | unknown template or cyclic `extends` |
+| `E105` | error | duplicate pin name, or redeclaration with a different kind |
+| `E106` | error | component outside a zone although zones are used |
+| `E107` | error | the grid cells of a component do not form a gapless rectangle, or grid rows differ in width |
+| `E108` | error | grid/hint breaks zone cohesion |
+| `E109` | error | unknown signal kind, category or theme |
+| `E110` | error | construct reserved for a later version |
+| `E111` | error | unknown shape or icon — with a Levenshtein suggestion |
+| `W201` | warning | connection between pins of incompatible groups (e.g. `power` → `can`) |
+| `W202` | warning | `hint` in `mode strict` |
+| `W203` | warning | local `define` overrides a library template |
+| `I301` | info | pin without a connection |
 
-**Fehlertoleranz:** Der Parser synchronisiert nach einem Fehler auf die nächste `}` bzw.
-das nächste Anweisungs-Schlüsselwort und liefert ein Teil-AST. Die Vorschau zeigt den
-letzten fehlerfreien Stand plus Diagnosen — sie wird nie leer, nur weil gerade getippt wird.
+**Error tolerance:** after an error the parser synchronizes on the next `}` or the next
+statement keyword and returns a partial AST. The preview shows the last error-free state
+plus the diagnostics — it never goes blank just because someone is typing.
 
 ---
 
-## 6. Kanonische Formatierung
+## 6. Canonical formatting
 
-`sysarch fmt` erzeugt eine eindeutige Schreibweise. Der Visuelle Editor nutzt dieselben
-Regeln für eingefügten Text.
+`sysarch fmt` produces one unambiguous spelling. The visual editor uses the same rules for
+the text it inserts.
 
-- **Einrückung** 4 Leerzeichen, ein Leerzeichen zwischen Token, `\n` als Zeilenende,
-  genau ein Zeilenumbruch am Dateiende.
-- **Reihenfolge in `architecture`:** `theme` › `direction` › `pins` › `stack` › `layout` ›
-  Zonen/Systeme/Komponenten › Verbindungen. Innerhalb dieser Gruppen und in allen anderen
-  Blöcken bleibt die Quelltextreihenfolge — sie trägt Bedeutung (Pin- und Zonenreihenfolge).
-- **Leerzeilen:** höchstens eine in Folge, keine am Anfang oder Ende eines Blocks. Zwischen
-  den Abschnitten (`theme`/`direction`/`pins`/`stack`, `layout`, Struktur, Verbindungen) und zwischen
-  `define`s steht immer eine.
-- **Einzeiler** `kopf { … }`, sofern der Block keine Kommentare enthält:
-  - Verbindungen mit höchstens zwei Eigenschaften: `a.X -> b { label "x" type can }`
-  - Komponenten mit genau einer Eigenschaft (`label`, `size`, `importance`, `category`,
+- **Indentation** 4 spaces, one space between tokens, `\n` as the line ending, exactly one
+  line break at the end of the file.
+- **Order inside `architecture`:** `theme` › `direction` › `pins` › `stack` › `layout` ›
+  zones/systems/components › connections. Within those groups and in every other block the
+  source order is kept — it carries meaning (pin and zone order).
+- **Blank lines:** at most one in a row, none at the start or end of a block. Between the
+  sections (`theme`/`direction`/`pins`/`stack`, `layout`, structure, connections) and between
+  `define`s there is always one.
+- **Single-line** `head { … }`, as long as the block contains no comments:
+  - connections with at most two properties: `a.X -> b { label "x" type can }`
+  - components with exactly one property (`label`, `size`, `importance`, `category`,
     `hint`, `count`): `component kl30: battery { label "KL30" }`
-  - Seitenblöcke mit höchstens drei Pins ohne Anzeigelabel, getrennt durch drei Leerzeichen,
-    solange die Zeile höchstens 80 Zeichen breit ist: `left { pin power VS   pin digital IN }`
-  - Leere Blöcke entfallen bei Komponenten und Verbindungen; sonst `zone z {}`.
-  - `layout`, `grid`, `meta`, Zonen, Systeme, `define` und `architecture` sind immer mehrzeilig.
-- **Ausrichtung:** Aufeinanderfolgende einzeilige Verbindungen bzw. Seitenblöcke richten ihr
-  `{` bündig aus; eine Leerzeile, ein Kommentar auf eigener Zeile oder ein mehrzeiliger Block
-  beginnt eine neue Gruppe. Grid-Spalten werden auf die breiteste Zelle aufgefüllt.
-- **Strings** werden mit den Escapes `\"`, `\\` und `\n` neu geschrieben.
-- **Kommentare bleiben erhalten.** Ein Kommentar auf eigener Zeile gehört zur folgenden
-  Anweisung und wandert beim Umsortieren mit ihr; ein Kommentar am Zeilenende bleibt hinter
-  der Anweisung davor. Kommentare mitten in einer Anweisung (`pin /* x */ can TX`) stehen
-  danach auf eigener Zeile vor der Anweisung.
-- Dateien mit **Syntaxfehlern** werden nicht verändert; Fehler des Resolvers (z. B. unbekannte
-  Pins) verhindern das Formatieren nicht.
-- `fmt` ist idempotent und ändert das Semantic Model nicht (per Test über alle Beispiele).
+  - side blocks with at most three pins without a display label, separated by three spaces,
+    as long as the line stays within 80 characters: `left { pin power VS   pin digital IN }`
+  - empty blocks are dropped on components and connections; otherwise `zone z {}`.
+  - `layout`, `grid`, `meta`, zones, systems, `define` and `architecture` are always
+    multi-line.
+- **Alignment:** consecutive single-line connections and side blocks align their `{`; a blank
+  line, a comment on its own line or a multi-line block starts a new group. Grid columns are
+  padded to the widest cell.
+- **Strings** are rewritten with the escapes `\"`, `\\` and `\n`.
+- **Comments are preserved.** A comment on its own line belongs to the statement that follows
+  and moves with it when statements are reordered; a comment at the end of a line stays behind
+  the statement in front of it. Comments in the middle of a statement (`pin /* x */ can TX`)
+  end up on their own line before the statement.
+- Files with **syntax errors** are left untouched; resolver errors (e.g. unknown pins) do not
+  prevent formatting.
+- `fmt` is idempotent and does not change the semantic model (verified by a test across all
+  examples).

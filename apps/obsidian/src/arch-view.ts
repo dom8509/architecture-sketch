@@ -5,7 +5,7 @@ import { Workbench } from "./workbench.js";
 
 export const ARCH_VIEW = "sysarch-arch";
 
-/** Eigene Ansicht für `.arch`-Dateien: derselbe Editor wie in der Web-App. */
+/** Dedicated view for `.arch` files: the same editor as in the web app. */
 export class ArchView extends TextFileView {
   workbench: Workbench | undefined;
 

@@ -23,8 +23,8 @@ const AFTER_KEYWORD: Record<string, Completion[]> = {
 };
 
 /**
- * Vervollständigung aus dem Semantic Model der letzten Analyse:
- * Template-Namen nach `:`, Pin-Namen nach `komponente.`, feste Werte nach `pin`, `type`, `theme` usw.
+ * Completion from the semantic model of the last analysis:
+ * template names after `:`, pin names after `component.`, fixed values after `pin`, `type`, `theme` and so on.
  */
 export function sysarchCompletion(current: () => Analysis | undefined) {
   return (context: CompletionContext): CompletionResult | null => {
@@ -51,7 +51,7 @@ export function sysarchCompletion(current: () => Analysis | undefined) {
         label: t.name, type: "class", ...(t.category && { detail: t.category }),
       }));
       for (const define of analysis?.tree.defines ?? []) {
-        if (!options.some((o) => o.label === define.name.name)) options.push({ label: define.name.name, type: "class", detail: "lokal" });
+        if (!options.some((o) => o.label === define.name.name)) options.push({ label: define.name.name, type: "class", detail: "local" });
       }
       return {
         from,

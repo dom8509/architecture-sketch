@@ -1,30 +1,30 @@
-# sysarch — Architecture-as-Code für Engineering-Diagramme
+# sysarch — Architecture-as-Code for engineering diagrams
 
-> Konsistente technische Architekturdiagramme aus Text: feste Semantik, feste Abstände,
-> Pins als First-Class-Elemente, orthogonale Verbindungen, Corporate Styles und
-> reproduzierbare SVG-/PNG-Ausgabe.
+> Consistent technical architecture diagrams from text: fixed semantics, fixed spacing,
+> pins as first-class elements, orthogonal connections, corporate styles and reproducible
+> SVG/PNG output.
 
-**Dokumentation:** https://dom8509.github.io/sysarch/ · **Web-App:** https://dom8509.github.io/sysarch/app/
+**Documentation:** https://dom8509.github.io/sysarch/ · **Web app:** https://dom8509.github.io/sysarch/app/
 
-**Status:** In Entwicklung. Umgesetzt sind M1 (Sprache: [`packages/core`](packages/core)),
-M2 (Layout & SVG: [`packages/themes`](packages/themes), [`packages/layout`](packages/layout),
+**Status:** In development. Implemented so far are M1 (language: [`packages/core`](packages/core)),
+M2 (layout & SVG: [`packages/themes`](packages/themes), [`packages/layout`](packages/layout),
 [`packages/render-svg`](packages/render-svg)), M3 (CLI: [`apps/cli`](apps/cli)), M4
-(Web-App: [`packages/editor`](packages/editor), [`apps/web`](apps/web)) und M5 (Exporte:
+(web app: [`packages/editor`](packages/editor), [`apps/web`](apps/web)), M5 (exports:
 [`packages/export-png`](packages/export-png), [`packages/export-reactflow`](packages/export-reactflow),
-Test-App [`apps/reactflow-test`](apps/reactflow-test)) und M6 (Obsidian-Plugin:
+test app [`apps/reactflow-test`](apps/reactflow-test)) and M6 (Obsidian plugin:
 [`apps/obsidian`](apps/obsidian)).
 
 ```sh
 npm install
 npm run typecheck
-npm test                  # inkl. Golden Files unter tests/golden/
-npx vitest run -u         # Golden Files nach einer gewollten Layoutänderung aktualisieren
-npm run build             # CLI, Web-App, React-Flow-Test-App und Obsidian-Plugin bauen
-npm run web               # Web-App mit Live-Vorschau unter http://localhost:5173
-npm run reactflow-test    # React-Flow-Test-App: lädt Beispiele bzw. exportiertes JSON
-npm run obsidian:install -- ~/Pfad/zum/Vault   # Obsidian-Plugin bauen und in einen Vault kopieren
-npm run docs              # Dokumentation mit Live-Reload unter http://localhost:5173/sysarch/
-npm run docs:build        # Dokumentation + Web-App wie auf GitHub Pages bauen
+npm test                  # including golden files under tests/golden/
+npx vitest run -u         # update golden files after an intended layout change
+npm run build             # build CLI, web app, React Flow test app and Obsidian plugin
+npm run web               # web app with live preview at http://localhost:5173
+npm run reactflow-test    # React Flow test app: loads examples or exported JSON
+npm run obsidian:install -- ~/path/to/vault   # build the Obsidian plugin and copy it into a vault
+npm run docs              # documentation with live reload at http://localhost:5173/sysarch/
+npm run docs:build        # build documentation + web app exactly as on GitHub Pages
 
 npm run sysarch -- render examples --out build/examples
 npm run sysarch -- render examples --format png --scale 2 --out build/examples
@@ -33,32 +33,32 @@ npm run sysarch -- check examples library --max-warnings 0
 npm run sysarch -- fmt examples library --check
 ```
 
-## Positionierung
+## Positioning
 
-| Tool       | optimiert auf                          |
-|------------|----------------------------------------|
-| Excalidraw | Freiheit                               |
-| Mermaid    | schnelle, generische Diagramme         |
-| React Flow | interaktive Graph-Anwendungen          |
-| **sysarch**| **konsistente Embedded-/Systemarchitekturen** |
+| Tool       | optimized for                                 |
+|------------|-----------------------------------------------|
+| Excalidraw | freedom                                       |
+| Mermaid    | quick, generic diagrams                       |
+| React Flow | interactive graph applications                |
+| **sysarch**| **consistent embedded/system architectures**  |
 
-Die Einschränkungen sind der Vorteil: Zehn Diagramme von zehn Entwicklern sehen aus,
-als hätte sie eine Person erstellt.
+The constraints are the point: ten diagrams from ten engineers look as though one person
+drew them all.
 
-## Grundprinzipien
+## Core principles
 
-1. **Der Text ist das führende Modell.** SVG, PNG und React-Flow-JSON werden daraus
-   erzeugt. Visuelles Editieren ändert den Text, nie einen parallelen State.
-2. **Ein einziges Layoutmodell.** Vorschau und Export kommen aus demselben Scene Graph —
-   was im Editor zu sehen ist, wird exportiert.
-3. **Design-System statt Pixel.** Keine Koordinaten, keine freien Schriftgrößen. Nur
-   semantische Stufen (`size`, `importance`, `category`); das Theme entscheidet.
-4. **Deterministisch.** Gleiche Eingabe ergibt byte-gleiches SVG — im Browser, in
-   Obsidian und in der CI.
-5. **Core ohne Laufzeit-Abhängigkeiten.** Lexer, Parser, Layout, Routing und
-   SVG-Renderer sind eigener TypeScript-Code.
+1. **The text is the source of truth.** SVG, PNG and React Flow JSON are derived from it.
+   Visual editing changes the text, never a parallel state.
+2. **A single layout model.** Preview and export come from the same scene graph — what you
+   see in the editor is what gets exported.
+3. **Design system instead of pixels.** No coordinates, no free-form font sizes. Only
+   semantic steps (`size`, `importance`, `category`); the theme decides.
+4. **Deterministic.** The same input yields byte-identical SVG — in the browser, in
+   Obsidian and in CI.
+5. **Core without runtime dependencies.** Lexer, parser, layout, routing and the SVG
+   renderer are our own TypeScript code.
 
-## Kurzbeispiel
+## Short example
 
 ```sysarch
 architecture "Door ECU" {
@@ -87,22 +87,22 @@ architecture "Door ECU" {
 }
 ```
 
-## Konzept
+## Concept
 
-| Dokument | Inhalt |
-|----------|--------|
-| [01 Zielbild](docs/01-zielbild.md) | Produkt, Zielgruppen, Einsatzorte, Abgrenzung |
-| [02 DSL v0.1](docs/02-dsl.md) | Sprache, Grammatik, Diagnosen |
-| [03 Domänenmodell](docs/03-domaenenmodell.md) | AST, Semantic Model, Scene Graph als TypeScript |
-| [04 Layout & Routing](docs/04-layout.md) | Platzierung, Zonen, Grid, orthogonales Routing |
-| [05 Rendering & Export](docs/05-rendering-export.md) | Themes, SVG, PNG, React Flow |
-| [06 Anwendungen](docs/06-anwendungen.md) | Web-App, Obsidian, CLI, visuelles Editieren |
-| [07 Repository-Struktur](docs/07-repository.md) | Pakete, Abhängigkeitsregeln, Tooling |
-| [08 Roadmap](docs/08-roadmap.md) | Meilensteine, MVP-Schnitt, offene Fragen |
-| [Entscheidungen](docs/entscheidungen.md) | Festgelegte Designentscheidungen mit Begründung |
+| Document | Contents |
+|----------|----------|
+| [01 Vision](docs/01-vision.md) | Product, audiences, use sites, scope boundaries |
+| [02 DSL v0.1](docs/02-dsl.md) | Language, grammar, diagnostics |
+| [03 Domain model](docs/03-domain-model.md) | AST, semantic model, scene graph as TypeScript |
+| [04 Layout & routing](docs/04-layout.md) | Placement, zones, grid, orthogonal routing |
+| [05 Rendering & export](docs/05-rendering-export.md) | Themes, SVG, PNG, React Flow |
+| [06 Applications](docs/06-applications.md) | Web app, Obsidian, CLI, visual editing |
+| [07 Repository structure](docs/07-repository.md) | Packages, dependency rules, tooling |
+| [08 Roadmap](docs/08-roadmap.md) | Milestones, MVP scope, open questions |
+| [Decisions](docs/decisions.md) | Settled design decisions with their rationale |
 
-Beispiele liegen unter [`examples/`](examples/).
+Examples live under [`examples/`](examples/).
 
-## Lizenz
+## License
 
 [MIT](LICENSE)

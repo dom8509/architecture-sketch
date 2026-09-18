@@ -4,7 +4,7 @@ import {
 } from "@sysarch/core";
 import type { Point, Rect, SceneGraph, SceneMarker, ScenePath, SceneRect, SceneShape } from "@sysarch/layout";
 
-// Typen spiegeln `ReactFlowJsonObject` aus @xyflow/react, ohne davon abzuhängen (D16).
+// Types mirror `ReactFlowJsonObject` from @xyflow/react without depending on it (D16).
 
 export interface ReactFlowExport {
   nodes: (ComponentNode | GroupNode)[];
@@ -22,7 +22,7 @@ export interface GroupNode {
   type: "group";
   parentId?: string;
   extent?: "parent";
-  /** Relativ zum Elternknoten, sonst absolut. */
+  /** Relative to the parent node, otherwise absolute. */
   position: XY;
   style: { width: number; height: number };
   data: { label: string; groupType: "zone" | "system" };
@@ -30,7 +30,7 @@ export interface GroupNode {
 
 export interface ComponentNode {
   id: string;
-  /** Template-Name; die Zielanwendung registriert dafür einen Custom Node. */
+  /** Template name; the target application registers a custom node for it. */
   type: string;
   parentId?: string;
   extent?: "parent";
@@ -45,30 +45,30 @@ export interface ComponentData {
   category: Category;
   importance: Importance;
   size: Size;
-  /** Form der Hülle; `pins[].offset` bezieht sich auf die Hülle. */
+  /** Shape of the hull; `pins[].offset` refers to the hull. */
   shape: Shape;
-  /** Vollständige Pfaddaten, damit die Zielanwendung ohne sysarch-Bibliothek auskommt. */
+  /** Complete path data, so the target application works without the sysarch library. */
   icon?: IconDef;
-  /** Anzahl gleicher Elemente (`count`); fehlt bei 1. Die Hülle umfasst den ganzen Stapel. */
+  /** Number of identical elements (`count`); absent for 1. The hull covers the whole stack. */
   count?: number;
   pins: PinData[];
   meta: Record<string, string>;
 }
 
 export interface PinData {
-  /** Handle-ID im Custom Node. */
+  /** Handle id in the custom node. */
   id: string;
   label: string;
   kind: SignalKind;
   side: Side;
-  /** Entlang der Seite ab der linken bzw. oberen Ecke der Hülle, in px. */
+  /** Along the side, from the left or top corner of the hull, in px. */
   offset: number;
 }
 
 export interface ConnectionEdge {
   id: string;
   source: string;
-  /** Pin-Name oder virtueller Körperanschluss `__body_<side>`. */
+  /** Pin name or virtual body handle `__body_<side>`. */
   sourceHandle: string;
   target: string;
   targetHandle: string;
@@ -80,23 +80,23 @@ export interface ConnectionEdge {
   data: {
     kind: SignalKind;
     direction: "forward" | "bidirectional" | "none";
-    /** Geroutete Geometrie in absoluten Koordinaten, damit eine Custom Edge nicht neu routet. */
+    /** Routed geometry in absolute coordinates, so a custom edge does not re-route. */
     points: [number, number][];
   };
 }
 
-/** Handle-ID eines Körperanschlusses (Verbindung ohne Pin). */
+/** Handle id of a body connection point (connection without a pin). */
 export function bodyHandle(side: Side): string {
   return `__body_${side}`;
 }
 
 /**
- * Semantic Model + Scene Graph → React-Flow-JSON. Reine Funktion, deterministisch; die
- * Geometrie kommt vollständig aus dem Scene Graph, damit sie dem SVG entspricht.
- * Eltern stehen in `nodes` vor ihren Kindern, wie React Flow es verlangt.
+ * Semantic model + scene graph → React Flow JSON. Pure function, deterministic; the geometry
+ * comes entirely from the scene graph so that it matches the SVG.
+ * Parents come before their children in `nodes`, as React Flow requires.
  */
 export function toReactFlow(source: ArchitectureModel, scene: SceneGraph): ReactFlowExport {
-  // Dieselbe Sicht wie das Layout: zusammengefasste Komponenten erscheinen einmal mit `count`.
+  // Same view as the layout: stacked components appear once with `count`.
   const model = stackIdentical(source);
   const shapes = new Map<string, SceneShape>();
   const frames = new Map<string, SceneRect>();
@@ -167,7 +167,7 @@ export function toReactFlow(source: ArchitectureModel, scene: SceneGraph): React
   };
   visit(model.root.children, undefined, undefined);
 
-  // Ausgeblendete Pins (`pins connected|none`) haben keinen Handle; die Kante hängt am Körper.
+  // Hidden pins (`pins connected|none`) have no handle; the edge attaches to the body.
   const handle = (component: string, pin: string | undefined) =>
     pin !== undefined && pins.has(`pin:${component}.${pin}`) ? pin : undefined;
   const edges: ConnectionEdge[] = [];
@@ -205,7 +205,7 @@ function sideOfAngle(angle: SceneMarker["angle"]): Side {
   return angle === 0 ? "right" : angle === 90 ? "bottom" : angle === 180 ? "left" : "top";
 }
 
-/** Seite der Hülle, an der ein Routenende liegt. */
+/** Side of the hull a route end lies on. */
 function nearestSide(hull: Rect, p: Point): Side {
   const distance: Record<Side, number> = {
     left: Math.abs(p.x - hull.x),

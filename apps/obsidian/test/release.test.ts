@@ -4,19 +4,19 @@ import { describe, expect, it } from "vitest";
 
 const read = (file: string) => JSON.parse(readFileSync(join(import.meta.dirname, "..", file), "utf8"));
 
-describe("Release-Dateien", () => {
+describe("release files", () => {
   const manifest = read("manifest.json");
 
-  it("Version in manifest.json, package.json und versions.json stimmt überein", () => {
+  it("the version in manifest.json, package.json and versions.json matches", () => {
     expect(manifest.version).toBe(read("package.json").version);
     expect(read("versions.json")[manifest.version]).toBe(manifest.minAppVersion);
   });
 
-  it("manifest.json im Repo-Wurzelverzeichnis ist identisch (BRAT liest sie dort)", () => {
+  it("manifest.json in the repository root is identical (BRAT reads it there)", () => {
     expect(read("../../manifest.json")).toEqual(manifest);
   });
 
-  it("manifest.json hat die Pflichtfelder eines Community-Plugins", () => {
+  it("manifest.json has the required fields of a community plugin", () => {
     for (const key of ["id", "name", "version", "minAppVersion", "description", "author", "isDesktopOnly"]) {
       expect(manifest).toHaveProperty(key);
     }

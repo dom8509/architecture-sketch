@@ -1,8 +1,8 @@
-## Inhalt
+## Contents
 
 -
 
-## Dokumentation
+## Documentation
 
-- [ ] Nutzerseitige Änderung (Sprache, Bibliothek, CLI, Web-App, Obsidian) ist in `apps/docs` beschrieben — oder betrifft Nutzer nicht
-- [ ] Konzept (`docs/`) angepasst, falls Regeln oder Entscheidungen sich ändern
+- [ ] User-facing change (language, library, CLI, web app, Obsidian) is described in `apps/docs` — or does not affect users
+- [ ] Concept (`docs/`) updated if rules or decisions changed

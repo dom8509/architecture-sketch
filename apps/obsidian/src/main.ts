@@ -21,16 +21,16 @@ export default class SysarchPlugin extends Plugin {
     this.registerExtensions(["arch"], ARCH_VIEW);
 
     this.registerView(LIBRARY_VIEW, (leaf) => new LibraryView(leaf, this));
-    this.addRibbonIcon("library", "sysarch-Bibliothek anzeigen", () => revealLibrary(this));
+    this.addRibbonIcon("library", "Show sysarch library", () => revealLibrary(this));
     this.addCommand({
       id: "show-library",
-      name: "Bibliothek anzeigen",
+      name: "Show library",
       callback: () => revealLibrary(this),
     });
 
     this.addCommand({
       id: "insert-codeblock",
-      name: "Codeblock einfügen",
+      name: "Insert code block",
       editorCallback: (editor) => {
         const cursor = editor.getCursor();
         editor.replaceSelection("```sysarch\n" + NEW_SOURCE + "```\n");
@@ -40,12 +40,12 @@ export default class SysarchPlugin extends Plugin {
 
     this.addCommand({
       id: "new-arch-file",
-      name: "Neue .arch-Datei",
+      name: "New .arch file",
       callback: async () => {
         const parent: TFolder = this.app.fileManager.getNewFileParent(this.app.workspace.getActiveFile()?.path ?? "");
-        let path = normalizePath(`${parent.path}/Architektur.arch`);
+        let path = normalizePath(`${parent.path}/Architecture.arch`);
         for (let i = 1; this.app.vault.getAbstractFileByPath(path); i++) {
-          path = normalizePath(`${parent.path}/Architektur ${i}.arch`);
+          path = normalizePath(`${parent.path}/Architecture ${i}.arch`);
         }
         try {
           const file = await this.app.vault.create(path, NEW_SOURCE);

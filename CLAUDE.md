@@ -1,19 +1,21 @@
 # sysarch
 
-Architecture-as-Code für Embedded- und Systemarchitekturen. npm-Workspaces-Monorepo (`packages/*`, `apps/*`), Sprache der Doku, Kommentare und Commits: Deutsch.
+Architecture-as-Code for embedded and system architectures. npm workspaces monorepo
+(`packages/*`, `apps/*`). Language of documentation, comments and commits: English.
 
-## Befehle
+## Commands
 
-- `npm run typecheck`, `npm test` — vor jedem Commit
-- `npm run docs:build` — Dokumentation + Web-App bauen; bricht bei fehlerhaften Diagrammen in der Doku und toten Links
-- `npm run docs` — Doku mit Live-Reload
+- `npm run typecheck`, `npm test` — before every commit
+- `npm run docs:build` — build documentation + web app; fails on broken diagrams in the docs and on dead links
+- `npm run docs` — docs with live reload
 
-## Dokumentation aktuell halten
+## Keeping the documentation up to date
 
-Die Nutzerdoku (`apps/docs`, VitePress) wird bei jedem Push auf `main` auf GitHub Pages veröffentlicht (`.github/workflows/docs.yml`).
+The user documentation (`apps/docs`, VitePress) is published to GitHub Pages on every push
+to `main` (`.github/workflows/docs.yml`).
 
-- Jede nutzerseitige Änderung — Syntax, Bibliothek, Diagnosen, CLI, Web-App, Obsidian-Plugin — aktualisiert `apps/docs` **im selben PR**: Referenz (`referenz/`) und die passende Anleitung (`anleitungen/`); Syntax- und Regeländerungen zusätzlich `docs/02-dsl.md`.
-- `docs/*.md` (Konzept) wird beim Build nach `apps/docs/konzept/` kopiert — nur in `docs/` bearbeiten.
-- Bibliothek, Icons, Themes, Signalarten, Beispiele, CLI-Hilfe und alle Diagrammbilder erzeugt `apps/docs/scripts/generate.ts` aus dem Code; neue Themes/Kategorien/Signalgruppen brauchen dort einen Text.
-- ```` ```sysarch ````-Blöcke mit `architecture "…"` werden gerendert und müssen fehlerfrei, warnungsfrei und `sysarch fmt`-formatiert sein; absichtlich fehlerhafte Beispiele: ```` ```sysarch nur-code ````.
-- `apps/docs/test/docs.test.ts` prüft Diagnosecodes, Obsidian-Befehle/Einstellungen/Menüs, Web-App-Schaltflächen, CLI-Optionen und die Sidebar gegen den Code.
+- Every user-facing change — syntax, library, diagnostics, CLI, web app, Obsidian plugin — updates `apps/docs` **in the same PR**: the reference (`reference/`) and the matching guide (`guides/`); syntax and rule changes additionally `docs/02-dsl.md`.
+- `docs/*.md` (concept) is copied to `apps/docs/concept/` at build time — only edit it in `docs/`.
+- Library, icons, themes, signal kinds, examples, CLI help and all diagram images are generated from the code by `apps/docs/scripts/generate.ts`; new themes, categories or signal groups need a text there.
+- ```` ```sysarch ```` blocks containing `architecture "…"` are rendered and must be error-free, warning-free and formatted with `sysarch fmt`; deliberately broken examples use ```` ```sysarch code-only ````.
+- `apps/docs/test/docs.test.ts` checks diagnostic codes, Obsidian commands/settings/menus, web-app buttons, CLI options and the sidebar against the code.

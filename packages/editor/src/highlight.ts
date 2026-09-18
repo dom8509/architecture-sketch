@@ -10,7 +10,7 @@ const KEYWORDS = new Set([
   "label", "size", "importance", "category", "pin", ...SIDES, "hint", "count", "row", "column", "meta",
   "define", "extends", "shape", "icon", "type",
 ]);
-/** Nach diesen Schlüsselwörtern folgt ein Wert aus einer festen Menge. */
+/** These keywords are followed by a value from a fixed set. */
 const VALUE_KEYWORDS = new Set(["theme", "direction", "pins", "stack", "mode", "size", "importance", "category", "pin", "type", "shape", "icon"]);
 const VALUES = new Set<string>([
   ...SIGNAL_KINDS, ...SIZES, ...IMPORTANCES, ...DIRECTIONS, ...PIN_DISPLAYS, ...STACK_MODES, ...LAYOUT_MODES, ...SHAPES, ...CATEGORIES, ...THEMES, "none",
@@ -21,7 +21,7 @@ export type TokenClass =
   | "keyword" | "value" | "definition" | "template" | "pin" | "string" | "number"
   | "operator" | "punctuation" | "comment" | "invalid";
 
-/** Klassifiziert Token für das Highlighting — kontextabhängig, denn die DSL reserviert keine Wörter. */
+/** Classifies tokens for highlighting — context-dependent, because the DSL reserves no words. */
 export function classify(source: string): { start: number; end: number; class: TokenClass }[] {
   const { tokens } = lex(source);
   const result: { start: number; end: number; class: TokenClass }[] = [];
@@ -49,7 +49,7 @@ function tokenClass(t: Token, prev: Token | undefined, next: Token | undefined):
   if (prev?.type === ":" || (prev?.type === "ident" && prev.text === "extends")) return "template";
   if (prev?.type === "ident" && DECLARING.has(prev.text)) return "definition";
   if (prev?.type === "ident" && VALUE_KEYWORDS.has(prev.text) && VALUES.has(t.text)) return "value";
-  // Komponentenreferenz am Anfang einer Verbindung (`pin.X -> …`, `size -> …`)
+  // Component reference at the start of a connection (`pin.X -> …`, `size -> …`)
   if (next?.type === "." || next?.type === "->" || next?.type === "<-" || next?.type === "<->" || next?.type === "--") return undefined;
   if (KEYWORDS.has(t.text)) return "keyword";
   return undefined;
@@ -70,7 +70,7 @@ function decorations(view: EditorView): DecorationSet {
   return builder.finish();
 }
 
-/** Syntax-Highlighting über den Lexer aus `@sysarch/core` — keine zweite Grammatik. */
+/** Syntax highlighting via the lexer from `@sysarch/core` — no second grammar. */
 export const sysarchHighlighting = [
   ViewPlugin.fromClass(
     class {

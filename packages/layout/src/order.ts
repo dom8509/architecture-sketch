@@ -3,9 +3,9 @@ import type { Axes, LEdge, LNode, Port } from "./graph.js";
 const SWEEPS = 4;
 
 /**
- * Phase 3: Reihenfolge innerhalb der Ränge.
- * Barycenter auf Pin-Ebene, Systeme bleiben je Rang zusammenhängend, Gleichstand →
- * Deklarationsreihenfolge, feste Zeilen aus `grid`/`hint` werden danach eingesetzt.
+ * Phase 3: order within the ranks.
+ * Barycenter at pin level, systems stay contiguous within a rank, ties fall back to
+ * declaration order, fixed rows from `grid`/`hint` are inserted afterwards.
  */
 export function orderLayers(nodes: readonly LNode[], edges: readonly LEdge[], axes: Axes): LNode[][] {
   const rankCount = nodes.reduce((m, n) => Math.max(m, n.rank + n.mainSpan), 0);
@@ -20,7 +20,7 @@ export function orderLayers(nodes: readonly LNode[], edges: readonly LEdge[], ax
     incident.get(e.target)!.push(e);
   }
 
-  /** Relative Lage eines Ports quer zur Flussrichtung (0…1). */
+  /** Relative position of a port across the flow direction (0…1). */
   const fraction = (node: LNode, port: Port | undefined): number => {
     if (port?.pin === undefined) return 0.5;
     const size = axes.crossSize(node.box);
@@ -59,7 +59,7 @@ interface Cluster {
   nodes: LNode[];
 }
 
-/** Sortiert einen Rang hierarchisch nach Systemen, setzt feste Zeilen ein und nummeriert. */
+/** Sorts a rank hierarchically by system, inserts fixed rows and numbers the result. */
 function finish(layer: LNode[], keys: Map<LNode, number>): void {
   const sortLevel = (members: LNode[], depth: number): LNode[] => {
     const clusters: Cluster[] = [];

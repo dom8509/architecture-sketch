@@ -17,11 +17,11 @@ export * from "./scene.js";
 export { shapeGeometry, stackFront, stackedGeometry, type ShapeGeometry, type ShapeParams, type Size2 } from "./shapes.js";
 
 export interface LayoutOptions {
-  /** Icons für `SceneGraph.icons`; Standard: Icons der Standardbibliothek. */
+  /** Icons for `SceneGraph.icons`; defaults to the icons of the standard library. */
   icons?: ReadonlyMap<string, IconDef>;
 }
 
-/** ArchitectureModel → SceneGraph. Reine Funktion, deterministisch. */
+/** ArchitectureModel → SceneGraph. Pure function, deterministic. */
 export function layout(
   source: ArchitectureModel,
   theme: Theme,
@@ -33,7 +33,7 @@ export function layout(
   const axes = new Axes(model.direction);
   const font = theme.typography.fontFamily;
 
-  // ── Größen ───────────────────────────────────────────────────
+  // ── Sizes ────────────────────────────────────────────────────
   const boxes = new Map<string, ComponentBox>();
   for (const c of model.components.values()) boxes.set(c.id, sizeComponent(c, theme, metrics));
 
@@ -58,7 +58,7 @@ export function layout(
     };
   });
 
-  // ── Ränge, Reihenfolge, Ports, Koordinaten ───────────────────
+  // ── Ranks, order, ports, coordinates ─────────────────────────
   assignRanks(nodes, edges, zones.length);
   const layers = orderLayers(nodes, edges, axes);
   assignBodyPorts(edges, axes, grid);
@@ -76,7 +76,7 @@ export function layout(
     const r = gap.after;
     labelSpace[r] = Math.max(labelSpace[r] ?? 0, along + 2 * theme.markers.arrow + 2 * grid);
   }
-  // Knoten über mehrere Grid-Zellen: Hülle strecken, Pins behalten ihre Port-Objekte.
+  // Nodes spanning several grid cells: stretch the hull, pins keep their port objects.
   const stretched = new Map<LNode, { main?: number; cross?: number }>();
   const stretch = (n: LNode, main: number | undefined, cross: number | undefined) => {
     const current = { ...stretched.get(n), ...(main !== undefined && { main }), ...(cross !== undefined && { cross }) };
@@ -89,7 +89,7 @@ export function layout(
   const natural = (n: LNode) => boxes.get(n.id)!;
   const frames = placeNodes({ model, theme, axes, nodes, edges, layers, zones, labelSpace, stretch, natural });
 
-  // ── Gruppenlabels ────────────────────────────────────────────
+  // ── Group labels ─────────────────────────────────────────────
   const groupStyle = style(theme.typography.group, font);
   const groupLabels: SceneText[] = [];
   for (const frame of frames) {
@@ -236,7 +236,7 @@ export function layout(
     });
 
     const endMarker = c.kind === "ground" && line.endMarker !== "none" ? "ground" : line.endMarker;
-    // Endet die Verbindung an einem Pin, sitzt die Spitze vor dem Pin-Marker statt darunter.
+    // If the connection ends at a pin, the tip sits in front of the pin marker instead of under it.
     const marker = (at: Point, from: Point, shape: "arrow" | "ground", pinned: boolean): SceneMarker => {
       const angle = direction(from, at);
       const back = pinned ? theme.markers.pin / 2 + 1 : 0;
@@ -276,7 +276,7 @@ export function layout(
 
   addHops(connectionItems, edges, theme.markers.hop);
 
-  // ── Titel, Ausdehnung, Verschiebung auf den Rand ─────────────
+  // ── Title, extent, shift by the padding ──────────────────────
   const titleStyle = style(theme.typography.title, font);
   const items: SceneItem[] = [
     ...zoneItems, ...systemItems, ...connectionItems, ...componentItems, ...iconItems, ...pinItems,
@@ -311,11 +311,11 @@ export function layout(
   };
 }
 
-// ── Hilfsfunktionen ────────────────────────────────────────────
+// ── Helpers ────────────────────────────────────────────────────
 
 /**
- * `pins connected|none`: Komponenten nur mit den gezeichneten Pins. Verbindungen an
- * ausgeblendete Pins docken wie Körperanschlüsse an, weil das Layout den Pin nicht findet.
+ * `pins connected|none`: components keep only the pins that are drawn. Connections to
+ * hidden pins attach like body ports, because the layout no longer finds the pin.
  */
 function withVisiblePins(model: ArchitectureModel): ArchitectureModel {
   if (model.pins === "all") return model;
@@ -331,10 +331,10 @@ function withVisiblePins(model: ArchitectureModel): ArchitectureModel {
 }
 
 /**
- * Brücken an Kreuzungen: Kreuzt ein waagerechtes Segment ein senkrechtes einer anderen
- * Verbindung, springt das waagerechte mit einem Bogen darüber. Verbindungen, die sich
- * einen Anschluss teilen, gehören zum selben Netz und bekommen keine Brücke; Kreuzungen
- * zu nah an einem Knick oder Ende ebenfalls nicht, weil dort kein Bogen Platz hat.
+ * Hops at crossings: where a horizontal segment crosses a vertical one of another
+ * connection, the horizontal one jumps over it with an arc. Connections that share an
+ * endpoint belong to the same net and get no hop; crossings too close to a bend or an
+ * end get none either, because there is no room for an arc.
  */
 function addHops(items: SceneItem[], edges: readonly LEdge[], radius: number): void {
   const paths = items.filter((i): i is ScenePath => i.type === "path");
@@ -410,7 +410,7 @@ function angleOf(side: Side): SceneMarker["angle"] {
   return side === "right" ? 0 : side === "bottom" ? 90 : side === "left" ? 180 : 270;
 }
 
-/** Richtung von `from` nach `to` als Winkel. */
+/** Direction from `from` to `to` as an angle. */
 function direction(from: Point, to: Point): SceneMarker["angle"] {
   if (to.x > from.x) return 0;
   if (to.y > from.y) return 90;

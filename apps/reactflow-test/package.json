@@ -2,7 +2,7 @@
   "name": "@sysarch/reactflow-test",
   "version": "0.1.0",
   "private": true,
-  "description": "Test-App für den React-Flow-Export: lädt sysarch-JSON mit Custom Nodes",
+  "description": "Test app for the React Flow export: loads sysarch JSON with custom nodes",
   "license": "MIT",
   "type": "module",
   "scripts": {

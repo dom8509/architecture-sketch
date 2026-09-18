@@ -10,12 +10,12 @@ export type TokenType =
 
 export interface Token {
   type: TokenType;
-  /** Quelltext des Tokens; bei Strings der Rohtext inklusive Anführungszeichen. */
+  /** Source text of the token; for strings the raw text including quotes. */
   text: string;
-  /** Wert nach Escape-Auflösung (nur Strings). */
+  /** Value after escape resolution (strings only). */
   value: string;
   span: Span;
-  /** Zwischen dem vorigen Token und diesem steht mindestens ein Zeilenumbruch. */
+  /** There is at least one line break between the previous token and this one. */
   newlineBefore: boolean;
   leadingTrivia: Trivia[];
 }
@@ -30,7 +30,7 @@ const isIdentStart = (c: string | undefined) => c !== undefined && /[A-Za-z_]/.t
 const isIdentPart = (c: string | undefined) => c !== undefined && /[A-Za-z0-9_]/.test(c);
 const isDigit = (c: string | undefined) => c !== undefined && c >= "0" && c <= "9";
 
-/** Zerlegt den Quelltext in Token. Kommentare und Leerzeilen landen als Trivia am Folgetoken. */
+/** Splits the source text into tokens. Comments and blank lines are attached as trivia to the following token. */
 export function lex(source: string): LexResult {
   const tokens: Token[] = [];
   const diagnostics: Diagnostic[] = [];
@@ -47,7 +47,7 @@ export function lex(source: string): LexResult {
 
   let trivia: Trivia[] = [];
   let newlineBefore = false;
-  /** Zeilenumbrüche seit dem letzten Token oder Kommentar — zwei ergeben eine Leerzeile. */
+  /** Line breaks since the last token or comment — two make a blank line. */
   let newlinesInRun = 0;
 
   while (pos < source.length) {
@@ -74,7 +74,7 @@ export function lex(source: string): LexResult {
     const startLine = line;
     const startColumn = pos - lineStart + 1;
 
-    // Kommentare
+    // Comments
     if (c === "/" && source[pos + 1] === "/") {
       while (pos < source.length && source[pos] !== "\n") pos++;
       trivia.push({ kind: "comment", text: source.slice(start, pos), span: spanFrom(start, startLine, startColumn) });
@@ -92,7 +92,7 @@ export function lex(source: string): LexResult {
         pos++;
       }
       if (pos >= source.length) {
-        diagnostics.push(diagnostic("E001", "Blockkommentar wird nicht geschlossen, erwartet `*/`", spanFrom(start, startLine, startColumn)));
+        diagnostics.push(diagnostic("E001", "Unterminated block comment, expected `*/`", spanFrom(start, startLine, startColumn)));
       } else {
         pos += 2;
       }
@@ -130,7 +130,7 @@ export function lex(source: string): LexResult {
           else if (next === "n") value += "\n";
           else {
             const escapeSpan = { start: pos, end: pos + 2, line, column: pos - lineStart + 1 };
-            diagnostics.push(diagnostic("E001", `Unbekannte Escape-Sequenz \`\\${next ?? ""}\`, erlaubt sind \\" \\\\ \\n`, escapeSpan));
+            diagnostics.push(diagnostic("E001", `Unknown escape sequence \`\\${next ?? ""}\`, allowed are \\" \\\\ \\n`, escapeSpan));
             if (next !== undefined && next !== "\n") value += next;
           }
           pos += next === undefined || next === "\n" ? 1 : 2;
@@ -141,7 +141,7 @@ export function lex(source: string): LexResult {
       }
       type = "string";
       if (!closed) {
-        diagnostics.push(diagnostic("E001", "String wird nicht geschlossen, erwartet `\"`", spanFrom(start, startLine, startColumn)));
+        diagnostics.push(diagnostic("E001", "Unterminated string, expected `\"`", spanFrom(start, startLine, startColumn)));
       }
     } else if (c === "-" && source[pos + 1] === ">") {
       pos += 2;
@@ -160,7 +160,7 @@ export function lex(source: string): LexResult {
       type = c;
     } else {
       pos++;
-      // Meldung erst im Parser, damit übersprungene Bereiche (z. B. reservierte Konstrukte) still bleiben.
+      // Reported only in the parser, so that skipped regions (e.g. reserved constructs) stay silent.
       type = "invalid";
     }
 

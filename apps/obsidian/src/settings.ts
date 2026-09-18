@@ -5,10 +5,10 @@ import type { ThemeSetting } from "./logic.js";
 import type SysarchPlugin from "./main.js";
 
 export interface SysarchSettings {
-  /** Theme für Diagramme ohne `theme` in der Quelle. */
+  /** Theme for diagrams without a `theme` in the source. */
   theme: ThemeSetting;
   pngScale: PngScale;
-  /** Leer: Anhangsordner laut Vault-Einstellungen. */
+  /** Empty: the attachment folder from the vault settings. */
   exportFolder: string;
 }
 
@@ -29,10 +29,10 @@ export class SysarchSettingTab extends PluginSettingTab {
     const { settings } = this.plugin;
 
     new Setting(containerEl)
-      .setName("Standard-Theme")
-      .setDesc("Gilt für Diagramme ohne `theme` in der Quelle. „Obsidian folgen“ wählt hell oder dunkel passend zum Modus.")
+      .setName("Default theme")
+      .setDesc("Applies to diagrams without a `theme` in the source. \"Follow Obsidian\" picks light or dark to match the current mode.")
       .addDropdown((dropdown) => {
-        dropdown.addOption("auto", "Obsidian folgen");
+        dropdown.addOption("auto", "Follow Obsidian");
         for (const theme of THEMES) dropdown.addOption(theme, theme);
         dropdown.setValue(settings.theme).onChange(async (value) => {
           settings.theme = value;
@@ -41,8 +41,8 @@ export class SysarchSettingTab extends PluginSettingTab {
       });
 
     new Setting(containerEl)
-      .setName("PNG-Skalierung")
-      .setDesc("Auflösung beim PNG-Export.")
+      .setName("PNG scale")
+      .setDesc("Resolution of the PNG export.")
       .addDropdown((dropdown) => {
         for (const scale of PNG_SCALES) dropdown.addOption(String(scale), `${scale}×`);
         dropdown.setValue(String(settings.pngScale)).onChange(async (value) => {
@@ -52,10 +52,10 @@ export class SysarchSettingTab extends PluginSettingTab {
       });
 
     new Setting(containerEl)
-      .setName("Exportordner")
-      .setDesc("Ordner im Vault für SVG, PNG und React Flow JSON. Leer: Anhangsordner laut Obsidian-Einstellungen.")
+      .setName("Export folder")
+      .setDesc("Folder in the vault for SVG, PNG and React Flow JSON. Empty: the attachment folder from the Obsidian settings.")
       .addText((text) =>
-        text.setPlaceholder("Anhangsordner").setValue(settings.exportFolder).onChange(async (value) => {
+        text.setPlaceholder("Attachment folder").setValue(settings.exportFolder).onChange(async (value) => {
           settings.exportFolder = value.trim();
           await this.plugin.saveSettings();
         }));

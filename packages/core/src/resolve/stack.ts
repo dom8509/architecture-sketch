@@ -1,24 +1,24 @@
 import type { ArchitectureModel, Component, ComponentId, Connection, Group } from "./index.js";
 
 /**
- * `stack identical`: Gleich verschaltete Komponenten werden zu einem Mehrfachelement
- * zusammengefasst. Liefert bei `stack none` das Modell unverändert zurück.
+ * `stack identical`: identically wired components are merged into a single multi-element.
+ * With `stack none` the model is returned unchanged.
  *
- * Gleich verschaltet heißt: gleicher Namensstamm (Label ohne laufende Nummer, siehe `labelStem`),
- * gleiche Eigenschaften (Template, Gruppe, Form, Pins, …) und
- * Verbindungen gleicher Art, Richtung und Beschriftung zu Gegenstellen, die ihrerseits gleich
- * verschaltet sind. Berechnet per Partitionsverfeinerung, deshalb fassen sich auch Ketten
- * zusammen (`hb1 → m1 … hb4 → m4` ergibt `hb ×4 → m ×4`).
+ * Identically wired means: same name stem (label without a running number, see `labelStem`),
+ * same properties (template, group, shape, pins, …) and connections of the same kind,
+ * direction and label to counterparts that are themselves identically wired. Computed by
+ * partition refinement, so chains are merged as well
+ * (`hb1 → m1 … hb4 → m4` becomes `hb ×4 → m ×4`).
  *
- * Die erste Komponente einer Klasse (Deklarationsreihenfolge) bleibt stehen, erhält die Summe
- * der Anzahlen und das gemeinsame Label; Verbindungen der übrigen fallen auf sie zurück,
- * Duplikate entfallen. Grid-Zellen entfernter Komponenten werden leer.
+ * The first component of a class (declaration order) is kept, gets the sum of the counts and
+ * the shared label; connections of the others fall back to it and duplicates are dropped.
+ * Grid cells of removed components become empty.
  */
 export function stackIdentical(model: ArchitectureModel): ArchitectureModel {
   if (model.stack !== "identical") return model;
   const components = [...model.components.values()];
 
-  // ── Klassen ──────────────────────────────────────────────────
+  // ── Classes ──────────────────────────────────────────────────
   const numbering = (keys: string[]) => {
     const ids = new Map<string, number>();
     return keys.map((k) => {
@@ -45,7 +45,7 @@ export function stackIdentical(model: ArchitectureModel): ArchitectureModel {
     if (stable) break;
   }
 
-  // ── Zusammenfassen ───────────────────────────────────────────
+  // ── Merging ──────────────────────────────────────────────────
   const members = new Map<number, Component[]>();
   components.forEach((c, i) => {
     if (!members.has(classes[i]!)) members.set(classes[i]!, []);
@@ -92,7 +92,7 @@ export function stackIdentical(model: ArchitectureModel): ArchitectureModel {
   };
 }
 
-/** Alles außer laufender Nummer im Label und Layout-Hinweisen muss übereinstimmen. */
+/** Everything except the running number in the label and layout hints must match. */
 function localKey(c: Component): string {
   return JSON.stringify([
     labelStem(c.label), c.template, c.groupPath, c.shape, c.icon ?? "", c.category, c.size, c.importance, c.count,
@@ -102,10 +102,10 @@ function localKey(c: Component): string {
 }
 
 /**
- * Label ohne laufende Nummer: „Half Bridge 3“ → „Half Bridge“, „HB1“ → „HB“, „Strom B“ → „Strom“.
- * Als Nummer gelten höchstens zwei Ziffern (Teilenummern wie „S32K344“ bleiben ganz) und
- * Einzelbuchstaben mit Trennzeichen davor. Unterschiedliche Stämme („Temperatur“, „Strom“)
- * werden nie zusammengefasst.
+ * Label without a running number: "Half Bridge 3" → "Half Bridge", "HB1" → "HB",
+ * "Current B" → "Current". A number is at most two digits (part numbers such as "S32K344"
+ * stay intact) and single letters preceded by a separator. Different stems ("Temperature",
+ * "Current") are never merged.
  */
 export function labelStem(label: string): string {
   const stem = label.replace(/(?:(?<!\d)[\s_\-#.:/]*\d{1,2}|[\s_\-#.:/]+[A-Za-z])$/, "");

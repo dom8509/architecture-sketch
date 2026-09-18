@@ -15,8 +15,8 @@ function cli(...argv: string[]): string {
   return stdout;
 }
 
-// Abnahme M4: Die Vorschau zeigt byte-genau das SVG, das die CLI schreibt.
-describe("Vorschau-SVG == CLI-SVG", () => {
+// Acceptance M4: the preview shows byte-for-byte the SVG the CLI writes.
+describe("preview SVG == CLI SVG", () => {
   for (const file of examples) {
     const path = join(root, "examples", file);
     const source = readFileSync(path, "utf8");
@@ -27,7 +27,7 @@ describe("Vorschau-SVG == CLI-SVG", () => {
       expect(svg).toBe(readFileSync(join(root, "tests", "golden", basename(file, ".arch") + ".svg"), "utf8"));
     });
 
-    it(`${basename(file, ".arch")} mit überschriebenem Theme`, () => {
+    it(`${basename(file, ".arch")} with overridden theme`, () => {
       for (const theme of THEMES) {
         expect(analyze(source, theme).svg).toBe(cli("render", path, "--out", "-", "--theme", theme));
       }
@@ -36,7 +36,7 @@ describe("Vorschau-SVG == CLI-SVG", () => {
 });
 
 describe("analyze", () => {
-  it("liefert bei Fehlern Diagnosen und Teilmodell, aber kein SVG", () => {
+  it("returns diagnostics and a partial model on errors, but no SVG", () => {
     const result = analyze(`architecture "X" {\n    component a\n    a.OUT -> b\n}\n`);
     expect(result.svg).toBeUndefined();
     expect(result.diagnostics.map((d) => d.code)).toEqual(["E103", "E102"]);

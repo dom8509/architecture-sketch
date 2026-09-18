@@ -14,24 +14,24 @@ import { sysarchHighlighting } from "./highlight.js";
 import { Preview } from "./preview.js";
 
 export interface EditorOptions {
-  /** Container für den Texteditor. */
+  /** Container for the text editor. */
   editor: HTMLElement;
-  /** Container für die Live-Vorschau. */
+  /** Container for the live preview. */
   preview: HTMLElement;
-  /** Optionaler Container für die Diagnosenleiste. */
+  /** Optional container for the diagnostics bar. */
   diagnostics?: HTMLElement;
   source?: string;
-  /** Überschreibt das Theme der Quelle, ohne sie zu ändern. */
+  /** Overrides the theme of the source without modifying it. */
   theme?: string;
-  /** Verzögerung zwischen Tastendruck und Neuberechnung (Standard 150 ms). */
+  /** Delay between keystroke and recomputation (default 150 ms). */
   debounce?: number;
-  /** Zusätzliche CodeMirror-Erweiterungen, z. B. ein dunkles Editor-Theme. */
+  /** Additional CodeMirror extensions, e.g. a dark editor theme. */
   extensions?: Extension[];
 }
 
 type Listener = (analysis: Analysis) => void;
 
-/** Editor mit Live-Vorschau und Diagnosen — framework-frei, nur DOM und CodeMirror 6. */
+/** Editor with live preview and diagnostics — framework-free, only DOM and CodeMirror 6. */
 export class SysarchEditor {
   readonly view: EditorView;
   readonly preview: Preview;
@@ -82,12 +82,12 @@ export class SysarchEditor {
     this.publish();
   }
 
-  /** Letzte Analyse; `svg` ist das zuletzt gerenderte SVG, sofern die Quelle fehlerfrei ist. */
+  /** Last analysis; `svg` is the most recently rendered SVG, as long as the source is error-free. */
   get current(): Analysis {
     return this.analysis;
   }
 
-  /** Das angezeigte SVG — bei Fehlern der letzte gültige Stand. */
+  /** The SVG on screen — on errors the last valid state. */
   get svg(): string | undefined {
     return this.lastSvg;
   }
@@ -96,7 +96,7 @@ export class SysarchEditor {
     return this.view.state.doc.toString();
   }
 
-  /** Ersetzt den gesamten Quelltext (als ein Undo-Schritt) und rendert sofort. */
+  /** Replaces the whole source (as a single undo step) and renders immediately. */
   setSource(source: string) {
     this.view.dispatch({ changes: { from: 0, to: this.view.state.doc.length, insert: source } });
     this.refresh();
@@ -111,7 +111,7 @@ export class SysarchEditor {
     this.listeners.push(listener);
   }
 
-  /** Setzt die Auswahl auf einen Quellbereich und holt den Editor in den Fokus. */
+  /** Selects a source range and focuses the editor. */
   reveal(start: number, end = start) {
     this.view.dispatch({ selection: { anchor: start, head: end }, scrollIntoView: true });
     this.view.focus();
@@ -123,7 +123,7 @@ export class SysarchEditor {
     this.preview.destroy();
   }
 
-  /** Neuberechnung ohne Debounce. */
+  /** Recompute without debounce. */
   refresh() {
     clearTimeout(this.timer);
     this.analysis = analyze(this.source, this.theme);
@@ -163,7 +163,7 @@ export class SysarchEditor {
   }
 }
 
-/** Diagnosenleiste; Hinweise (I…) erscheinen wie in der CLI nur auf Wunsch. */
+/** Diagnostics bar; infos (I…) only show on request, as in the CLI. */
 function renderDiagnostics(element: HTMLElement, diagnostics: readonly Diagnostic[], editor: SysarchEditor) {
   const showInfos = element.dataset.showInfos === "true";
   element.replaceChildren();
@@ -173,7 +173,7 @@ function renderDiagnostics(element: HTMLElement, diagnostics: readonly Diagnosti
 
   const summary = element.appendChild(document.createElement("div"));
   summary.className = "sa-diagnostics-summary";
-  summary.append(`${counts.error} Fehler · ${counts.warning} Warnungen · `);
+  summary.append(`${counts.error} errors · ${counts.warning} warnings · `);
   const toggle = summary.appendChild(document.createElement("label"));
   const checkbox = toggle.appendChild(document.createElement("input"));
   checkbox.type = "checkbox";
@@ -182,7 +182,7 @@ function renderDiagnostics(element: HTMLElement, diagnostics: readonly Diagnosti
     element.dataset.showInfos = String(checkbox.checked);
     renderDiagnostics(element, diagnostics, editor);
   });
-  toggle.append(` ${counts.info} Hinweise`);
+  toggle.append(` ${counts.info} infos`);
 
   const list = element.appendChild(document.createElement("ul"));
   for (const d of diagnostics) {

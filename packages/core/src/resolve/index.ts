@@ -16,27 +16,27 @@ export type PinAddress = `${ComponentId}.${string}`;
 
 export interface ArchitectureModel {
   title: string;
-  /** Name, Auflösung erst im Layout. */
+  /** Name only; resolved during layout. */
   theme: string;
   direction: Direction;
   layoutMode: LayoutMode;
-  /** Darstellung der Pins; Pins bleiben im Modell, das Layout blendet sie aus. */
+  /** How pins are shown; pins stay in the model, the layout hides them. */
   pins: PinDisplay;
-  /** `identical`: Layout und Exporte fassen gleich verschaltete Komponenten zusammen (`stackIdentical`). */
+  /** `identical`: layout and exports merge identically wired components (`stackIdentical`). */
   stack: StackMode;
   grid?: GridSpec;
-  /** Einfügereihenfolge = Deklarationsreihenfolge. */
+  /** Insertion order = declaration order. */
   components: Map<ComponentId, Component>;
   connections: Connection[];
-  /** Wurzel des Gruppenbaums; Zonen sind direkte Kinder, falls vorhanden. */
+  /** Root of the group tree; zones are direct children, if present. */
   root: Group;
-  /** Alle Zonen und Systeme nach ID. */
+  /** All zones and systems by ID. */
   groups: Map<GroupId, Group>;
 }
 
 export interface Component {
   id: ComponentId;
-  /** "block", wenn keiner angegeben. */
+  /** "block" if none is given. */
   template: string;
   shape: Shape;
   icon?: string;
@@ -44,13 +44,13 @@ export interface Component {
   category: Category;
   size: Size;
   importance: Importance;
-  /** Reihenfolge = Darstellungsreihenfolge. */
+  /** Order = rendering order. */
   pins: Pin[];
   hints: { row?: number; column?: number };
-  /** Anzahl gleicher Elemente (`count`), mindestens 1. */
+  /** Number of identical elements (`count`), at least 1. */
   count: number;
   meta: Record<string, string>;
-  /** Z. B. ["processing", "ecu"]. */
+  /** E.g. ["processing", "ecu"]. */
   groupPath: GroupId[];
   origin: Span;
 }
@@ -66,12 +66,12 @@ export interface Pin {
 
 export interface Endpoint {
   component: ComponentId;
-  /** Fehlt → Anschluss am Komponentenkörper. */
+  /** Missing → attaches to the component body. */
   pin?: string;
 }
 
 export interface Connection {
-  /** Stabil: "<source>-><target>#<n>". */
+  /** Stable: "<source>-><target>#<n>". */
   id: string;
   source: Endpoint;
   target: Endpoint;
@@ -91,7 +91,7 @@ export interface Group {
 }
 
 export interface GridSpec {
-  /** null = ".". Eine Komponente über mehrere Zellen steht in jeder davon (immer ein Rechteck). */
+  /** null = ".". A component spanning several cells appears in each of them (always a rectangle). */
   rows: (ComponentId | null)[][];
   origin: Span;
 }
@@ -99,7 +99,7 @@ export interface GridSpec {
 const DEFAULT_THEME = "automotive-light";
 const BLOCK: TemplateDef = { name: "block", category: "generic", size: "medium", pins: [], origin: { start: 0, end: 0, line: 1, column: 1 } };
 
-/** Löst Templates auf, prüft IDs und Pins, leitet Seiten und Typen ab. */
+/** Resolves templates, checks IDs and pins, derives sides and types. */
 export function resolve(tree: SyntaxTree, library: Library): ParseResult<ArchitectureModel> {
   const diagnostics: Diagnostic[] = [];
   const arch = tree.architecture;
@@ -108,7 +108,7 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
 
   for (const define of tree.defines) {
     if (library.templates.has(define.name.name)) {
-      diagnostics.push(diagnostic("W203", `Lokales Template \`${define.name.name}\` überschreibt das Bibliotheks-Template`, define.name.span));
+      diagnostics.push(diagnostic("W203", `Local template \`${define.name.name}\` overrides the library template`, define.name.span));
     }
   }
   const templates = new Map(library.templates);
@@ -130,18 +130,18 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
   };
 
   if (arch === undefined) {
-    diagnostics.push(diagnostic("E001", "Erwartet `architecture`, gefunden Dateiende", { start: tree.span.end, end: tree.span.end, line: 1, column: 1 }));
+    diagnostics.push(diagnostic("E001", "Expected `architecture`, found end of file", { start: tree.span.end, end: tree.span.end, line: 1, column: 1 }));
     return { value: model, diagnostics };
   }
 
-  // ── Dokumenteinstellungen ────────────────────────────────────
+  // ── Document settings ────────────────────────────────────────
 
   let gridNode: GridNode | undefined;
   for (const stmt of arch.body) {
     switch (stmt.kind) {
       case "Theme":
         if (THEMES.includes(stmt.name.name)) model.theme = stmt.name.name;
-        else diagnostics.push(withSuggestion("E109", `Unbekanntes Theme \`${stmt.name.name}\``, stmt.name.name, stmt.name.span, THEMES));
+        else diagnostics.push(withSuggestion("E109", `Unknown theme \`${stmt.name.name}\``, stmt.name.name, stmt.name.span, THEMES));
         break;
       case "Direction":
         model.direction = stmt.value;
@@ -161,7 +161,7 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
     }
   }
 
-  // ── Gruppenbaum und Komponenten ──────────────────────────────
+  // ── Group tree and components ────────────────────────────────
 
   const hasZones = arch.body.some((s) => s.kind === "Zone");
   const usedIds = new Map<string, Span>();
@@ -171,7 +171,7 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
 
   const claimId = (id: string, span: Span, what: string): boolean => {
     if (usedIds.has(id)) {
-      diagnostics.push(diagnostic("E101", `${what}-ID \`${id}\` ist bereits vergeben`, span));
+      diagnostics.push(diagnostic("E101", `${what} ID \`${id}\` is already in use`, span));
       return false;
     }
     usedIds.set(id, span);
@@ -180,9 +180,9 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
 
   const addComponent = (node: ComponentNode, group: Group, path: GroupId[], inZone: boolean) => {
     const id = node.id.name;
-    if (!claimId(id, node.id.span, "Komponenten")) return;
+    if (!claimId(id, node.id.span, "Component")) return;
     if (hasZones && !inZone) {
-      diagnostics.push(diagnostic("E106", `Komponente \`${id}\` liegt außerhalb einer Zone, obwohl das Dokument Zonen verwendet`, node.id.span));
+      diagnostics.push(diagnostic("E106", `Component \`${id}\` is outside any zone, although the document uses zones`, node.id.span));
     }
     const component = resolveComponent(node, path);
     model.components.set(id, component);
@@ -194,7 +194,7 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
     const templateName = node.template?.name ?? "block";
     let template = templates.get(templateName) ?? (templateName === "block" ? BLOCK : undefined);
     if (template === undefined) {
-      diagnostics.push(withSuggestion("E104", `Unbekanntes Template \`${templateName}\``, templateName, node.template!.span, templates.keys()));
+      diagnostics.push(withSuggestion("E104", `Unknown template \`${templateName}\``, templateName, node.template!.span, templates.keys()));
       template = templates.get("block") ?? BLOCK;
     }
 
@@ -236,7 +236,7 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
           break;
         case "Category":
           if (isOneOf(CATEGORIES, stmt.value.name)) component.category = stmt.value.name;
-          else diagnostics.push(withSuggestion("E109", `Unbekannte Kategorie \`${stmt.value.name}\``, stmt.value.name, stmt.value.span, CATEGORIES));
+          else diagnostics.push(withSuggestion("E109", `Unknown category \`${stmt.value.name}\``, stmt.value.name, stmt.value.span, CATEGORIES));
           break;
         case "Pin":
           declarePin(pins, stmt, undefined, "explicit", diagnostics);
@@ -270,7 +270,7 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
 
   const applyHint = (component: Component, stmt: HintStmt, spans: Partial<Record<"row" | "column", Span>>) => {
     if (model.layoutMode === "strict") {
-      diagnostics.push(diagnostic("W202", `\`hint ${stmt.axis}\` wird in \`mode strict\` ignoriert — \`layout { mode assisted }\` setzen`, stmt.span));
+      diagnostics.push(diagnostic("W202", `\`hint ${stmt.axis}\` is ignored in \`mode strict\` — set \`layout { mode assisted }\``, stmt.span));
       return;
     }
     component.hints[stmt.axis] = stmt.value;
@@ -303,7 +303,7 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
     switch (stmt.kind) {
       case "Zone": {
         zoneIndex++;
-        if (!claimId(stmt.id.name, stmt.id.span, "Zonen")) break;
+        if (!claimId(stmt.id.name, stmt.id.span, "Zone")) break;
         const zone: Group = { id: stmt.id.name, type: "zone", children: [], origin: stmt.span };
         model.groups.set(zone.id, zone);
         model.root.children.push(zone.id);
@@ -322,7 +322,7 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
     }
   }
 
-  // ── Verbindungen ─────────────────────────────────────────────
+  // ── Connections ──────────────────────────────────────────────
 
   const incoming = new Map<PinAddress, number>();
   const outgoing = new Map<PinAddress, number>();
@@ -333,7 +333,7 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
     const componentId = node.component.name;
     const component = model.components.get(componentId);
     if (component === undefined) {
-      diagnostics.push(withSuggestion("E102", `Unbekannte Komponente \`${componentId}\``, componentId, node.component.span, model.components.keys()));
+      diagnostics.push(withSuggestion("E102", `Unknown component \`${componentId}\``, componentId, node.component.span, model.components.keys()));
       return undefined;
     }
     if (node.pin === undefined) return { endpoint: { component: componentId } };
@@ -341,7 +341,7 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
     if (pin === undefined) {
       diagnostics.push(withSuggestion(
         "E103",
-        `Komponente \`${componentId}\` hat keinen Pin \`${node.pin.name}\``,
+        `Unknown pin \`${node.pin.name}\` on component \`${componentId}\``,
         node.pin.name,
         node.pin.span,
         component.pins.map((p) => p.name),
@@ -383,7 +383,7 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
       if (SIGNAL_GROUPS[source.pin.kind] !== SIGNAL_GROUPS[target.pin.kind] && !invalidKind) {
         diagnostics.push(diagnostic(
           "W201",
-          `Verbindung zwischen unverträglichen Signalarten \`${source.pin.kind}\` und \`${target.pin.kind}\` — \`type\` explizit setzen, falls gewollt`,
+          `Connection between incompatible signal kinds \`${source.pin.kind}\` and \`${target.pin.kind}\` — set \`type\` explicitly if this is intended`,
           node.span,
         ));
       }
@@ -414,7 +414,7 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
     }
   }
 
-  // ── Pin-Seiten ableiten, unverbundene Pins melden ────────────
+  // ── Derive pin sides, report unconnected pins ────────────────
 
   for (const component of model.components.values()) {
     for (const pin of component.pins) {
@@ -425,28 +425,28 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
         const towardsEnd = outCount > inCount;
         pin.side = model.direction === "LR" ? (towardsEnd ? "right" : "left") : (towardsEnd ? "bottom" : "top");
       }
-      // Bei `pins connected|none` werden unverbundene Pins nicht gezeichnet — kein Hinweis nötig.
+      // With `pins connected|none` unconnected pins are not drawn — no hint needed.
       if (!connected.has(pinAddress) && model.pins === "all") {
-        diagnostics.push(diagnostic("I301", `Pin \`${pinAddress}\` ist nicht verbunden`, pin.origin));
+        diagnostics.push(diagnostic("I301", `Pin \`${pinAddress}\` is not connected`, pin.origin));
       }
     }
   }
 
   // ── Grid ─────────────────────────────────────────────────────
 
-  /** Lage entlang der Hauptachse, 1-basiert; `end` > `value` bei überspannten Zellen. */
+  /** Position along the main axis, 1-based; `end` > `value` for spanned cells. */
   const position = new Map<ComponentId, { value: number; end: number; span: Span }>();
   const mainAxis = model.direction === "LR" ? "column" : "row";
 
   if (gridNode) {
-    // Zellen je Komponente sammeln; mehrfach genannt = überspannt, wenn sie ein Rechteck bilden.
+    // Collect cells per component; listed several times = spanned, if they form a rectangle.
     const cellsOf = new Map<ComponentId, { row: number; column: number; span: Span }[]>();
     const rows = gridNode.rows.map((row, rowIndex) =>
       row.cells.map((cell, columnIndex) => {
         if (cell.id === undefined) return null;
         const id = cell.id.name;
         if (!model.components.has(id)) {
-          diagnostics.push(withSuggestion("E102", `Unbekannte Komponente \`${id}\` im Grid`, id, cell.id.span, model.components.keys()));
+          diagnostics.push(withSuggestion("E102", `Unknown component \`${id}\` in the grid`, id, cell.id.span, model.components.keys()));
           return null;
         }
         if (!cellsOf.has(id)) cellsOf.set(id, []);
@@ -462,7 +462,7 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
       const rectangle = cells.length === (bottom - top + 1) * (right - left + 1) &&
         rows.slice(top, bottom + 1).every((row) => row.slice(left, right + 1).every((cell) => cell === id) && row.length > right);
       if (!rectangle) {
-        diagnostics.push(diagnostic("E107", `Zellen von \`${id}\` im Grid bilden kein zusammenhängendes Rechteck`, cells[1]!.span));
+        diagnostics.push(diagnostic("E107", `Cells of \`${id}\` in the grid do not form a contiguous rectangle`, cells[1]!.span));
         for (const row of rows) row.forEach((cell, k) => { if (cell === id) row[k] = null; });
         continue;
       }
@@ -473,7 +473,7 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
     const width = rows[0]?.length ?? 0;
     gridNode.rows.forEach((row, rowIndex) => {
       if (row.cells.length !== width) {
-        diagnostics.push(diagnostic("E107", `Grid-Zeile ${rowIndex + 1} hat ${row.cells.length} Zellen, erwartet ${width}`, row.span));
+        diagnostics.push(diagnostic("E107", `Grid row ${rowIndex + 1} has ${row.cells.length} cells, expected ${width}`, row.span));
       }
     });
     model.grid = { rows, origin: gridNode.span };
@@ -485,21 +485,21 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
     if (value !== undefined && span !== undefined) position.set(component.id, { value, end: value, span });
   }
 
-  // ── Zonen-Zusammenhang ───────────────────────────────────────
+  // ── Zone contiguity ──────────────────────────────────────────
 
   if (hasZones) {
     const placed = [...position.entries()].filter(([id]) => zoneOf.has(id));
-    const axisName = mainAxis === "column" ? "Spalte" : "Zeile";
+    const axisName = mainAxis === "column" ? "column" : "row";
     const zoneIds = arch.body.filter((s) => s.kind === "Zone").map((z) => z.id.name);
     for (const [id, pos] of placed) {
       const zone = zoneOf.get(id)!;
-      // Je Paar genau eine Meldung, am Element der späteren Zone.
+      // Exactly one message per pair, at the element of the later zone.
       const conflict = placed.find(([otherId, other]) => zoneOf.get(otherId)! < zone && other.end >= pos.value);
       if (conflict === undefined) continue;
       const [otherId, other] = conflict;
       diagnostics.push(diagnostic(
         "E108",
-        `\`${id}\` (Zone \`${zoneIds[zone]}\`, ${axisName} ${pos.value}) liegt nicht hinter \`${otherId}\` (Zone \`${zoneIds[zoneOf.get(otherId)!]}\`, ${axisName} ${other.end}) — Zonen müssen zusammenhängend in Deklarationsreihenfolge bleiben`,
+        `\`${id}\` (zone \`${zoneIds[zone]}\`, ${axisName} ${pos.value}) is not after \`${otherId}\` (zone \`${zoneIds[zoneOf.get(otherId)!]}\`, ${axisName} ${other.end}) — zones must stay contiguous and in declaration order`,
         pos.span,
       ));
     }

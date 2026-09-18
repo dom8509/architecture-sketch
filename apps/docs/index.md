@@ -3,32 +3,32 @@ layout: home
 
 hero:
   name: sysarch
-  text: Architektur als Code
-  tagline: Embedded- und Systemarchitekturen aus Text — mit Pins, Zonen, festen Abständen und reproduzierbarem SVG, PNG und React-Flow-JSON.
+  text: Architecture as code
+  tagline: Embedded and system architectures from plain text — with pins, zones, fixed spacing and reproducible SVG, PNG and React Flow JSON.
   actions:
     - theme: brand
-      text: Schnellstart
-      link: /einstieg/schnellstart
+      text: Quickstart
+      link: /getting-started/quickstart
     - theme: alt
-      text: Im Browser ausprobieren ↗
+      text: Try it in the browser ↗
       link: /app/
       target: _blank
     - theme: alt
-      text: Was ist sysarch?
-      link: /einstieg/
+      text: What is sysarch?
+      link: /getting-started/
 
 features:
-  - title: Text ist das Modell
-    details: Diagramme sind diffbar, reviewbar und in der CI prüfbar. SVG, PNG und React Flow werden daraus erzeugt.
-  - title: Pins als First-Class-Elemente
-    details: Schnittstellen sind modelliert, nicht gezeichnet. Tippfehler bei Pin-Namen sind Fehler — mit Vorschlag.
-  - title: Design-System statt Pixel
-    details: Keine Koordinaten, keine Farben, keine Schriftgrößen. Das Theme entscheidet — zehn Diagramme sehen aus wie aus einer Hand.
-  - title: Überall dasselbe Bild
-    details: Web-App, Obsidian und CLI erzeugen byte-gleiches SVG aus demselben Kern.
+  - title: The text is the model
+    details: Diagrams are diffable, reviewable and checkable in CI. SVG, PNG and React Flow are generated from them.
+  - title: Pins as first-class elements
+    details: Interfaces are modeled, not drawn. A typo in a pin name is an error — with a suggestion.
+  - title: Design system instead of pixels
+    details: No coordinates, no colors, no font sizes. The theme decides — ten diagrams look like the work of one person.
+  - title: The same picture everywhere
+    details: Web app, Obsidian and CLI produce byte-identical SVG from the same core.
 ---
 
-## So sieht das aus
+## What it looks like
 
 ```sysarch
 architecture "Door ECU" {
@@ -46,4 +46,4 @@ architecture "Door ECU" {
 }
 ```
 
-Weiter mit dem [Schnellstart](/einstieg/schnellstart) — in zehn Minuten zum ersten eigenen Diagramm.
+Continue with the [quickstart](/getting-started/quickstart) — your first diagram in ten minutes.
