@@ -1,0 +1,4306 @@
+{
+  "width": 1328,
+  "height": 928,
+  "background": "#FFFFFF",
+  "title": "Seat Control Module",
+  "icons": [
+    {
+      "name": "battery",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M3.5 7h14a1.5 1.5 0 0 1 1.5 1.5v7a1.5 1.5 0 0 1 -1.5 1.5h-14a1.5 1.5 0 0 1 -1.5 -1.5v-7a1.5 1.5 0 0 1 1.5 -1.5Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M22 10v4",
+          "mode": "stroke"
+        },
+        {
+          "d": "M6 12h4M8 10v4",
+          "mode": "stroke"
+        },
+        {
+          "d": "M13 12h3",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "bridge",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M5 3v18M19 3v18",
+          "mode": "stroke"
+        },
+        {
+          "d": "M5 12h14",
+          "mode": "stroke"
+        },
+        {
+          "d": "M10 9l3 3-3 3",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "chip",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M7 6h10a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1v-10a1 1 0 0 1 1 -1Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "regulator",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M7 12c1.5-3 3-3 4.5 0s3 3 4.5 0",
+          "mode": "stroke"
+        }
+      ]
+    }
+  ],
+  "items": [
+    {
+      "type": "rect",
+      "ref": "system:ecu",
+      "className": "sa-system",
+      "x": 400,
+      "y": 112,
+      "width": 240,
+      "height": 464,
+      "radius": 10,
+      "fill": "none",
+      "stroke": "#8A94A6",
+      "strokeWidth": 1,
+      "dash": [
+        5,
+        3
+      ]
+    },
+    {
+      "type": "path",
+      "ref": "connection:kl30->sbc1.VIN#1",
+      "className": "sa-connection sa-group-supply sa-kind-power",
+      "points": [
+        {
+          "x": 160,
+          "y": 208
+        },
+        {
+          "x": 160,
+          "y": 416
+        },
+        {
+          "x": 48,
+          "y": 416
+        },
+        {
+          "x": 48,
+          "y": 496
+        },
+        {
+          "x": 64,
+          "y": 496
+        }
+      ],
+      "stroke": "#8A6100",
+      "strokeWidth": 2.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:kl30->sbc1.VIN#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 60,
+      "y": 496,
+      "angle": 0,
+      "size": 8,
+      "fill": "#8A6100",
+      "stroke": "#8A6100",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:sbc1.VOUT->traveo.VDD#1",
+      "className": "sa-connection sa-group-supply sa-kind-power",
+      "points": [
+        {
+          "x": 272,
+          "y": 496
+        },
+        {
+          "x": 384,
+          "y": 496
+        },
+        {
+          "x": 384,
+          "y": 224
+        },
+        {
+          "x": 416,
+          "y": 224
+        }
+      ],
+      "stroke": "#8A6100",
+      "strokeWidth": 2.5,
+      "hops": [
+        {
+          "x": 352,
+          "y": 496
+        }
+      ],
+      "hopRadius": 5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:sbc1.VOUT->traveo.VDD#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 412,
+      "y": 224,
+      "angle": 0,
+      "size": 8,
+      "fill": "#8A6100",
+      "stroke": "#8A6100",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:sbc1.VOUT->rl78.VDD#1",
+      "className": "sa-connection sa-group-supply sa-kind-power",
+      "points": [
+        {
+          "x": 272,
+          "y": 496
+        },
+        {
+          "x": 432,
+          "y": 496
+        }
+      ],
+      "stroke": "#8A6100",
+      "strokeWidth": 2.5,
+      "hops": [
+        {
+          "x": 352,
+          "y": 496
+        }
+      ],
+      "hopRadius": 5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:sbc1.VOUT->rl78.VDD#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 428,
+      "y": 496,
+      "angle": 0,
+      "size": 8,
+      "fill": "#8A6100",
+      "stroke": "#8A6100",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:kl30->drv1.VS#1",
+      "className": "sa-connection sa-group-supply sa-kind-power",
+      "points": [
+        {
+          "x": 208,
+          "y": 160
+        },
+        {
+          "x": 384,
+          "y": 160
+        },
+        {
+          "x": 384,
+          "y": 96
+        },
+        {
+          "x": 816,
+          "y": 96
+        },
+        {
+          "x": 816,
+          "y": 192
+        },
+        {
+          "x": 832,
+          "y": 192
+        }
+      ],
+      "stroke": "#8A6100",
+      "strokeWidth": 2.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:kl30->drv1.VS#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 828,
+      "y": 192,
+      "angle": 0,
+      "size": 8,
+      "fill": "#8A6100",
+      "stroke": "#8A6100",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:kl30->drv2.VS#1",
+      "className": "sa-connection sa-group-supply sa-kind-power",
+      "points": [
+        {
+          "x": 208,
+          "y": 176
+        },
+        {
+          "x": 368,
+          "y": 176
+        },
+        {
+          "x": 368,
+          "y": 432
+        },
+        {
+          "x": 816,
+          "y": 432
+        },
+        {
+          "x": 816,
+          "y": 480
+        },
+        {
+          "x": 832,
+          "y": 480
+        }
+      ],
+      "stroke": "#8A6100",
+      "strokeWidth": 2.5,
+      "hops": [
+        {
+          "x": 384,
+          "y": 432
+        },
+        {
+          "x": 624,
+          "y": 432
+        },
+        {
+          "x": 656,
+          "y": 432
+        },
+        {
+          "x": 672,
+          "y": 432
+        },
+        {
+          "x": 752,
+          "y": 432
+        },
+        {
+          "x": 768,
+          "y": 432
+        },
+        {
+          "x": 784,
+          "y": 432
+        },
+        {
+          "x": 800,
+          "y": 432
+        }
+      ],
+      "hopRadius": 5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:kl30->drv2.VS#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 828,
+      "y": 480,
+      "angle": 0,
+      "size": 8,
+      "fill": "#8A6100",
+      "stroke": "#8A6100",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:kl30->drv3.VS#1",
+      "className": "sa-connection sa-group-supply sa-kind-power",
+      "points": [
+        {
+          "x": 208,
+          "y": 192
+        },
+        {
+          "x": 352,
+          "y": 192
+        },
+        {
+          "x": 352,
+          "y": 768
+        },
+        {
+          "x": 832,
+          "y": 768
+        }
+      ],
+      "stroke": "#8A6100",
+      "strokeWidth": 2.5,
+      "hops": [
+        {
+          "x": 752,
+          "y": 768
+        },
+        {
+          "x": 784,
+          "y": 768
+        },
+        {
+          "x": 800,
+          "y": 768
+        }
+      ],
+      "hopRadius": 5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:kl30->drv3.VS#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 828,
+      "y": 768,
+      "angle": 0,
+      "size": 8,
+      "fill": "#8A6100",
+      "stroke": "#8A6100",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:traveo.WDT->sbc1.WDI#1",
+      "className": "sa-connection sa-group-single sa-kind-digital",
+      "points": [
+        {
+          "x": 624,
+          "y": 272
+        },
+        {
+          "x": 672,
+          "y": 272
+        },
+        {
+          "x": 672,
+          "y": 608
+        },
+        {
+          "x": 304,
+          "y": 608
+        },
+        {
+          "x": 304,
+          "y": 512
+        },
+        {
+          "x": 272,
+          "y": 512
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5,
+      "hops": [
+        {
+          "x": 352,
+          "y": 608
+        }
+      ],
+      "hopRadius": 5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:traveo.WDT->sbc1.WDI#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 276,
+      "y": 512,
+      "angle": 180,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:traveo.IPC_TX->rl78.IPC_RX#1",
+      "className": "sa-connection sa-group-bus sa-kind-uart",
+      "points": [
+        {
+          "x": 624,
+          "y": 288
+        },
+        {
+          "x": 656,
+          "y": 288
+        },
+        {
+          "x": 656,
+          "y": 592
+        },
+        {
+          "x": 416,
+          "y": 592
+        },
+        {
+          "x": 416,
+          "y": 528
+        },
+        {
+          "x": 432,
+          "y": 528
+        }
+      ],
+      "stroke": "#1D5FBF",
+      "strokeWidth": 4.5,
+      "double": true,
+      "gap": "#FFFFFF"
+    },
+    {
+      "type": "marker",
+      "ref": "connection:traveo.IPC_TX->rl78.IPC_RX#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 428,
+      "y": 528,
+      "angle": 0,
+      "size": 8,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:rl78.IPC_TX->traveo.IPC_RX#1",
+      "className": "sa-connection sa-group-bus sa-kind-uart",
+      "points": [
+        {
+          "x": 608,
+          "y": 528
+        },
+        {
+          "x": 640,
+          "y": 528
+        },
+        {
+          "x": 640,
+          "y": 496
+        },
+        {
+          "x": 624,
+          "y": 496
+        },
+        {
+          "x": 624,
+          "y": 320
+        },
+        {
+          "x": 400,
+          "y": 320
+        },
+        {
+          "x": 400,
+          "y": 256
+        },
+        {
+          "x": 416,
+          "y": 256
+        }
+      ],
+      "stroke": "#1D5FBF",
+      "strokeWidth": 4.5,
+      "double": true,
+      "gap": "#FFFFFF"
+    },
+    {
+      "type": "marker",
+      "ref": "connection:rl78.IPC_TX->traveo.IPC_RX#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 412,
+      "y": 256,
+      "angle": 0,
+      "size": 8,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:rl78.SAFE_OFF->drv1.EN#1",
+      "className": "sa-connection sa-group-single sa-kind-digital",
+      "points": [
+        {
+          "x": 608,
+          "y": 512
+        },
+        {
+          "x": 784,
+          "y": 512
+        },
+        {
+          "x": 784,
+          "y": 240
+        },
+        {
+          "x": 832,
+          "y": 240
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5,
+      "hops": [
+        {
+          "x": 800,
+          "y": 240
+        },
+        {
+          "x": 640,
+          "y": 512
+        },
+        {
+          "x": 656,
+          "y": 512
+        },
+        {
+          "x": 672,
+          "y": 512
+        },
+        {
+          "x": 752,
+          "y": 512
+        }
+      ],
+      "hopRadius": 5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:rl78.SAFE_OFF->drv1.EN#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 828,
+      "y": 240,
+      "angle": 0,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:rl78.SAFE_OFF->drv2.EN#1",
+      "className": "sa-connection sa-group-single sa-kind-digital",
+      "points": [
+        {
+          "x": 608,
+          "y": 512
+        },
+        {
+          "x": 784,
+          "y": 512
+        },
+        {
+          "x": 784,
+          "y": 528
+        },
+        {
+          "x": 832,
+          "y": 528
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5,
+      "hops": [
+        {
+          "x": 640,
+          "y": 512
+        },
+        {
+          "x": 656,
+          "y": 512
+        },
+        {
+          "x": 672,
+          "y": 512
+        },
+        {
+          "x": 752,
+          "y": 512
+        },
+        {
+          "x": 800,
+          "y": 528
+        }
+      ],
+      "hopRadius": 5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:rl78.SAFE_OFF->drv2.EN#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 828,
+      "y": 528,
+      "angle": 0,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:rl78.SAFE_OFF->drv3.EN#1",
+      "className": "sa-connection sa-group-single sa-kind-digital",
+      "points": [
+        {
+          "x": 608,
+          "y": 512
+        },
+        {
+          "x": 784,
+          "y": 512
+        },
+        {
+          "x": 784,
+          "y": 816
+        },
+        {
+          "x": 832,
+          "y": 816
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5,
+      "hops": [
+        {
+          "x": 640,
+          "y": 512
+        },
+        {
+          "x": 656,
+          "y": 512
+        },
+        {
+          "x": 672,
+          "y": 512
+        },
+        {
+          "x": 752,
+          "y": 512
+        }
+      ],
+      "hopRadius": 5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:rl78.SAFE_OFF->drv3.EN#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 828,
+      "y": 816,
+      "angle": 0,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:traveo.SPI->drv1.SPI#1",
+      "className": "sa-connection sa-group-bus sa-kind-spi",
+      "points": [
+        {
+          "x": 624,
+          "y": 208
+        },
+        {
+          "x": 832,
+          "y": 208
+        }
+      ],
+      "stroke": "#1D5FBF",
+      "strokeWidth": 4.5,
+      "double": true,
+      "gap": "#FFFFFF"
+    },
+    {
+      "type": "marker",
+      "ref": "connection:traveo.SPI->drv1.SPI#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 828,
+      "y": 208,
+      "angle": 0,
+      "size": 8,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "marker",
+      "ref": "connection:traveo.SPI->drv1.SPI#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 628,
+      "y": 208,
+      "angle": 180,
+      "size": 8,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:traveo.SPI->drv2.SPI#1",
+      "className": "sa-connection sa-group-bus sa-kind-spi",
+      "points": [
+        {
+          "x": 624,
+          "y": 208
+        },
+        {
+          "x": 800,
+          "y": 208
+        },
+        {
+          "x": 800,
+          "y": 496
+        },
+        {
+          "x": 832,
+          "y": 496
+        }
+      ],
+      "stroke": "#1D5FBF",
+      "strokeWidth": 4.5,
+      "double": true,
+      "gap": "#FFFFFF"
+    },
+    {
+      "type": "marker",
+      "ref": "connection:traveo.SPI->drv2.SPI#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 828,
+      "y": 496,
+      "angle": 0,
+      "size": 8,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "marker",
+      "ref": "connection:traveo.SPI->drv2.SPI#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 628,
+      "y": 208,
+      "angle": 180,
+      "size": 8,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:traveo.SPI->drv3.SPI#1",
+      "className": "sa-connection sa-group-bus sa-kind-spi",
+      "points": [
+        {
+          "x": 624,
+          "y": 208
+        },
+        {
+          "x": 800,
+          "y": 208
+        },
+        {
+          "x": 800,
+          "y": 784
+        },
+        {
+          "x": 832,
+          "y": 784
+        }
+      ],
+      "stroke": "#1D5FBF",
+      "strokeWidth": 4.5,
+      "double": true,
+      "gap": "#FFFFFF"
+    },
+    {
+      "type": "marker",
+      "ref": "connection:traveo.SPI->drv3.SPI#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 828,
+      "y": 784,
+      "angle": 0,
+      "size": 8,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "marker",
+      "ref": "connection:traveo.SPI->drv3.SPI#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 628,
+      "y": 208,
+      "angle": 180,
+      "size": 8,
+      "fill": "#1D5FBF",
+      "stroke": "#1D5FBF",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:traveo.PWM1->drv1.PWM#1",
+      "className": "sa-connection sa-group-single sa-kind-pwm",
+      "points": [
+        {
+          "x": 624,
+          "y": 224
+        },
+        {
+          "x": 832,
+          "y": 224
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5,
+      "hops": [
+        {
+          "x": 800,
+          "y": 224
+        }
+      ],
+      "hopRadius": 5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:traveo.PWM1->drv1.PWM#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 828,
+      "y": 224,
+      "angle": 0,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:traveo.PWM2->drv2.PWM#1",
+      "className": "sa-connection sa-group-single sa-kind-pwm",
+      "points": [
+        {
+          "x": 624,
+          "y": 240
+        },
+        {
+          "x": 768,
+          "y": 240
+        },
+        {
+          "x": 768,
+          "y": 496
+        },
+        {
+          "x": 800,
+          "y": 496
+        },
+        {
+          "x": 800,
+          "y": 512
+        },
+        {
+          "x": 832,
+          "y": 512
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5,
+      "hops": [
+        {
+          "x": 784,
+          "y": 496
+        }
+      ],
+      "hopRadius": 5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:traveo.PWM2->drv2.PWM#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 828,
+      "y": 512,
+      "angle": 0,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:traveo.PWM3->drv3.PWM#1",
+      "className": "sa-connection sa-group-single sa-kind-pwm",
+      "points": [
+        {
+          "x": 624,
+          "y": 256
+        },
+        {
+          "x": 752,
+          "y": 256
+        },
+        {
+          "x": 752,
+          "y": 800
+        },
+        {
+          "x": 832,
+          "y": 800
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5,
+      "hops": [
+        {
+          "x": 784,
+          "y": 800
+        }
+      ],
+      "hopRadius": 5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:traveo.PWM3->drv3.PWM#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 828,
+      "y": 800,
+      "angle": 0,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:drv1.OUT_A->hb1.IN#1",
+      "className": "sa-connection sa-group-single sa-kind-digital",
+      "points": [
+        {
+          "x": 992,
+          "y": 208
+        },
+        {
+          "x": 1120,
+          "y": 208
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:drv1.OUT_A->hb1.IN#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 1116,
+      "y": 208,
+      "angle": 0,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:drv1.OUT_B->hb2.IN#1",
+      "className": "sa-connection sa-group-single sa-kind-digital",
+      "points": [
+        {
+          "x": 992,
+          "y": 224
+        },
+        {
+          "x": 1088,
+          "y": 224
+        },
+        {
+          "x": 1088,
+          "y": 400
+        },
+        {
+          "x": 1120,
+          "y": 400
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:drv1.OUT_B->hb2.IN#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 1116,
+      "y": 400,
+      "angle": 0,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:drv2.OUT_A->hb3.IN#1",
+      "className": "sa-connection sa-group-single sa-kind-digital",
+      "points": [
+        {
+          "x": 992,
+          "y": 496
+        },
+        {
+          "x": 1088,
+          "y": 496
+        },
+        {
+          "x": 1088,
+          "y": 544
+        },
+        {
+          "x": 1120,
+          "y": 544
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:drv2.OUT_A->hb3.IN#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 1116,
+      "y": 544,
+      "angle": 0,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:drv2.OUT_B->hb4.IN#1",
+      "className": "sa-connection sa-group-single sa-kind-digital",
+      "points": [
+        {
+          "x": 992,
+          "y": 512
+        },
+        {
+          "x": 1072,
+          "y": 512
+        },
+        {
+          "x": 1072,
+          "y": 688
+        },
+        {
+          "x": 1120,
+          "y": 688
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:drv2.OUT_B->hb4.IN#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 1116,
+      "y": 688,
+      "angle": 0,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:drv3.OUT_A->hb5.IN#1",
+      "className": "sa-connection sa-group-single sa-kind-digital",
+      "points": [
+        {
+          "x": 992,
+          "y": 784
+        },
+        {
+          "x": 1088,
+          "y": 784
+        },
+        {
+          "x": 1088,
+          "y": 832
+        },
+        {
+          "x": 1120,
+          "y": 832
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:drv3.OUT_A->hb5.IN#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 1116,
+      "y": 832,
+      "angle": 0,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "shape",
+      "ref": "component:kl30",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 112,
+      "y": 144,
+      "width": 96,
+      "height": 64,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:sbc1",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 64,
+      "y": 432,
+      "width": 208,
+      "height": 144,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:traveo",
+      "className": "sa-component sa-shape-rounded sa-cat-controller sa-importance-primary",
+      "shape": "rounded",
+      "x": 416,
+      "y": 144,
+      "width": 208,
+      "height": 160,
+      "radius": 8,
+      "fill": "#EAF2FF",
+      "stroke": "#316BD6",
+      "strokeWidth": 2
+    },
+    {
+      "type": "shape",
+      "ref": "component:rl78",
+      "className": "sa-component sa-shape-rounded sa-cat-controller sa-importance-secondary",
+      "shape": "rounded",
+      "x": 432,
+      "y": 448,
+      "width": 176,
+      "height": 112,
+      "radius": 8,
+      "fill": "#EAF2FF",
+      "stroke": "#316BD6",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:drv1",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 832,
+      "y": 144,
+      "width": 160,
+      "height": 144,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:drv2",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 832,
+      "y": 432,
+      "width": 160,
+      "height": 144,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:drv3",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 832,
+      "y": 720,
+      "width": 160,
+      "height": 144,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:hb1",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 1120,
+      "y": 144,
+      "width": 160,
+      "height": 112,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:hb2",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 1120,
+      "y": 336,
+      "width": 160,
+      "height": 112,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:hb3",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 1120,
+      "y": 480,
+      "width": 160,
+      "height": 112,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:hb4",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 1120,
+      "y": 624,
+      "width": 160,
+      "height": 112,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:hb5",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 1120,
+      "y": 768,
+      "width": 160,
+      "height": 112,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "icon",
+      "ref": "component:kl30",
+      "className": "sa-icon",
+      "name": "battery",
+      "x": 152,
+      "y": 155.875,
+      "size": 16,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:sbc1",
+      "className": "sa-icon",
+      "name": "regulator",
+      "x": 138.76513671875,
+      "y": 440,
+      "size": 24,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:traveo",
+      "className": "sa-icon",
+      "name": "chip",
+      "x": 459.5458984375,
+      "y": 152,
+      "size": 24,
+      "color": "#0F2A5C",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:rl78",
+      "className": "sa-icon",
+      "name": "chip",
+      "x": 446.23046875,
+      "y": 456,
+      "size": 20,
+      "color": "#0F2A5C",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:drv1",
+      "className": "sa-icon",
+      "name": "bridge",
+      "x": 874.732666015625,
+      "y": 152,
+      "size": 20,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:drv2",
+      "className": "sa-icon",
+      "name": "bridge",
+      "x": 873.425048828125,
+      "y": 440,
+      "size": 20,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:drv3",
+      "className": "sa-icon",
+      "name": "bridge",
+      "x": 873.355224609375,
+      "y": 728,
+      "size": 20,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:hb1",
+      "className": "sa-icon",
+      "name": "bridge",
+      "x": 1146.86669921875,
+      "y": 152,
+      "size": 20,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:hb2",
+      "className": "sa-icon",
+      "name": "bridge",
+      "x": 1145.55908203125,
+      "y": 344,
+      "size": 20,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:hb3",
+      "className": "sa-icon",
+      "name": "bridge",
+      "x": 1145.4892578125,
+      "y": 488,
+      "size": 20,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:hb4",
+      "className": "sa-icon",
+      "name": "bridge",
+      "x": 1145.298828125,
+      "y": 632,
+      "size": 20,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:hb5",
+      "className": "sa-icon",
+      "name": "bridge",
+      "x": 1145.644775390625,
+      "y": 776,
+      "size": 20,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "marker",
+      "ref": "pin:sbc1.VIN",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 64,
+      "y": 496,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:sbc1.EN",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 64,
+      "y": 512,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:sbc1.VOUT",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 272,
+      "y": 496,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:sbc1.GND",
+      "className": "sa-pin sa-group-supply sa-kind-ground",
+      "shape": "pin",
+      "x": 176,
+      "y": 576,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:sbc1.SPI",
+      "className": "sa-pin sa-group-bus sa-kind-spi",
+      "shape": "pin",
+      "x": 64,
+      "y": 528,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:sbc1.WDI",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 272,
+      "y": 512,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:sbc1.CANH",
+      "className": "sa-pin sa-group-bus sa-kind-can",
+      "shape": "pin",
+      "x": 272,
+      "y": 528,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:sbc1.CANL",
+      "className": "sa-pin sa-group-bus sa-kind-can",
+      "shape": "pin",
+      "x": 272,
+      "y": 544,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:traveo.VDD",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 416,
+      "y": 224,
+      "angle": 180,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:traveo.GND",
+      "className": "sa-pin sa-group-supply sa-kind-ground",
+      "shape": "pin",
+      "x": 416,
+      "y": 240,
+      "angle": 180,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:traveo.IPC_RX",
+      "className": "sa-pin sa-group-bus sa-kind-uart",
+      "shape": "pin",
+      "x": 416,
+      "y": 256,
+      "angle": 180,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:traveo.SPI",
+      "className": "sa-pin sa-group-bus sa-kind-spi",
+      "shape": "pin",
+      "x": 624,
+      "y": 208,
+      "angle": 0,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:traveo.PWM1",
+      "className": "sa-pin sa-group-single sa-kind-pwm",
+      "shape": "pin",
+      "x": 624,
+      "y": 224,
+      "angle": 0,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:traveo.PWM2",
+      "className": "sa-pin sa-group-single sa-kind-pwm",
+      "shape": "pin",
+      "x": 624,
+      "y": 240,
+      "angle": 0,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:traveo.PWM3",
+      "className": "sa-pin sa-group-single sa-kind-pwm",
+      "shape": "pin",
+      "x": 624,
+      "y": 256,
+      "angle": 0,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:traveo.WDT",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 624,
+      "y": 272,
+      "angle": 0,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:traveo.IPC_TX",
+      "className": "sa-pin sa-group-bus sa-kind-uart",
+      "shape": "pin",
+      "x": 624,
+      "y": 288,
+      "angle": 0,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:rl78.VDD",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 432,
+      "y": 496,
+      "angle": 180,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:rl78.GND",
+      "className": "sa-pin sa-group-supply sa-kind-ground",
+      "shape": "pin",
+      "x": 432,
+      "y": 512,
+      "angle": 180,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:rl78.IPC_RX",
+      "className": "sa-pin sa-group-bus sa-kind-uart",
+      "shape": "pin",
+      "x": 432,
+      "y": 528,
+      "angle": 180,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:rl78.SAFE_OFF",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 608,
+      "y": 512,
+      "angle": 0,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:rl78.IPC_TX",
+      "className": "sa-pin sa-group-bus sa-kind-uart",
+      "shape": "pin",
+      "x": 608,
+      "y": 528,
+      "angle": 0,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:drv1.VS",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 832,
+      "y": 192,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:drv1.SPI",
+      "className": "sa-pin sa-group-bus sa-kind-spi",
+      "shape": "pin",
+      "x": 832,
+      "y": 208,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:drv1.PWM",
+      "className": "sa-pin sa-group-single sa-kind-pwm",
+      "shape": "pin",
+      "x": 832,
+      "y": 224,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:drv1.EN",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 832,
+      "y": 240,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:drv1.OUT_A",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 992,
+      "y": 208,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:drv1.OUT_B",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 992,
+      "y": 224,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:drv1.GND",
+      "className": "sa-pin sa-group-supply sa-kind-ground",
+      "shape": "pin",
+      "x": 912,
+      "y": 288,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:drv2.VS",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 832,
+      "y": 480,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:drv2.SPI",
+      "className": "sa-pin sa-group-bus sa-kind-spi",
+      "shape": "pin",
+      "x": 832,
+      "y": 496,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:drv2.PWM",
+      "className": "sa-pin sa-group-single sa-kind-pwm",
+      "shape": "pin",
+      "x": 832,
+      "y": 512,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:drv2.EN",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 832,
+      "y": 528,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:drv2.OUT_A",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 992,
+      "y": 496,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:drv2.OUT_B",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 992,
+      "y": 512,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:drv2.GND",
+      "className": "sa-pin sa-group-supply sa-kind-ground",
+      "shape": "pin",
+      "x": 912,
+      "y": 576,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:drv3.VS",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 832,
+      "y": 768,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:drv3.SPI",
+      "className": "sa-pin sa-group-bus sa-kind-spi",
+      "shape": "pin",
+      "x": 832,
+      "y": 784,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:drv3.PWM",
+      "className": "sa-pin sa-group-single sa-kind-pwm",
+      "shape": "pin",
+      "x": 832,
+      "y": 800,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:drv3.EN",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 832,
+      "y": 816,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:drv3.OUT_A",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 992,
+      "y": 784,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:drv3.OUT_B",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 992,
+      "y": 800,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:drv3.GND",
+      "className": "sa-pin sa-group-supply sa-kind-ground",
+      "shape": "pin",
+      "x": 912,
+      "y": 864,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb1.VS",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 1120,
+      "y": 192,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb1.IN",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 1120,
+      "y": 208,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb1.OUT",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 1280,
+      "y": 208,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb1.IS",
+      "className": "sa-pin sa-group-single sa-kind-analog",
+      "shape": "pin",
+      "x": 1184,
+      "y": 256,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb1.GND",
+      "className": "sa-pin sa-group-supply sa-kind-ground",
+      "shape": "pin",
+      "x": 1232,
+      "y": 256,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb2.VS",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 1120,
+      "y": 384,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb2.IN",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 1120,
+      "y": 400,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb2.OUT",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 1280,
+      "y": 400,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb2.IS",
+      "className": "sa-pin sa-group-single sa-kind-analog",
+      "shape": "pin",
+      "x": 1184,
+      "y": 448,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb2.GND",
+      "className": "sa-pin sa-group-supply sa-kind-ground",
+      "shape": "pin",
+      "x": 1232,
+      "y": 448,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb3.VS",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 1120,
+      "y": 528,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb3.IN",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 1120,
+      "y": 544,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb3.OUT",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 1280,
+      "y": 544,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb3.IS",
+      "className": "sa-pin sa-group-single sa-kind-analog",
+      "shape": "pin",
+      "x": 1184,
+      "y": 592,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb3.GND",
+      "className": "sa-pin sa-group-supply sa-kind-ground",
+      "shape": "pin",
+      "x": 1232,
+      "y": 592,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb4.VS",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 1120,
+      "y": 672,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb4.IN",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 1120,
+      "y": 688,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb4.OUT",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 1280,
+      "y": 688,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb4.IS",
+      "className": "sa-pin sa-group-single sa-kind-analog",
+      "shape": "pin",
+      "x": 1184,
+      "y": 736,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb4.GND",
+      "className": "sa-pin sa-group-supply sa-kind-ground",
+      "shape": "pin",
+      "x": 1232,
+      "y": 736,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb5.VS",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 1120,
+      "y": 816,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb5.IN",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 1120,
+      "y": 832,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb5.OUT",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 1280,
+      "y": 832,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb5.IS",
+      "className": "sa-pin sa-group-single sa-kind-analog",
+      "shape": "pin",
+      "x": 1184,
+      "y": 880,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb5.GND",
+      "className": "sa-pin sa-group-supply sa-kind-ground",
+      "shape": "pin",
+      "x": 1232,
+      "y": 880,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "text",
+      "ref": "system:ecu",
+      "className": "sa-label sa-system-label",
+      "x": 408,
+      "y": 116,
+      "anchor": "start",
+      "baseline": "top",
+      "lines": [
+        "Seat ECU"
+      ],
+      "style": {
+        "size": 12,
+        "weight": 600,
+        "color": "#4B5563",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 15,
+      "ascent": 11.865234375,
+      "width": 54.10546875
+    },
+    {
+      "type": "text",
+      "ref": "component:kl30",
+      "className": "sa-label sa-component-label",
+      "x": 160,
+      "y": 179.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "KL30"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 32.830078125
+    },
+    {
+      "type": "text",
+      "ref": "component:sbc1",
+      "className": "sa-label sa-component-label",
+      "x": 184,
+      "y": 443.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "SBC"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 26.4697265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:sbc1.VIN",
+      "className": "sa-label sa-pin-label",
+      "x": 72,
+      "y": 496,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "VIN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 18.8310546875
+    },
+    {
+      "type": "text",
+      "ref": "pin:sbc1.EN",
+      "className": "sa-label sa-pin-label",
+      "x": 72,
+      "y": 512,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "EN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 14.8994140625
+    },
+    {
+      "type": "text",
+      "ref": "pin:sbc1.VOUT",
+      "className": "sa-label sa-pin-label",
+      "x": 264,
+      "y": 496,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "VOUT"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 30.916015625
+    },
+    {
+      "type": "text",
+      "ref": "pin:sbc1.GND",
+      "className": "sa-label sa-pin-label",
+      "x": 176,
+      "y": 568,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 24.43310546875
+    },
+    {
+      "type": "text",
+      "ref": "pin:sbc1.SPI",
+      "className": "sa-label sa-pin-label",
+      "x": 72,
+      "y": 528,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "SPI"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 17.037109375
+    },
+    {
+      "type": "text",
+      "ref": "pin:sbc1.WDI",
+      "className": "sa-label sa-pin-label",
+      "x": 264,
+      "y": 512,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "WDI"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 21.7314453125
+    },
+    {
+      "type": "text",
+      "ref": "pin:sbc1.CANH",
+      "className": "sa-label sa-pin-label",
+      "x": 264,
+      "y": 528,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "CANH"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 31.8720703125
+    },
+    {
+      "type": "text",
+      "ref": "pin:sbc1.CANL",
+      "className": "sa-label sa-pin-label",
+      "x": 264,
+      "y": 544,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "CANL"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 29.9169921875
+    },
+    {
+      "type": "text",
+      "ref": "component:traveo",
+      "className": "sa-label sa-component-label",
+      "x": 536,
+      "y": 155.25,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "TRAVEO T2G"
+      ],
+      "style": {
+        "size": 14,
+        "weight": 600,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 17.5,
+      "ascent": 13.8427734375,
+      "width": 88.908203125
+    },
+    {
+      "type": "text",
+      "ref": "pin:traveo.VDD",
+      "className": "sa-label sa-pin-label",
+      "x": 424,
+      "y": 224,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "VDD"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 23.46630859375
+    },
+    {
+      "type": "text",
+      "ref": "pin:traveo.GND",
+      "className": "sa-label sa-pin-label",
+      "x": 424,
+      "y": 240,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 24.43310546875
+    },
+    {
+      "type": "text",
+      "ref": "pin:traveo.IPC_RX",
+      "className": "sa-label sa-pin-label",
+      "x": 424,
+      "y": 256,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "IPC_RX"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 37.54931640625
+    },
+    {
+      "type": "text",
+      "ref": "pin:traveo.SPI",
+      "className": "sa-label sa-pin-label",
+      "x": 616,
+      "y": 208,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "SPI"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 17.037109375
+    },
+    {
+      "type": "text",
+      "ref": "pin:traveo.PWM1",
+      "className": "sa-label sa-pin-label",
+      "x": 616,
+      "y": 224,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "PWM1"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 32.27490234375
+    },
+    {
+      "type": "text",
+      "ref": "pin:traveo.PWM2",
+      "className": "sa-label sa-pin-label",
+      "x": 616,
+      "y": 240,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "PWM2"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 34.50927734375
+    },
+    {
+      "type": "text",
+      "ref": "pin:traveo.PWM3",
+      "className": "sa-label sa-pin-label",
+      "x": 616,
+      "y": 256,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "PWM3"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 34.59521484375
+    },
+    {
+      "type": "text",
+      "ref": "pin:traveo.WDT",
+      "className": "sa-label sa-pin-label",
+      "x": 616,
+      "y": 272,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "WDT"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 25.55029296875
+    },
+    {
+      "type": "text",
+      "ref": "pin:traveo.IPC_TX",
+      "className": "sa-label sa-pin-label",
+      "x": 616,
+      "y": 288,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "IPC_TX"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 36.5771484375
+    },
+    {
+      "type": "text",
+      "ref": "component:rl78",
+      "className": "sa-label sa-component-label",
+      "x": 534,
+      "y": 457.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "RL78 Co-Controller"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 119.5390625
+    },
+    {
+      "type": "text",
+      "ref": "pin:rl78.VDD",
+      "className": "sa-label sa-pin-label",
+      "x": 440,
+      "y": 496,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "VDD"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 23.46630859375
+    },
+    {
+      "type": "text",
+      "ref": "pin:rl78.GND",
+      "className": "sa-label sa-pin-label",
+      "x": 440,
+      "y": 512,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 24.43310546875
+    },
+    {
+      "type": "text",
+      "ref": "pin:rl78.IPC_RX",
+      "className": "sa-label sa-pin-label",
+      "x": 440,
+      "y": 528,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "IPC_RX"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 37.54931640625
+    },
+    {
+      "type": "text",
+      "ref": "pin:rl78.SAFE_OFF",
+      "className": "sa-label sa-pin-label",
+      "x": 600,
+      "y": 512,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "SAFE_OFF"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 53.732421875
+    },
+    {
+      "type": "text",
+      "ref": "pin:rl78.IPC_TX",
+      "className": "sa-label sa-pin-label",
+      "x": 600,
+      "y": 528,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "IPC_TX"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 36.5771484375
+    },
+    {
+      "type": "text",
+      "ref": "component:drv1",
+      "className": "sa-label sa-component-label",
+      "x": 926,
+      "y": 153.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Driver 1"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 46.53466796875
+    },
+    {
+      "type": "text",
+      "ref": "pin:drv1.VS",
+      "className": "sa-label sa-pin-label",
+      "x": 840,
+      "y": 192,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "VS"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 14.64697265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:drv1.SPI",
+      "className": "sa-label sa-pin-label",
+      "x": 840,
+      "y": 208,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "SPI"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 17.037109375
+    },
+    {
+      "type": "text",
+      "ref": "pin:drv1.PWM",
+      "className": "sa-label sa-pin-label",
+      "x": 840,
+      "y": 224,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "PWM"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 27.80078125
+    },
+    {
+      "type": "text",
+      "ref": "pin:drv1.EN",
+      "className": "sa-label sa-pin-label",
+      "x": 840,
+      "y": 240,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "EN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 14.8994140625
+    },
+    {
+      "type": "text",
+      "ref": "pin:drv1.OUT_A",
+      "className": "sa-label sa-pin-label",
+      "x": 984,
+      "y": 208,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "OUT_A"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 35.68017578125
+    },
+    {
+      "type": "text",
+      "ref": "pin:drv1.OUT_B",
+      "className": "sa-label sa-pin-label",
+      "x": 984,
+      "y": 224,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "OUT_B"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 35.65869140625
+    },
+    {
+      "type": "text",
+      "ref": "pin:drv1.GND",
+      "className": "sa-label sa-pin-label",
+      "x": 912,
+      "y": 280,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 24.43310546875
+    },
+    {
+      "type": "text",
+      "ref": "component:drv2",
+      "className": "sa-label sa-component-label",
+      "x": 926,
+      "y": 441.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Driver 2"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 49.14990234375
+    },
+    {
+      "type": "text",
+      "ref": "pin:drv2.VS",
+      "className": "sa-label sa-pin-label",
+      "x": 840,
+      "y": 480,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "VS"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 14.64697265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:drv2.SPI",
+      "className": "sa-label sa-pin-label",
+      "x": 840,
+      "y": 496,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "SPI"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 17.037109375
+    },
+    {
+      "type": "text",
+      "ref": "pin:drv2.PWM",
+      "className": "sa-label sa-pin-label",
+      "x": 840,
+      "y": 512,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "PWM"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 27.80078125
+    },
+    {
+      "type": "text",
+      "ref": "pin:drv2.EN",
+      "className": "sa-label sa-pin-label",
+      "x": 840,
+      "y": 528,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "EN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 14.8994140625
+    },
+    {
+      "type": "text",
+      "ref": "pin:drv2.OUT_A",
+      "className": "sa-label sa-pin-label",
+      "x": 984,
+      "y": 496,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "OUT_A"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 35.68017578125
+    },
+    {
+      "type": "text",
+      "ref": "pin:drv2.OUT_B",
+      "className": "sa-label sa-pin-label",
+      "x": 984,
+      "y": 512,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "OUT_B"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 35.65869140625
+    },
+    {
+      "type": "text",
+      "ref": "pin:drv2.GND",
+      "className": "sa-label sa-pin-label",
+      "x": 912,
+      "y": 568,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 24.43310546875
+    },
+    {
+      "type": "text",
+      "ref": "component:drv3",
+      "className": "sa-label sa-component-label",
+      "x": 926,
+      "y": 729.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Driver 3"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 49.28955078125
+    },
+    {
+      "type": "text",
+      "ref": "pin:drv3.VS",
+      "className": "sa-label sa-pin-label",
+      "x": 840,
+      "y": 768,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "VS"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 14.64697265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:drv3.SPI",
+      "className": "sa-label sa-pin-label",
+      "x": 840,
+      "y": 784,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "SPI"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 17.037109375
+    },
+    {
+      "type": "text",
+      "ref": "pin:drv3.PWM",
+      "className": "sa-label sa-pin-label",
+      "x": 840,
+      "y": 800,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "PWM"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 27.80078125
+    },
+    {
+      "type": "text",
+      "ref": "pin:drv3.EN",
+      "className": "sa-label sa-pin-label",
+      "x": 840,
+      "y": 816,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "EN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 14.8994140625
+    },
+    {
+      "type": "text",
+      "ref": "pin:drv3.OUT_A",
+      "className": "sa-label sa-pin-label",
+      "x": 984,
+      "y": 784,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "OUT_A"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 35.68017578125
+    },
+    {
+      "type": "text",
+      "ref": "pin:drv3.OUT_B",
+      "className": "sa-label sa-pin-label",
+      "x": 984,
+      "y": 800,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "OUT_B"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 35.65869140625
+    },
+    {
+      "type": "text",
+      "ref": "pin:drv3.GND",
+      "className": "sa-label sa-pin-label",
+      "x": 912,
+      "y": 856,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 24.43310546875
+    },
+    {
+      "type": "text",
+      "ref": "component:hb1",
+      "className": "sa-label sa-component-label",
+      "x": 1214,
+      "y": 153.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Half Bridge 1"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 78.2666015625
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb1.VS",
+      "className": "sa-label sa-pin-label",
+      "x": 1128,
+      "y": 192,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "VS"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 14.64697265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb1.IN",
+      "className": "sa-label sa-pin-label",
+      "x": 1128,
+      "y": 208,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "IN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 11.24169921875
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb1.OUT",
+      "className": "sa-label sa-pin-label",
+      "x": 1272,
+      "y": 208,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "OUT"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 23.697265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb1.IS",
+      "className": "sa-label sa-pin-label",
+      "x": 1184,
+      "y": 248,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "IS"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 10.01171875
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb1.GND",
+      "className": "sa-label sa-pin-label",
+      "x": 1232,
+      "y": 248,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 24.43310546875
+    },
+    {
+      "type": "text",
+      "ref": "component:hb2",
+      "className": "sa-label sa-component-label",
+      "x": 1214,
+      "y": 345.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Half Bridge 2"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 80.8818359375
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb2.VS",
+      "className": "sa-label sa-pin-label",
+      "x": 1128,
+      "y": 384,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "VS"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 14.64697265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb2.IN",
+      "className": "sa-label sa-pin-label",
+      "x": 1128,
+      "y": 400,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "IN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 11.24169921875
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb2.OUT",
+      "className": "sa-label sa-pin-label",
+      "x": 1272,
+      "y": 400,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "OUT"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 23.697265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb2.IS",
+      "className": "sa-label sa-pin-label",
+      "x": 1184,
+      "y": 440,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "IS"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 10.01171875
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb2.GND",
+      "className": "sa-label sa-pin-label",
+      "x": 1232,
+      "y": 440,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 24.43310546875
+    },
+    {
+      "type": "text",
+      "ref": "component:hb3",
+      "className": "sa-label sa-component-label",
+      "x": 1214,
+      "y": 489.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Half Bridge 3"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 81.021484375
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb3.VS",
+      "className": "sa-label sa-pin-label",
+      "x": 1128,
+      "y": 528,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "VS"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 14.64697265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb3.IN",
+      "className": "sa-label sa-pin-label",
+      "x": 1128,
+      "y": 544,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "IN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 11.24169921875
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb3.OUT",
+      "className": "sa-label sa-pin-label",
+      "x": 1272,
+      "y": 544,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "OUT"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 23.697265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb3.IS",
+      "className": "sa-label sa-pin-label",
+      "x": 1184,
+      "y": 584,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "IS"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 10.01171875
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb3.GND",
+      "className": "sa-label sa-pin-label",
+      "x": 1232,
+      "y": 584,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 24.43310546875
+    },
+    {
+      "type": "text",
+      "ref": "component:hb4",
+      "className": "sa-label sa-component-label",
+      "x": 1214,
+      "y": 633.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Half Bridge 4"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 81.40234375
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb4.VS",
+      "className": "sa-label sa-pin-label",
+      "x": 1128,
+      "y": 672,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "VS"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 14.64697265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb4.IN",
+      "className": "sa-label sa-pin-label",
+      "x": 1128,
+      "y": 688,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "IN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 11.24169921875
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb4.OUT",
+      "className": "sa-label sa-pin-label",
+      "x": 1272,
+      "y": 688,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "OUT"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 23.697265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb4.IS",
+      "className": "sa-label sa-pin-label",
+      "x": 1184,
+      "y": 728,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "IS"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 10.01171875
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb4.GND",
+      "className": "sa-label sa-pin-label",
+      "x": 1232,
+      "y": 728,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 24.43310546875
+    },
+    {
+      "type": "text",
+      "ref": "component:hb5",
+      "className": "sa-label sa-component-label",
+      "x": 1214,
+      "y": 777.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Half Bridge 5"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 80.71044921875
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb5.VS",
+      "className": "sa-label sa-pin-label",
+      "x": 1128,
+      "y": 816,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "VS"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 14.64697265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb5.IN",
+      "className": "sa-label sa-pin-label",
+      "x": 1128,
+      "y": 832,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "IN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 11.24169921875
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb5.OUT",
+      "className": "sa-label sa-pin-label",
+      "x": 1272,
+      "y": 832,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "OUT"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 23.697265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb5.IS",
+      "className": "sa-label sa-pin-label",
+      "x": 1184,
+      "y": 872,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "IS"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 10.01171875
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb5.GND",
+      "className": "sa-label sa-pin-label",
+      "x": 1232,
+      "y": 872,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 24.43310546875
+    },
+    {
+      "type": "text",
+      "ref": "connection:kl30->sbc1.VIN#1",
+      "className": "sa-label sa-connection-label",
+      "x": 160,
+      "y": 312,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "KL30"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 27.779296875
+    },
+    {
+      "type": "text",
+      "ref": "connection:sbc1.VOUT->traveo.VDD#1",
+      "className": "sa-label sa-connection-label",
+      "x": 384,
+      "y": 360,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "5 V"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 17.36474609375
+    },
+    {
+      "type": "text",
+      "ref": "connection:sbc1.VOUT->rl78.VDD#1",
+      "className": "sa-label sa-connection-label",
+      "x": 400,
+      "y": 496,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "5 V"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 17.36474609375
+    },
+    {
+      "type": "text",
+      "ref": "connection:traveo.WDT->sbc1.WDI#1",
+      "className": "sa-label sa-connection-label",
+      "x": 488,
+      "y": 608,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "Watchdog"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 53.55517578125
+    },
+    {
+      "type": "text",
+      "ref": "connection:traveo.IPC_TX->rl78.IPC_RX#1",
+      "className": "sa-label sa-connection-label",
+      "x": 656,
+      "y": 304,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "IPC"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 18.1220703125
+    },
+    {
+      "type": "text",
+      "ref": "connection:rl78.IPC_TX->traveo.IPC_RX#1",
+      "className": "sa-label sa-connection-label",
+      "x": 512,
+      "y": 320,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "Status"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 33.43505859375
+    },
+    {
+      "type": "text",
+      "ref": "connection:rl78.SAFE_OFF->drv1.EN#1",
+      "className": "sa-label sa-connection-label",
+      "x": 784,
+      "y": 376,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "Safe Off"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 42.96337890625
+    },
+    {
+      "type": "text",
+      "ref": "connection:traveo.SPI->drv1.SPI#1",
+      "className": "sa-label sa-connection-label",
+      "x": 728,
+      "y": 208,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "SPI"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 17.16064453125
+    },
+    {
+      "type": "text",
+      "ref": "connection:traveo.PWM1->drv1.PWM#1",
+      "className": "sa-label sa-connection-label",
+      "x": 656,
+      "y": 224,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "PWM"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 28.12841796875
+    },
+    {
+      "type": "text",
+      "className": "sa-title",
+      "x": 32,
+      "y": 32,
+      "anchor": "start",
+      "baseline": "top",
+      "lines": [
+        "Seat Control Module"
+      ],
+      "style": {
+        "size": 18,
+        "weight": 600,
+        "color": "#111827",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 22.5,
+      "ascent": 17.7978515625,
+      "width": 177.46875
+    }
+  ]
+}

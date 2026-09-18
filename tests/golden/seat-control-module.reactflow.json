@@ -1,0 +1,1782 @@
+{
+  "nodes": [
+    {
+      "id": "kl30",
+      "type": "battery",
+      "position": {
+        "x": 112,
+        "y": 144
+      },
+      "width": 96,
+      "height": 64,
+      "data": {
+        "label": "KL30",
+        "category": "power",
+        "importance": "secondary",
+        "size": "small",
+        "shape": "rounded",
+        "icon": {
+          "name": "battery",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M3.5 7h14a1.5 1.5 0 0 1 1.5 1.5v7a1.5 1.5 0 0 1 -1.5 1.5h-14a1.5 1.5 0 0 1 -1.5 -1.5v-7a1.5 1.5 0 0 1 1.5 -1.5Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M22 10v4",
+              "mode": "stroke"
+            },
+            {
+              "d": "M6 12h4M8 10v4",
+              "mode": "stroke"
+            },
+            {
+              "d": "M13 12h3",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [],
+        "meta": {}
+      }
+    },
+    {
+      "id": "sbc1",
+      "type": "sbc",
+      "position": {
+        "x": 64,
+        "y": 432
+      },
+      "width": 208,
+      "height": 144,
+      "data": {
+        "label": "SBC",
+        "category": "power",
+        "importance": "secondary",
+        "size": "large",
+        "shape": "rounded",
+        "icon": {
+          "name": "regulator",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M7 12c1.5-3 3-3 4.5 0s3 3 4.5 0",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "VIN",
+            "label": "VIN",
+            "kind": "power",
+            "side": "left",
+            "offset": 64
+          },
+          {
+            "id": "EN",
+            "label": "EN",
+            "kind": "digital",
+            "side": "left",
+            "offset": 80
+          },
+          {
+            "id": "VOUT",
+            "label": "VOUT",
+            "kind": "power",
+            "side": "right",
+            "offset": 64
+          },
+          {
+            "id": "GND",
+            "label": "GND",
+            "kind": "ground",
+            "side": "bottom",
+            "offset": 112
+          },
+          {
+            "id": "SPI",
+            "label": "SPI",
+            "kind": "spi",
+            "side": "left",
+            "offset": 96
+          },
+          {
+            "id": "WDI",
+            "label": "WDI",
+            "kind": "digital",
+            "side": "right",
+            "offset": 80
+          },
+          {
+            "id": "CANH",
+            "label": "CANH",
+            "kind": "can",
+            "side": "right",
+            "offset": 96
+          },
+          {
+            "id": "CANL",
+            "label": "CANL",
+            "kind": "can",
+            "side": "right",
+            "offset": 112
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "ecu",
+      "type": "group",
+      "position": {
+        "x": 400,
+        "y": 112
+      },
+      "style": {
+        "width": 240,
+        "height": 464
+      },
+      "data": {
+        "label": "Seat ECU",
+        "groupType": "system"
+      }
+    },
+    {
+      "id": "traveo",
+      "type": "microcontroller",
+      "parentId": "ecu",
+      "extent": "parent",
+      "position": {
+        "x": 16,
+        "y": 32
+      },
+      "width": 208,
+      "height": 160,
+      "data": {
+        "label": "TRAVEO T2G",
+        "category": "controller",
+        "importance": "primary",
+        "size": "large",
+        "shape": "rounded",
+        "icon": {
+          "name": "chip",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M7 6h10a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1v-10a1 1 0 0 1 1 -1Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "VDD",
+            "label": "VDD",
+            "kind": "power",
+            "side": "left",
+            "offset": 80
+          },
+          {
+            "id": "GND",
+            "label": "GND",
+            "kind": "ground",
+            "side": "left",
+            "offset": 96
+          },
+          {
+            "id": "IPC_RX",
+            "label": "IPC_RX",
+            "kind": "uart",
+            "side": "left",
+            "offset": 112
+          },
+          {
+            "id": "SPI",
+            "label": "SPI",
+            "kind": "spi",
+            "side": "right",
+            "offset": 64
+          },
+          {
+            "id": "PWM1",
+            "label": "PWM1",
+            "kind": "pwm",
+            "side": "right",
+            "offset": 80
+          },
+          {
+            "id": "PWM2",
+            "label": "PWM2",
+            "kind": "pwm",
+            "side": "right",
+            "offset": 96
+          },
+          {
+            "id": "PWM3",
+            "label": "PWM3",
+            "kind": "pwm",
+            "side": "right",
+            "offset": 112
+          },
+          {
+            "id": "WDT",
+            "label": "WDT",
+            "kind": "digital",
+            "side": "right",
+            "offset": 128
+          },
+          {
+            "id": "IPC_TX",
+            "label": "IPC_TX",
+            "kind": "uart",
+            "side": "right",
+            "offset": 144
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "rl78",
+      "type": "microcontroller",
+      "parentId": "ecu",
+      "extent": "parent",
+      "position": {
+        "x": 32,
+        "y": 336
+      },
+      "width": 176,
+      "height": 112,
+      "data": {
+        "label": "RL78 Co-Controller",
+        "category": "controller",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "chip",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M7 6h10a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1v-10a1 1 0 0 1 1 -1Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "VDD",
+            "label": "VDD",
+            "kind": "power",
+            "side": "left",
+            "offset": 48
+          },
+          {
+            "id": "GND",
+            "label": "GND",
+            "kind": "ground",
+            "side": "left",
+            "offset": 64
+          },
+          {
+            "id": "IPC_RX",
+            "label": "IPC_RX",
+            "kind": "uart",
+            "side": "left",
+            "offset": 80
+          },
+          {
+            "id": "SAFE_OFF",
+            "label": "SAFE_OFF",
+            "kind": "digital",
+            "side": "right",
+            "offset": 64
+          },
+          {
+            "id": "IPC_TX",
+            "label": "IPC_TX",
+            "kind": "uart",
+            "side": "right",
+            "offset": 80
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "drv1",
+      "type": "motor_driver",
+      "position": {
+        "x": 832,
+        "y": 144
+      },
+      "width": 160,
+      "height": 144,
+      "data": {
+        "label": "Driver 1",
+        "category": "power",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "bridge",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M5 3v18M19 3v18",
+              "mode": "stroke"
+            },
+            {
+              "d": "M5 12h14",
+              "mode": "stroke"
+            },
+            {
+              "d": "M10 9l3 3-3 3",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "VS",
+            "label": "VS",
+            "kind": "power",
+            "side": "left",
+            "offset": 48
+          },
+          {
+            "id": "SPI",
+            "label": "SPI",
+            "kind": "spi",
+            "side": "left",
+            "offset": 64
+          },
+          {
+            "id": "PWM",
+            "label": "PWM",
+            "kind": "pwm",
+            "side": "left",
+            "offset": 80
+          },
+          {
+            "id": "EN",
+            "label": "EN",
+            "kind": "digital",
+            "side": "left",
+            "offset": 96
+          },
+          {
+            "id": "OUT_A",
+            "label": "OUT_A",
+            "kind": "digital",
+            "side": "right",
+            "offset": 64
+          },
+          {
+            "id": "OUT_B",
+            "label": "OUT_B",
+            "kind": "digital",
+            "side": "right",
+            "offset": 80
+          },
+          {
+            "id": "GND",
+            "label": "GND",
+            "kind": "ground",
+            "side": "bottom",
+            "offset": 80
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "drv2",
+      "type": "motor_driver",
+      "position": {
+        "x": 832,
+        "y": 432
+      },
+      "width": 160,
+      "height": 144,
+      "data": {
+        "label": "Driver 2",
+        "category": "power",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "bridge",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M5 3v18M19 3v18",
+              "mode": "stroke"
+            },
+            {
+              "d": "M5 12h14",
+              "mode": "stroke"
+            },
+            {
+              "d": "M10 9l3 3-3 3",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "VS",
+            "label": "VS",
+            "kind": "power",
+            "side": "left",
+            "offset": 48
+          },
+          {
+            "id": "SPI",
+            "label": "SPI",
+            "kind": "spi",
+            "side": "left",
+            "offset": 64
+          },
+          {
+            "id": "PWM",
+            "label": "PWM",
+            "kind": "pwm",
+            "side": "left",
+            "offset": 80
+          },
+          {
+            "id": "EN",
+            "label": "EN",
+            "kind": "digital",
+            "side": "left",
+            "offset": 96
+          },
+          {
+            "id": "OUT_A",
+            "label": "OUT_A",
+            "kind": "digital",
+            "side": "right",
+            "offset": 64
+          },
+          {
+            "id": "OUT_B",
+            "label": "OUT_B",
+            "kind": "digital",
+            "side": "right",
+            "offset": 80
+          },
+          {
+            "id": "GND",
+            "label": "GND",
+            "kind": "ground",
+            "side": "bottom",
+            "offset": 80
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "drv3",
+      "type": "motor_driver",
+      "position": {
+        "x": 832,
+        "y": 720
+      },
+      "width": 160,
+      "height": 144,
+      "data": {
+        "label": "Driver 3",
+        "category": "power",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "bridge",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M5 3v18M19 3v18",
+              "mode": "stroke"
+            },
+            {
+              "d": "M5 12h14",
+              "mode": "stroke"
+            },
+            {
+              "d": "M10 9l3 3-3 3",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "VS",
+            "label": "VS",
+            "kind": "power",
+            "side": "left",
+            "offset": 48
+          },
+          {
+            "id": "SPI",
+            "label": "SPI",
+            "kind": "spi",
+            "side": "left",
+            "offset": 64
+          },
+          {
+            "id": "PWM",
+            "label": "PWM",
+            "kind": "pwm",
+            "side": "left",
+            "offset": 80
+          },
+          {
+            "id": "EN",
+            "label": "EN",
+            "kind": "digital",
+            "side": "left",
+            "offset": 96
+          },
+          {
+            "id": "OUT_A",
+            "label": "OUT_A",
+            "kind": "digital",
+            "side": "right",
+            "offset": 64
+          },
+          {
+            "id": "OUT_B",
+            "label": "OUT_B",
+            "kind": "digital",
+            "side": "right",
+            "offset": 80
+          },
+          {
+            "id": "GND",
+            "label": "GND",
+            "kind": "ground",
+            "side": "bottom",
+            "offset": 80
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "hb1",
+      "type": "half_bridge",
+      "position": {
+        "x": 1120,
+        "y": 144
+      },
+      "width": 160,
+      "height": 112,
+      "data": {
+        "label": "Half Bridge 1",
+        "category": "power",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "bridge",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M5 3v18M19 3v18",
+              "mode": "stroke"
+            },
+            {
+              "d": "M5 12h14",
+              "mode": "stroke"
+            },
+            {
+              "d": "M10 9l3 3-3 3",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "VS",
+            "label": "VS",
+            "kind": "power",
+            "side": "left",
+            "offset": 48
+          },
+          {
+            "id": "IN",
+            "label": "IN",
+            "kind": "digital",
+            "side": "left",
+            "offset": 64
+          },
+          {
+            "id": "OUT",
+            "label": "OUT",
+            "kind": "power",
+            "side": "right",
+            "offset": 64
+          },
+          {
+            "id": "IS",
+            "label": "IS",
+            "kind": "analog",
+            "side": "bottom",
+            "offset": 64
+          },
+          {
+            "id": "GND",
+            "label": "GND",
+            "kind": "ground",
+            "side": "bottom",
+            "offset": 112
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "hb2",
+      "type": "half_bridge",
+      "position": {
+        "x": 1120,
+        "y": 336
+      },
+      "width": 160,
+      "height": 112,
+      "data": {
+        "label": "Half Bridge 2",
+        "category": "power",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "bridge",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M5 3v18M19 3v18",
+              "mode": "stroke"
+            },
+            {
+              "d": "M5 12h14",
+              "mode": "stroke"
+            },
+            {
+              "d": "M10 9l3 3-3 3",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "VS",
+            "label": "VS",
+            "kind": "power",
+            "side": "left",
+            "offset": 48
+          },
+          {
+            "id": "IN",
+            "label": "IN",
+            "kind": "digital",
+            "side": "left",
+            "offset": 64
+          },
+          {
+            "id": "OUT",
+            "label": "OUT",
+            "kind": "power",
+            "side": "right",
+            "offset": 64
+          },
+          {
+            "id": "IS",
+            "label": "IS",
+            "kind": "analog",
+            "side": "bottom",
+            "offset": 64
+          },
+          {
+            "id": "GND",
+            "label": "GND",
+            "kind": "ground",
+            "side": "bottom",
+            "offset": 112
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "hb3",
+      "type": "half_bridge",
+      "position": {
+        "x": 1120,
+        "y": 480
+      },
+      "width": 160,
+      "height": 112,
+      "data": {
+        "label": "Half Bridge 3",
+        "category": "power",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "bridge",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M5 3v18M19 3v18",
+              "mode": "stroke"
+            },
+            {
+              "d": "M5 12h14",
+              "mode": "stroke"
+            },
+            {
+              "d": "M10 9l3 3-3 3",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "VS",
+            "label": "VS",
+            "kind": "power",
+            "side": "left",
+            "offset": 48
+          },
+          {
+            "id": "IN",
+            "label": "IN",
+            "kind": "digital",
+            "side": "left",
+            "offset": 64
+          },
+          {
+            "id": "OUT",
+            "label": "OUT",
+            "kind": "power",
+            "side": "right",
+            "offset": 64
+          },
+          {
+            "id": "IS",
+            "label": "IS",
+            "kind": "analog",
+            "side": "bottom",
+            "offset": 64
+          },
+          {
+            "id": "GND",
+            "label": "GND",
+            "kind": "ground",
+            "side": "bottom",
+            "offset": 112
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "hb4",
+      "type": "half_bridge",
+      "position": {
+        "x": 1120,
+        "y": 624
+      },
+      "width": 160,
+      "height": 112,
+      "data": {
+        "label": "Half Bridge 4",
+        "category": "power",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "bridge",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M5 3v18M19 3v18",
+              "mode": "stroke"
+            },
+            {
+              "d": "M5 12h14",
+              "mode": "stroke"
+            },
+            {
+              "d": "M10 9l3 3-3 3",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "VS",
+            "label": "VS",
+            "kind": "power",
+            "side": "left",
+            "offset": 48
+          },
+          {
+            "id": "IN",
+            "label": "IN",
+            "kind": "digital",
+            "side": "left",
+            "offset": 64
+          },
+          {
+            "id": "OUT",
+            "label": "OUT",
+            "kind": "power",
+            "side": "right",
+            "offset": 64
+          },
+          {
+            "id": "IS",
+            "label": "IS",
+            "kind": "analog",
+            "side": "bottom",
+            "offset": 64
+          },
+          {
+            "id": "GND",
+            "label": "GND",
+            "kind": "ground",
+            "side": "bottom",
+            "offset": 112
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "hb5",
+      "type": "half_bridge",
+      "position": {
+        "x": 1120,
+        "y": 768
+      },
+      "width": 160,
+      "height": 112,
+      "data": {
+        "label": "Half Bridge 5",
+        "category": "power",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "bridge",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M5 3v18M19 3v18",
+              "mode": "stroke"
+            },
+            {
+              "d": "M5 12h14",
+              "mode": "stroke"
+            },
+            {
+              "d": "M10 9l3 3-3 3",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "VS",
+            "label": "VS",
+            "kind": "power",
+            "side": "left",
+            "offset": 48
+          },
+          {
+            "id": "IN",
+            "label": "IN",
+            "kind": "digital",
+            "side": "left",
+            "offset": 64
+          },
+          {
+            "id": "OUT",
+            "label": "OUT",
+            "kind": "power",
+            "side": "right",
+            "offset": 64
+          },
+          {
+            "id": "IS",
+            "label": "IS",
+            "kind": "analog",
+            "side": "bottom",
+            "offset": 64
+          },
+          {
+            "id": "GND",
+            "label": "GND",
+            "kind": "ground",
+            "side": "bottom",
+            "offset": 112
+          }
+        ],
+        "meta": {}
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "kl30->sbc1.VIN#1",
+      "source": "kl30",
+      "sourceHandle": "__body_bottom",
+      "target": "sbc1",
+      "targetHandle": "VIN",
+      "type": "step",
+      "label": "KL30",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-supply sa-kind-power",
+      "data": {
+        "kind": "power",
+        "direction": "forward",
+        "points": [
+          [
+            160,
+            208
+          ],
+          [
+            160,
+            416
+          ],
+          [
+            48,
+            416
+          ],
+          [
+            48,
+            496
+          ],
+          [
+            64,
+            496
+          ]
+        ]
+      }
+    },
+    {
+      "id": "sbc1.VOUT->traveo.VDD#1",
+      "source": "sbc1",
+      "sourceHandle": "VOUT",
+      "target": "traveo",
+      "targetHandle": "VDD",
+      "type": "step",
+      "label": "5 V",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-supply sa-kind-power",
+      "data": {
+        "kind": "power",
+        "direction": "forward",
+        "points": [
+          [
+            272,
+            496
+          ],
+          [
+            384,
+            496
+          ],
+          [
+            384,
+            224
+          ],
+          [
+            416,
+            224
+          ]
+        ]
+      }
+    },
+    {
+      "id": "sbc1.VOUT->rl78.VDD#1",
+      "source": "sbc1",
+      "sourceHandle": "VOUT",
+      "target": "rl78",
+      "targetHandle": "VDD",
+      "type": "step",
+      "label": "5 V",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-supply sa-kind-power",
+      "data": {
+        "kind": "power",
+        "direction": "forward",
+        "points": [
+          [
+            272,
+            496
+          ],
+          [
+            432,
+            496
+          ]
+        ]
+      }
+    },
+    {
+      "id": "kl30->drv1.VS#1",
+      "source": "kl30",
+      "sourceHandle": "__body_right",
+      "target": "drv1",
+      "targetHandle": "VS",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-supply sa-kind-power",
+      "data": {
+        "kind": "power",
+        "direction": "forward",
+        "points": [
+          [
+            208,
+            160
+          ],
+          [
+            384,
+            160
+          ],
+          [
+            384,
+            96
+          ],
+          [
+            816,
+            96
+          ],
+          [
+            816,
+            192
+          ],
+          [
+            832,
+            192
+          ]
+        ]
+      }
+    },
+    {
+      "id": "kl30->drv2.VS#1",
+      "source": "kl30",
+      "sourceHandle": "__body_right",
+      "target": "drv2",
+      "targetHandle": "VS",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-supply sa-kind-power",
+      "data": {
+        "kind": "power",
+        "direction": "forward",
+        "points": [
+          [
+            208,
+            176
+          ],
+          [
+            368,
+            176
+          ],
+          [
+            368,
+            432
+          ],
+          [
+            816,
+            432
+          ],
+          [
+            816,
+            480
+          ],
+          [
+            832,
+            480
+          ]
+        ]
+      }
+    },
+    {
+      "id": "kl30->drv3.VS#1",
+      "source": "kl30",
+      "sourceHandle": "__body_right",
+      "target": "drv3",
+      "targetHandle": "VS",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-supply sa-kind-power",
+      "data": {
+        "kind": "power",
+        "direction": "forward",
+        "points": [
+          [
+            208,
+            192
+          ],
+          [
+            352,
+            192
+          ],
+          [
+            352,
+            768
+          ],
+          [
+            832,
+            768
+          ]
+        ]
+      }
+    },
+    {
+      "id": "traveo.WDT->sbc1.WDI#1",
+      "source": "traveo",
+      "sourceHandle": "WDT",
+      "target": "sbc1",
+      "targetHandle": "WDI",
+      "type": "step",
+      "label": "Watchdog",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-digital",
+      "data": {
+        "kind": "digital",
+        "direction": "forward",
+        "points": [
+          [
+            624,
+            272
+          ],
+          [
+            672,
+            272
+          ],
+          [
+            672,
+            608
+          ],
+          [
+            304,
+            608
+          ],
+          [
+            304,
+            512
+          ],
+          [
+            272,
+            512
+          ]
+        ]
+      }
+    },
+    {
+      "id": "traveo.IPC_TX->rl78.IPC_RX#1",
+      "source": "traveo",
+      "sourceHandle": "IPC_TX",
+      "target": "rl78",
+      "targetHandle": "IPC_RX",
+      "type": "step",
+      "label": "IPC",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-bus sa-kind-uart",
+      "data": {
+        "kind": "uart",
+        "direction": "forward",
+        "points": [
+          [
+            624,
+            288
+          ],
+          [
+            656,
+            288
+          ],
+          [
+            656,
+            592
+          ],
+          [
+            416,
+            592
+          ],
+          [
+            416,
+            528
+          ],
+          [
+            432,
+            528
+          ]
+        ]
+      }
+    },
+    {
+      "id": "rl78.IPC_TX->traveo.IPC_RX#1",
+      "source": "rl78",
+      "sourceHandle": "IPC_TX",
+      "target": "traveo",
+      "targetHandle": "IPC_RX",
+      "type": "step",
+      "label": "Status",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-bus sa-kind-uart",
+      "data": {
+        "kind": "uart",
+        "direction": "forward",
+        "points": [
+          [
+            608,
+            528
+          ],
+          [
+            640,
+            528
+          ],
+          [
+            640,
+            496
+          ],
+          [
+            624,
+            496
+          ],
+          [
+            624,
+            320
+          ],
+          [
+            400,
+            320
+          ],
+          [
+            400,
+            256
+          ],
+          [
+            416,
+            256
+          ]
+        ]
+      }
+    },
+    {
+      "id": "rl78.SAFE_OFF->drv1.EN#1",
+      "source": "rl78",
+      "sourceHandle": "SAFE_OFF",
+      "target": "drv1",
+      "targetHandle": "EN",
+      "type": "step",
+      "label": "Safe Off",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-digital",
+      "data": {
+        "kind": "digital",
+        "direction": "forward",
+        "points": [
+          [
+            608,
+            512
+          ],
+          [
+            784,
+            512
+          ],
+          [
+            784,
+            240
+          ],
+          [
+            832,
+            240
+          ]
+        ]
+      }
+    },
+    {
+      "id": "rl78.SAFE_OFF->drv2.EN#1",
+      "source": "rl78",
+      "sourceHandle": "SAFE_OFF",
+      "target": "drv2",
+      "targetHandle": "EN",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-digital",
+      "data": {
+        "kind": "digital",
+        "direction": "forward",
+        "points": [
+          [
+            608,
+            512
+          ],
+          [
+            784,
+            512
+          ],
+          [
+            784,
+            528
+          ],
+          [
+            832,
+            528
+          ]
+        ]
+      }
+    },
+    {
+      "id": "rl78.SAFE_OFF->drv3.EN#1",
+      "source": "rl78",
+      "sourceHandle": "SAFE_OFF",
+      "target": "drv3",
+      "targetHandle": "EN",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-digital",
+      "data": {
+        "kind": "digital",
+        "direction": "forward",
+        "points": [
+          [
+            608,
+            512
+          ],
+          [
+            784,
+            512
+          ],
+          [
+            784,
+            816
+          ],
+          [
+            832,
+            816
+          ]
+        ]
+      }
+    },
+    {
+      "id": "traveo.SPI->drv1.SPI#1",
+      "source": "traveo",
+      "sourceHandle": "SPI",
+      "target": "drv1",
+      "targetHandle": "SPI",
+      "type": "step",
+      "label": "SPI",
+      "markerStart": {
+        "type": "arrowclosed"
+      },
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-bus sa-kind-spi",
+      "data": {
+        "kind": "spi",
+        "direction": "bidirectional",
+        "points": [
+          [
+            624,
+            208
+          ],
+          [
+            832,
+            208
+          ]
+        ]
+      }
+    },
+    {
+      "id": "traveo.SPI->drv2.SPI#1",
+      "source": "traveo",
+      "sourceHandle": "SPI",
+      "target": "drv2",
+      "targetHandle": "SPI",
+      "type": "step",
+      "markerStart": {
+        "type": "arrowclosed"
+      },
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-bus sa-kind-spi",
+      "data": {
+        "kind": "spi",
+        "direction": "bidirectional",
+        "points": [
+          [
+            624,
+            208
+          ],
+          [
+            800,
+            208
+          ],
+          [
+            800,
+            496
+          ],
+          [
+            832,
+            496
+          ]
+        ]
+      }
+    },
+    {
+      "id": "traveo.SPI->drv3.SPI#1",
+      "source": "traveo",
+      "sourceHandle": "SPI",
+      "target": "drv3",
+      "targetHandle": "SPI",
+      "type": "step",
+      "markerStart": {
+        "type": "arrowclosed"
+      },
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-bus sa-kind-spi",
+      "data": {
+        "kind": "spi",
+        "direction": "bidirectional",
+        "points": [
+          [
+            624,
+            208
+          ],
+          [
+            800,
+            208
+          ],
+          [
+            800,
+            784
+          ],
+          [
+            832,
+            784
+          ]
+        ]
+      }
+    },
+    {
+      "id": "traveo.PWM1->drv1.PWM#1",
+      "source": "traveo",
+      "sourceHandle": "PWM1",
+      "target": "drv1",
+      "targetHandle": "PWM",
+      "type": "step",
+      "label": "PWM",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-pwm",
+      "data": {
+        "kind": "pwm",
+        "direction": "forward",
+        "points": [
+          [
+            624,
+            224
+          ],
+          [
+            832,
+            224
+          ]
+        ]
+      }
+    },
+    {
+      "id": "traveo.PWM2->drv2.PWM#1",
+      "source": "traveo",
+      "sourceHandle": "PWM2",
+      "target": "drv2",
+      "targetHandle": "PWM",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-pwm",
+      "data": {
+        "kind": "pwm",
+        "direction": "forward",
+        "points": [
+          [
+            624,
+            240
+          ],
+          [
+            768,
+            240
+          ],
+          [
+            768,
+            496
+          ],
+          [
+            800,
+            496
+          ],
+          [
+            800,
+            512
+          ],
+          [
+            832,
+            512
+          ]
+        ]
+      }
+    },
+    {
+      "id": "traveo.PWM3->drv3.PWM#1",
+      "source": "traveo",
+      "sourceHandle": "PWM3",
+      "target": "drv3",
+      "targetHandle": "PWM",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-pwm",
+      "data": {
+        "kind": "pwm",
+        "direction": "forward",
+        "points": [
+          [
+            624,
+            256
+          ],
+          [
+            752,
+            256
+          ],
+          [
+            752,
+            800
+          ],
+          [
+            832,
+            800
+          ]
+        ]
+      }
+    },
+    {
+      "id": "drv1.OUT_A->hb1.IN#1",
+      "source": "drv1",
+      "sourceHandle": "OUT_A",
+      "target": "hb1",
+      "targetHandle": "IN",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-digital",
+      "data": {
+        "kind": "digital",
+        "direction": "forward",
+        "points": [
+          [
+            992,
+            208
+          ],
+          [
+            1120,
+            208
+          ]
+        ]
+      }
+    },
+    {
+      "id": "drv1.OUT_B->hb2.IN#1",
+      "source": "drv1",
+      "sourceHandle": "OUT_B",
+      "target": "hb2",
+      "targetHandle": "IN",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-digital",
+      "data": {
+        "kind": "digital",
+        "direction": "forward",
+        "points": [
+          [
+            992,
+            224
+          ],
+          [
+            1088,
+            224
+          ],
+          [
+            1088,
+            400
+          ],
+          [
+            1120,
+            400
+          ]
+        ]
+      }
+    },
+    {
+      "id": "drv2.OUT_A->hb3.IN#1",
+      "source": "drv2",
+      "sourceHandle": "OUT_A",
+      "target": "hb3",
+      "targetHandle": "IN",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-digital",
+      "data": {
+        "kind": "digital",
+        "direction": "forward",
+        "points": [
+          [
+            992,
+            496
+          ],
+          [
+            1088,
+            496
+          ],
+          [
+            1088,
+            544
+          ],
+          [
+            1120,
+            544
+          ]
+        ]
+      }
+    },
+    {
+      "id": "drv2.OUT_B->hb4.IN#1",
+      "source": "drv2",
+      "sourceHandle": "OUT_B",
+      "target": "hb4",
+      "targetHandle": "IN",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-digital",
+      "data": {
+        "kind": "digital",
+        "direction": "forward",
+        "points": [
+          [
+            992,
+            512
+          ],
+          [
+            1072,
+            512
+          ],
+          [
+            1072,
+            688
+          ],
+          [
+            1120,
+            688
+          ]
+        ]
+      }
+    },
+    {
+      "id": "drv3.OUT_A->hb5.IN#1",
+      "source": "drv3",
+      "sourceHandle": "OUT_A",
+      "target": "hb5",
+      "targetHandle": "IN",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-digital",
+      "data": {
+        "kind": "digital",
+        "direction": "forward",
+        "points": [
+          [
+            992,
+            784
+          ],
+          [
+            1088,
+            784
+          ],
+          [
+            1088,
+            832
+          ],
+          [
+            1120,
+            832
+          ]
+        ]
+      }
+    }
+  ],
+  "viewport": {
+    "x": 0,
+    "y": 0,
+    "zoom": 1
+  }
+}

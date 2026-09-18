@@ -1,0 +1,106 @@
+// Seat Control Module — Traveo main controller, RL78 co-controller for the safety path,
+// three gate drivers and five half bridges, supplied and monitored by an SBC.
+
+define sbc extends power_supply {
+    label "System Basis Chip"
+    size large
+    left  { pin spi SPI }
+    right { pin digital WDI   pin can CANH   pin can CANL }
+}
+
+define motor_driver {
+    label "Motor Driver"
+    icon bridge
+    category power
+    size medium
+    left {
+        pin power VS
+        pin spi SPI
+        pin pwm PWM
+        pin digital EN
+    }
+    right  { pin digital OUT_A   pin digital OUT_B }
+    bottom { pin ground GND }
+}
+
+architecture "Seat Control Module" {
+    theme automotive-light
+    direction LR
+
+    layout {
+        grid {
+            kl30 | traveo | drv1 | hb1
+            .    | .      | .    | hb2
+            sbc1 | rl78   | drv2 | hb3
+            .    | .      | .    | hb4
+            .    | .      | drv3 | hb5
+        }
+    }
+
+    component kl30: battery { label "KL30" }
+    component sbc1: sbc { label "SBC" }
+
+    system ecu {
+        label "Seat ECU"
+        component traveo: microcontroller {
+            label "TRAVEO T2G"
+            importance primary
+            left { pin power VDD   pin ground GND   pin uart IPC_RX }
+            right {
+                pin spi SPI
+                pin pwm PWM1
+                pin pwm PWM2
+                pin pwm PWM3
+                pin digital WDT
+                pin uart IPC_TX
+            }
+        }
+        component rl78: microcontroller {
+            label "RL78 Co-Controller"
+            size medium
+            left  { pin power VDD   pin ground GND   pin uart IPC_RX }
+            right { pin digital SAFE_OFF   pin uart IPC_TX }
+        }
+    }
+
+    component drv1: motor_driver { label "Driver 1" }
+    component drv2: motor_driver { label "Driver 2" }
+    component drv3: motor_driver { label "Driver 3" }
+
+    component hb1: half_bridge { label "Half Bridge 1" }
+    component hb2: half_bridge { label "Half Bridge 2" }
+    component hb3: half_bridge { label "Half Bridge 3" }
+    component hb4: half_bridge { label "Half Bridge 4" }
+    component hb5: half_bridge { label "Half Bridge 5" }
+
+    // Supply
+    kl30 -> sbc1.VIN        { label "KL30" type power }
+    sbc1.VOUT -> traveo.VDD { label "5 V" type power }
+    sbc1.VOUT -> rl78.VDD   { label "5 V" type power }
+    kl30 -> drv1.VS         { type power }
+    kl30 -> drv2.VS         { type power }
+    kl30 -> drv3.VS         { type power }
+
+    // Safety path
+    traveo.WDT -> sbc1.WDI       { label "Watchdog" }
+    traveo.IPC_TX -> rl78.IPC_RX { label "IPC" }
+    rl78.IPC_TX -> traveo.IPC_RX { label "Status" }
+    rl78.SAFE_OFF -> drv1.EN     { label "Safe Off" }
+    rl78.SAFE_OFF -> drv2.EN
+    rl78.SAFE_OFF -> drv3.EN
+
+    // Control
+    traveo.SPI <-> drv1.SPI { label "SPI" }
+    traveo.SPI <-> drv2.SPI
+    traveo.SPI <-> drv3.SPI
+    traveo.PWM1 -> drv1.PWM { label "PWM" }
+    traveo.PWM2 -> drv2.PWM
+    traveo.PWM3 -> drv3.PWM
+
+    // Power stage
+    drv1.OUT_A -> hb1.IN
+    drv1.OUT_B -> hb2.IN
+    drv2.OUT_A -> hb3.IN
+    drv2.OUT_B -> hb4.IN
+    drv3.OUT_A -> hb5.IN
+}
