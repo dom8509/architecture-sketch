@@ -78,6 +78,51 @@ Every milestone is usable on its own and ends with green tests.
 
 ---
 
+## Idea backlog
+
+Collected, not yet scheduled for a version. Sorted by the topic they belong to.
+
+### Slices, groups and navigation
+
+- **Slices** — an end-to-end cut through the architecture along a function: every
+  component and connection a given function touches, from the sensor to the actuator.
+  Declared on the function, comparable to `view` above, but selected by function instead
+  of by hand.
+- **Groups** — a named summary of several components (subsystem, domain, ECU family)
+  that can be rendered as a single block, or expanded.
+- **Browser** — a menu in the web app and the Obsidian plugin that lists all slices and
+  groups of a file and navigates to them. The first navigation UI beyond a single
+  diagram, and the reason slices and groups need stable names.
+
+### Signals and pages
+
+- **Named, unconnected signals** — as in a schematic: a signal gets a name at both ends
+  instead of a drawn line, so components that belong together logically can be spread
+  across several pages or diagrams. This is a rendering decision, not a model change —
+  the connection stays in the model, only the view resolves it to a label. Belongs next
+  to the views from v0.2.
+- **External components** — motors, buses, connectors, sensors, test equipment:
+  everything that is part of the context but not part of the system being described.
+  Needs its own shape and its own semantics in the plausibility rules (an external
+  component has no internal structure and is never fully specified).
+
+### Starting from the schematic
+
+- Allow an architecture to start at the schematic level — pins, nets and parts first —
+  and grow upwards, instead of only being refined top-down from the system level.
+- **Documentation:** a guide describing the whole path — schematic → system
+  architecture → coarse block diagram for presentations — and how one source is
+  condensed into the next level. This is the guide that ties slices, groups and views
+  together; it should be written once those exist.
+
+### Layout
+
+- An easier way to express layout arrangements besides grids — rows, columns, stacks,
+  chains along a signal flow — so that the common cases need no explicit grid
+  coordinates. Related to [04](04-layout.md).
+
+---
+
 ## Open questions
 
 None at the moment. Answered questions are recorded in the
