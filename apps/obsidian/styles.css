@@ -75,8 +75,10 @@
 .sysarch-workbench.sa-editor-collapsed {
   grid-template-columns: 0 5px minmax(0, 1fr);
 }
+/* `visibility`, not `display`: a hidden grid item would move the preview into the
+   splitter column. The zero-width column plus `overflow: hidden` clips the editor. */
 .sysarch-workbench.sa-editor-collapsed .sysarch-editor-pane {
-  display: none;
+  visibility: hidden;
 }
 .sysarch-workbench.sa-splitting {
   cursor: col-resize;
