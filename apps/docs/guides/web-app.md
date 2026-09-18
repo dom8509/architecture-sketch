@@ -8,11 +8,14 @@ one. It runs entirely in the browser, without an account and without a server.
 | Area | Contents |
 |---------|--------|
 | Toolbar | file, examples, theme, exports, sharing, presentation |
-| Editor (left) | source text with highlighting, autocompletion and diagnostics in the gutter |
+| Editor (left) | source text with highlighting, autocompletion and diagnostics in the gutter; resizable and hideable |
 | Preview (right) | live diagram; zoom with the scroll wheel, pan by dragging, double-click or **Fit** to fit it in |
 | Diagnostics bar (bottom) | errors, warnings and hints; a click jumps to the location |
 
-The divider between editor and preview can be dragged.
+The divider between editor and preview can be dragged — the width is kept for the next visit.
+A double-click on the divider, the **Editor** button in the toolbar or ⌘E / Ctrl+E hides the
+editor and gives the diagram the whole width; the same action brings it back at its old width.
+With the divider focused, ← and → resize it, Enter hides and shows the editor.
 
 ## Writing
 

@@ -117,8 +117,9 @@ endpoint      = IDENT [ "." IDENT ] ;
 arrow         = "->" | "<-" | "<->" | "--" ;
 conn_type     = "type" IDENT ;
 
-layout        = "layout" "{" { mode | grid } "}" ;
+layout        = "layout" "{" { mode | pin_spacing | grid } "}" ;
 mode          = "mode" ( "strict" | "assisted" ) ;
+pin_spacing   = "pin" "spacing" INT ;                    (* grid units, >= 1 *)
 grid          = "grid" "{" grid_row { NEWLINE grid_row } "}" ;
 grid_row      = cell { "|" cell } ;
 cell          = IDENT | "." ;
@@ -260,6 +261,7 @@ Both group components, but they serve different purposes:
 ```sysarch
 layout {
     mode assisted
+    pin spacing 2
     grid {
         battery | regulator | mcu | hb1
         .       | .         | wdg | motor
@@ -293,6 +295,15 @@ layout {
   run straight (full example: [`examples/mcu-hub.arch`](../examples/mcu-hub.arch)).
 - `hint row|column` (1-based) means the same for a single component.
 - Grid and hints must not break zone cohesion (otherwise error `E108`).
+- `pin spacing N` sets the distance between two neighbouring pins to **N grid units**
+  (`N ≥ 1`); without it the `pinPitch` of the theme applies. The unit is the grid, not a
+  pixel value — the spacing therefore scales with the theme. The same distance applies to
+  connections that dock on the body of a component (`pins none` or an endpoint without a
+  pin).
+- **Components grow on their own** when their pins or docking connections need more room
+  than `size` provides: a side needs `(number of attachment points + 1) × spacing`, so no
+  two connections ever share an attachment point. `size` therefore stays a minimum, not a
+  cap.
 
 ### 4.6 Templates (`define`)
 

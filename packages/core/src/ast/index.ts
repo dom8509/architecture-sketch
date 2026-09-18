@@ -44,9 +44,11 @@ export interface StackStmt extends SyntaxNode { kind: "Stack"; value: StackMode 
 
 export interface LayoutStmt extends SyntaxNode {
   kind: "Layout";
-  body: (ModeStmt | GridNode)[];
+  body: (ModeStmt | PinSpacingStmt | GridNode)[];
 }
 export interface ModeStmt extends SyntaxNode { kind: "Mode"; value: LayoutMode }
+/** `pin spacing N`: distance between neighbouring pins in grid units (≥ 1). */
+export interface PinSpacingStmt extends SyntaxNode { kind: "PinSpacing"; value: number }
 export interface GridNode extends SyntaxNode { kind: "Grid"; rows: GridRow[] }
 export interface GridRow extends SyntaxNode { kind: "GridRow"; cells: GridCell[] }
 /** `id` is missing for an empty cell (`.`). */

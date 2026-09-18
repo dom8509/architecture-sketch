@@ -103,6 +103,45 @@ architecture "Hints" {
 }
 ```
 
+## Pin spacing and blocks that grow
+
+`layout { pin spacing N }` sets how far apart two neighbouring pins sit — in **grid units**,
+not pixels, so the value scales with the theme. Without it, the `pinPitch` of the theme
+applies (one grid unit in all themes shipped today).
+
+```sysarch
+architecture "Pin spacing" {
+    layout {
+        pin spacing 2
+    }
+
+    component mcu: microcontroller {
+        right { pin pwm PWM   pin analog IS }
+    }
+    component drv: half_bridge
+    component motor: motor
+    component kl30: battery { label "KL30" }
+
+    mcu.PWM -> drv.IN
+    kl30 -> drv.VS
+    drv.IS -> mcu.IS
+    drv.OUT -> motor
+}
+```
+
+The spacing also applies to connections that dock on the **body** of a component — that is
+every endpoint without a pin, and everything in a view with `pins none`.
+
+Components **grow on their own** when the signals need more room than `size` provides: every
+side has to hold `(number of attachment points + 1) × spacing`. A small block with twelve
+incoming connections therefore becomes tall enough for all twelve to dock separately instead
+of crowding onto the same point. `size small | medium | large` is a minimum, never a cap.
+
+::: tip
+Wide spacing quickly makes a diagram large. `pin spacing 2` is usually enough for
+presentations; for print, the `technical` theme with its larger grid is the better lever.
+:::
+
 ## Zones stay contiguous
 
 Grid and hints must not tear zones apart: all components of one zone have to come before

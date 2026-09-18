@@ -29,6 +29,17 @@ export default class SysarchPlugin extends Plugin {
     });
 
     this.addCommand({
+      id: "toggle-editor-pane",
+      name: "Toggle editor pane",
+      checkCallback: (checking) => {
+        const view = this.app.workspace.getActiveViewOfType(ArchView);
+        if (!view?.workbench) return false;
+        if (!checking) view.workbench.toggleEditor();
+        return true;
+      },
+    });
+
+    this.addCommand({
       id: "insert-codeblock",
       name: "Insert code block",
       editorCallback: (editor) => {
@@ -59,6 +70,11 @@ export default class SysarchPlugin extends Plugin {
 
   async loadSettings() {
     this.settings = { ...DEFAULT_SETTINGS, ...(await this.loadData()) };
+  }
+
+  /** Persists pane geometry — without re-rendering every diagram. */
+  async savePaneState() {
+    await this.saveData(this.settings);
   }
 
   async saveSettings() {

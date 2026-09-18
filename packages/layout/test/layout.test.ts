@@ -260,3 +260,91 @@ describe("scene", () => {
     }
   });
 });
+
+describe("architectures without components", () => {
+  // An architecture whose only content is an empty layout or empty zones used to make the
+  // routing grid infinitely large (`RangeError: Invalid typed array length: Infinity`).
+  const empty = [
+    `architecture "T" { }`,
+    `architecture "T" { layout { mode assisted } }`,
+    `architecture "T" { layout { grid { . | . } } }`,
+    `architecture "T" { zone z { label "Empty" } }`,
+    `architecture "T" { zone z { system s { label "Empty" } } }`,
+  ];
+
+  it("renders an empty canvas instead of crashing", () => {
+    for (const source of empty) {
+      const scene = render(source);
+      expect(scene.width, source).toBeGreaterThan(0);
+      expect(scene.height, source).toBeGreaterThan(0);
+      expect(scene.items.filter((i) => i.type !== "text"), source).toEqual([]);
+    }
+  });
+
+  it("still shows the title", () => {
+    const scene = render(`architecture "Empty" { zone z { } }`);
+    expect(scene.items.filter((i) => i.type === "text").map((i) => i.lines)).toEqual([["Empty"]]);
+  });
+});
+
+describe("pin spacing", () => {
+  const withPins = (spacing = "") => `architecture "T" {
+    ${spacing}
+    component mcu { left { pin digital A  pin digital B  pin digital C } }
+    component x
+    mcu.A -> x
+  }`;
+  const pin = (scene: SceneGraph, id: string) => {
+    const marker = scene.items.find((i) => i.type === "marker" && i.ref === `pin:${id}`);
+    if (marker?.type !== "marker") throw new Error(`pin ${id} missing`);
+    return marker;
+  };
+
+  it("`layout { pin spacing N }` spreads the pins over N grid units", () => {
+    const grid = 16;
+    for (const n of [1, 2, 4]) {
+      const scene = render(withPins(`layout { pin spacing ${n} }`));
+      expect(pin(scene, "mcu.B").y - pin(scene, "mcu.A").y, `spacing ${n}`).toBe(n * grid);
+      expect(pin(scene, "mcu.C").y - pin(scene, "mcu.B").y, `spacing ${n}`).toBe(n * grid);
+    }
+  });
+
+  it("grows the component so that the wider pins still fit", () => {
+    const narrow = body(render(withPins("layout { pin spacing 1 }")), "mcu").height;
+    const wide = body(render(withPins("layout { pin spacing 4 }")), "mcu").height;
+    expect(wide).toBeGreaterThan(narrow);
+  });
+});
+
+describe("components too small for their connections", () => {
+  /** `pins none`: every connection docks on the body, so the body needs the room. */
+  const hub = (n: number, spacing = "") => `architecture "T" {
+    pins none
+    ${spacing}
+    component hub: microcontroller { label "Hub"  size small }
+${Array.from({ length: n }, (_, i) => `    component s${i}`).join("\n")}
+${Array.from({ length: n }, (_, i) => `    s${i} -> hub`).join("\n")}
+  }`;
+  /** Docking points on the hub = last point of every connection. */
+  const docks = (scene: SceneGraph) =>
+    scene.items
+      .filter((i) => i.type === "path" && i.className?.startsWith("sa-connection"))
+      .map((i) => (i.type === "path" ? i.points[i.points.length - 1]!.y : 0))
+      .sort((a, b) => a - b);
+
+  it("grows the component instead of stacking the body ports on one point", () => {
+    for (const n of [4, 12, 20]) {
+      const points = docks(render(hub(n)));
+      expect(points, `${n} connections`).toHaveLength(n);
+      expect(new Set(points).size, `${n} connections`).toBe(n);
+      for (const [k, y] of points.slice(1).entries()) expect(y - points[k]!, `${n} connections`).toBeGreaterThanOrEqual(16);
+    }
+  });
+
+  it("takes the pin spacing into account when growing", () => {
+    const wide = render(hub(8, "layout { pin spacing 2 }"));
+    expect(body(wide, "hub").height).toBeGreaterThan(body(render(hub(8)), "hub").height);
+    const points = docks(wide);
+    for (const [k, y] of points.slice(1).entries()) expect(y - points[k]!).toBeGreaterThanOrEqual(32);
+  });
+});

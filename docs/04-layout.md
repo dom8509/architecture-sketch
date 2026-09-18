@@ -106,7 +106,11 @@ Rank 0 … 1     │ Rank 2          │ Rank 3 … 4
   geometry identical in the browser, in Obsidian and in Node.
 - Component width = max(`minWidth[size]`, icon + spacing + label width + padding, widest
   combination of pin labels left + right + minimum spacing).
-- Component height = max(`minHeight[size]`, label + padding, pins per side × `pinPitch`).
+- Component height = max(`minHeight[size]`, label + padding, pins per side × pin spacing).
+- Pin spacing = `layout { pin spacing N }` × grid, otherwise `pinPitch` of the theme.
+- Body ports (connections without a pin) are counted like pins: a side must hold
+  `(pins + body ports + 1) × pin spacing`, otherwise the component grows after the ports
+  have been assigned and the ports are spread again.
 - All sizes are **rounded up to the grid** (16 px by default).
 - Pins sit on grid points. Pins on the left/right are distributed evenly around the centre
   of the area below the header (icon + label), pins on the top/bottom around the centre of

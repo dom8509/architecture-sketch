@@ -38,14 +38,22 @@ export interface ComponentBox {
 const ceilTo = (value: number, grid: number) => Math.ceil(value / grid - 1e-9) * grid;
 const roundTo = (value: number, grid: number) => Math.round(value / grid) * grid;
 
-/** `stretch`: minimum hull size, e.g. for components spanning several grid cells. */
+export interface SizeOptions {
+  /** Minimum hull size, e.g. for components spanning several grid cells. */
+  width?: number;
+  height?: number;
+  /** Distance between neighbouring pins; default `theme.spacing.pinPitch`. */
+  pitch?: number;
+}
+
 export function sizeComponent(
   component: Component,
   theme: Theme,
   metrics: FontMetrics,
-  stretch: { width?: number; height?: number } = {},
+  stretch: SizeOptions = {},
 ): ComponentBox {
-  const { grid, pinPitch } = theme.spacing;
+  const { grid } = theme.spacing;
+  const pinPitch = stretch.pitch ?? theme.spacing.pinPitch;
   const { padding } = theme.component;
   const stack = component.count > 1 ? { layers: Math.min(component.count - 1, 2), offset: 0 } : undefined;
   const depth = stack ? grid / 2 : 0;

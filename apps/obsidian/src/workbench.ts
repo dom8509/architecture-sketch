@@ -1,6 +1,6 @@
 import { Compartment } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
-import { SysarchEditor } from "@sysarch/editor";
+import { SplitPane, SysarchEditor } from "@sysarch/editor";
 import type { EventRef } from "obsidian";
 import type { Diagram } from "./exports.js";
 import { effectiveTheme } from "./logic.js";
@@ -14,13 +14,16 @@ export const isDark = () => document.body.classList.contains("theme-dark");
  */
 export class Workbench {
   readonly editor: SysarchEditor;
+  readonly split: SplitPane;
   private readonly appearance = new Compartment();
   private theme: string | undefined;
   private readonly cssChange: EventRef;
+  private saveTimer: ReturnType<typeof setTimeout> | undefined;
 
   constructor(private readonly plugin: SysarchPlugin, parent: HTMLElement, source: string) {
     parent.addClass("sysarch-workbench");
     const editor = parent.createDiv({ cls: "sysarch-editor-pane" });
+    const splitter = parent.createDiv({ cls: "sysarch-splitter" });
     const preview = parent.createDiv({ cls: "sysarch-preview-pane" });
     const diagnostics = parent.createDiv({ cls: "sysarch-diagnostics-pane" });
     this.theme = effectiveTheme(source, plugin.settings.theme, isDark());
@@ -28,8 +31,24 @@ export class Workbench {
       editor, preview, diagnostics, source, theme: this.theme,
       extensions: [this.appearance.of(EditorView.theme({}, { dark: isDark() }))],
     });
+    this.split = new SplitPane({
+      container: parent,
+      splitter,
+      state: { width: plugin.settings.editorWidth, collapsed: plugin.settings.editorCollapsed },
+      onChange: (state) => {
+        plugin.settings.editorWidth = state.width;
+        plugin.settings.editorCollapsed = state.collapsed;
+        clearTimeout(this.saveTimer);
+        this.saveTimer = setTimeout(() => void plugin.savePaneState(), 300);
+      },
+    });
     this.editor.onUpdate(({ source }) => this.syncTheme(source));
     this.cssChange = plugin.app.workspace.on("css-change", () => this.refresh());
+  }
+
+  /** Shows or hides the editor pane; without an argument it switches. */
+  toggleEditor(collapsed?: boolean) {
+    this.split.toggle(collapsed);
   }
 
   /** After a mode switch or changed settings. */
@@ -45,7 +64,9 @@ export class Workbench {
   }
 
   destroy() {
+    clearTimeout(this.saveTimer);
     this.plugin.app.workspace.offref(this.cssChange);
+    this.split.destroy();
     this.editor.destroy();
   }
 

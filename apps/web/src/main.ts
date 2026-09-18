@@ -1,5 +1,5 @@
 import { THEMES } from "@sysarch/core";
-import { SysarchEditor } from "@sysarch/editor";
+import { SplitPane, SysarchEditor, type SplitState } from "@sysarch/editor";
 import { PNG_SCALES, svgToPng, type PngScale } from "@sysarch/export-png";
 import { toReactFlow } from "@sysarch/export-reactflow";
 import { architectureScene } from "@sysarch/render-svg";
@@ -8,6 +8,7 @@ import { decodeSource, encodeSource, sourceFromHash } from "./share.ts";
 import "./style.css";
 
 const DRAFT_KEY = "sysarch:draft";
+const SPLIT_KEY = "sysarch:split";
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
 const examples: Record<string, string> = Object.fromEntries(
@@ -190,18 +191,27 @@ document.addEventListener("keydown", (e) => {
   } else if (mod && e.key === "o") {
     e.preventDefault();
     open();
+  } else if (mod && e.key.toLowerCase() === "e") {
+    e.preventDefault();
+    split.toggle();
   } else if (e.key === "Escape" && document.body.classList.contains("presenting")) {
     present(false);
   }
 });
 
-$("splitter").addEventListener("pointerdown", (e) => {
-  const splitter = e.currentTarget as HTMLElement;
-  splitter.setPointerCapture(e.pointerId);
-  const move = (m: PointerEvent) => {
-    const percent = Math.min(80, Math.max(20, (m.clientX / window.innerWidth) * 100));
-    document.documentElement.style.setProperty("--editor-width", `${percent}%`);
-  };
-  splitter.addEventListener("pointermove", move);
-  splitter.addEventListener("pointerup", () => splitter.removeEventListener("pointermove", move), { once: true });
+function savedSplit(): Partial<SplitState> {
+  try {
+    const stored = localStorage.getItem(SPLIT_KEY);
+    return stored ? (JSON.parse(stored) as Partial<SplitState>) : {};
+  } catch {
+    return {};
+  }
+}
+
+const split = new SplitPane({
+  container: $("workspace"),
+  splitter: $("splitter"),
+  state: savedSplit(),
+  onChange: (state) => localStorage.setItem(SPLIT_KEY, JSON.stringify(state)),
 });
+$("toggle-editor").addEventListener("click", () => split.toggle());

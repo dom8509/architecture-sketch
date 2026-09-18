@@ -105,6 +105,14 @@ describe("error tolerance", () => {
     expect(body.filter((s) => s.kind === "Component").map((c) => (c as ComponentNode).id.name)).toContain("motor");
   });
 
+  it("parses `pin spacing` and rejects values below 1", () => {
+    const { value, diagnostics } = parse('architecture "A" {\n layout { pin spacing 3 }\n}');
+    expect(diagnostics).toEqual([]);
+    const layout = value.architecture!.body[0] as LayoutStmt;
+    expect(layout.body).toMatchObject([{ kind: "PinSpacing", value: 3 }]);
+    expect(parse('architecture "A" {\n layout { pin spacing 0 }\n}').diagnostics.map((d) => d.code)).toEqual(["E001"]);
+  });
+
   it("returns a partial AST when the closing brace is missing", () => {
     const { value, diagnostics } = parse('architecture "A" {\n component a\n component b\n a -> b');
     expect(diagnostics.map((d) => d.code)).toEqual(["E001"]);

@@ -1,5 +1,4 @@
 :root {
-  --editor-width: 42%;
   --bg: #f8fafc;
   --panel: #ffffff;
   --border: #e2e8f0;
@@ -62,15 +61,20 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); o
 
 .workspace {
   display: grid;
-  grid-template-columns: var(--editor-width) 5px 1fr;
+  grid-template-columns: var(--sa-editor-width, 42%) 5px minmax(0, 1fr);
   min-height: 0;
 }
+.workspace.sa-editor-collapsed { grid-template-columns: 0 5px minmax(0, 1fr); }
+.workspace.sa-editor-collapsed .editor-pane { display: none; }
+.workspace.sa-splitting { cursor: col-resize; user-select: none; }
 .pane { position: relative; min-width: 0; min-height: 0; }
 .editor-pane { background: var(--panel); overflow: hidden; }
 .editor-pane .cm-editor { height: 100%; font-size: 13px; }
 .editor-pane .cm-scroller { font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace; }
 .splitter { cursor: col-resize; background: var(--border); }
-.splitter:hover { background: #cbd5e1; }
+.splitter:hover, .sa-splitting .splitter { background: #cbd5e1; }
+.splitter:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.sa-editor-collapsed .splitter { cursor: e-resize; }
 
 .preview-pane { overflow: hidden; }
 .preview-tools { position: absolute; top: 8px; right: 8px; z-index: 2; }
@@ -166,6 +170,7 @@ body.presenting .sa-preview { background: var(--bg); cursor: default; }
 .toast.visible { opacity: 1; transform: translate(-50%, 0); }
 
 @media (max-width: 720px) {
-  .workspace { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+  .workspace, .workspace.sa-editor-collapsed { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+  .workspace.sa-editor-collapsed { grid-template-rows: 1fr; }
   .splitter { display: none; }
 }

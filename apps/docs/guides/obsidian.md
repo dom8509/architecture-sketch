@@ -55,6 +55,11 @@ Files with the extension `.arch` are opened by Obsidian in the same editor as th
 source text, live preview and diagnostics side by side. The exports live in the view's
 **More options** (⋯) menu.
 
+The divider between editor and preview can be dragged; a double-click on it or
+**sysarch: Toggle editor pane** hides the editor so that the diagram gets the whole width.
+With the divider focused, ← and → resize it, Enter hides and shows the editor. Width and
+visibility are remembered and apply to every `.arch` file that is opened afterwards.
+
 A new file is created by **sysarch: New .arch file**.
 
 ## Library in the sidebar
@@ -78,6 +83,7 @@ The same templates, with their definitions, are described in the
 | **Insert code block** | ` ```sysarch ` block with a starter template at the cursor position |
 | **New .arch file** | creates `Architecture.arch` in the folder for new files and opens it |
 | **Show library** | opens the library in the sidebar |
+| **Toggle editor pane** | hides or shows the editor of the active `.arch` view |
 
 ## Settings
 

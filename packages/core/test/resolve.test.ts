@@ -72,6 +72,11 @@ describe("components", () => {
     expect(m.components.get("b")!.groupPath).toEqual(["z"]);
   });
 
+  it("reads the pin spacing from `layout`, in grid units", () => {
+    expect(model(arch(" layout { pin spacing 3 }\n component a")).pinSpacing).toBe(3);
+    expect(model(arch(" component a")).pinSpacing).toBeUndefined();
+  });
+
   it("stores hints only in mode assisted", () => {
     expect(model(arch(" layout { mode assisted }\n component a { hint row 2 hint column 3 }")).components.get("a")!.hints).toEqual({ row: 2, column: 3 });
     expect(compile(arch(" component a { hint row 2 }")).value.components.get("a")!.hints).toEqual({});

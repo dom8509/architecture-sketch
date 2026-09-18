@@ -181,6 +181,16 @@ describe("format", () => {
     expect(fmt(source)).toContain("    left {\n        pin analog CURRENT_SENSE_A\n");
   });
 
+  it("keeps `pin spacing` in the layout block", () => {
+    const source = arch("layout {\nmode assisted\npin   spacing   3\n}");
+    expect(fmt(source)).toBe(arch([
+      "    layout {",
+      "        mode assisted",
+      "        pin spacing 3",
+      "    }",
+    ].join("\n")));
+  });
+
   it("aligns grid columns", () => {
     const source = arch("layout {\ngrid {\nbattery|.|mcu\n.   |   regulator   |  wdg\n}\n}");
     expect(fmt(source)).toBe(arch([
