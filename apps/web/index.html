@@ -32,11 +32,12 @@
         <button type="button" id="export-reactflow" title="Nodes, pins and routed edges for React Flow">React Flow</button>
       </div>
       <div class="group end">
+        <button type="button" id="toggle-editor" title="Show or hide the editor (⌘E)">Editor</button>
         <button type="button" id="share" title="Copy a link with the source in the URL fragment">Share link</button>
         <button type="button" id="present" title="Presentation mode (Esc exits)">Present</button>
       </div>
     </header>
-    <main class="workspace">
+    <main class="workspace" id="workspace">
       <section class="pane editor-pane" id="editor" aria-label="DSL editor"></section>
       <div class="splitter" id="splitter" role="separator" aria-orientation="vertical"></div>
       <section class="pane preview-pane" id="preview" aria-label="Preview">

@@ -10,12 +10,18 @@ export interface SysarchSettings {
   pngScale: PngScale;
   /** Empty: the attachment folder from the vault settings. */
   exportFolder: string;
+  /** Width of the editor pane in `.arch` views, in percent of the workspace. */
+  editorWidth: number;
+  /** Editor pane hidden — the view then shows only the diagram. */
+  editorCollapsed: boolean;
 }
 
 export const DEFAULT_SETTINGS: SysarchSettings = {
   theme: "auto",
   pngScale: 2,
   exportFolder: "",
+  editorWidth: 42,
+  editorCollapsed: false,
 };
 
 export class SysarchSettingTab extends PluginSettingTab {
