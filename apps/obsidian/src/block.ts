@@ -1,4 +1,4 @@
-import { analyze, scopeSvg } from "@sysarch/editor";
+import { analyze, scopeSvg, ViewSelect } from "@sysarch/editor";
 import { MarkdownRenderChild, MarkdownView, Menu, Notice, type MarkdownPostProcessorContext } from "obsidian";
 import { EditorModal } from "./editor-modal.js";
 import { addExportItems, type Diagram } from "./exports.js";
@@ -14,6 +14,8 @@ export class SysarchBlock extends MarkdownRenderChild {
   private theme: string | undefined;
   private rendered = false;
   private diagram: Diagram | undefined;
+  private view: string | undefined;
+  private viewSelect: ViewSelect | undefined;
 
   constructor(
     private readonly plugin: SysarchPlugin,
@@ -35,18 +37,31 @@ export class SysarchBlock extends MarkdownRenderChild {
     this.plugin.blocks.delete(this);
   }
 
-  /** Re-renders as soon as the theme changes; `force` after the settings changed. */
+  /** Re-renders as soon as the theme changes; `force` after the settings or the view changed. */
   render(force = false) {
     const theme = effectiveTheme(this.source, this.plugin.settings.theme, isDark());
     if (this.rendered && !force && theme === this.theme) return;
     this.rendered = true;
     this.theme = theme;
 
-    const { model, svg, diagnostics } = analyze(this.source, theme);
-    this.diagram = svg === undefined ? undefined : { model, svg, theme, sourcePath: this.ctx.sourcePath };
+    const { model, rendered, svg, view, diagnostics } = analyze(this.source, theme, this.view);
+    this.diagram = svg === undefined
+      ? undefined
+      : { model: rendered, svg, theme, ...(view && { view }), sourcePath: this.ctx.sourcePath };
     const el = this.containerEl;
     el.empty();
     el.addClass("sysarch-block");
+    // A block with views gets a selector; without views nothing changes.
+    if (model.views.length > 0) {
+      const bar = el.createDiv({ cls: "sysarch-view-bar" });
+      this.viewSelect = new ViewSelect(bar, (selected) => {
+        if (selected === this.view) return;
+        this.view = selected;
+        this.render(true);
+      });
+      this.viewSelect.sync(model.views);
+      this.viewSelect.element.value = this.view ?? "";
+    }
     if (svg !== undefined) el.createDiv({ cls: "sysarch-diagram" }).innerHTML = scopeSvg(svg, this.prefix);
 
     // infos (I…) are not shown unasked, as in the CLI

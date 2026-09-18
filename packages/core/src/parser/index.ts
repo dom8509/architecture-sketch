@@ -2,8 +2,8 @@ import type {
   ArchitectureNode, CategoryStmt, ComponentNode, ComponentStmt, ConnectionNode, DefineNode,
   DefineStmt, DirectionStmt, PinsStmt, PinSpacingStmt, StackStmt, CountStmt, EndpointNode, GridCell, GridNode, GridRow, GroupStmt, HintStmt,
   Ident, IconStmt, ImportanceStmt, LabelStmt, LayoutStmt, MetaBlock, MetaEntry, ModeStmt,
-  PinStmt, ShapeStmt, SideBlock, SizeStmt, Statement, StringLit, SyntaxNode, SyntaxTree,
-  SystemNode, ThemeStmt, Trivia, TypeStmt, ZoneNode,
+  PinStmt, ShapeStmt, ShowStmt, SideBlock, SizeStmt, Statement, StringLit, SyntaxNode, SyntaxTree,
+  SystemNode, ThemeStmt, Trivia, TypeStmt, ViewNode, ZoneNode,
 } from "../ast/index.js";
 import { diagnostic, withSuggestion, type Diagnostic, type ParseResult } from "../diagnostics/index.js";
 import { lex, type Token, type TokenType } from "../lexer/index.js";
@@ -15,19 +15,17 @@ import {
 /** Constructs from later versions (02-dsl.md §4.7) with the version that introduces them. */
 const RESERVED: Readonly<Record<string, string>> = {
   use: "v0.2",
-  view: "v0.2",
-  show: "v0.2",
   interface: "v0.3",
   rule: "v0.3",
 };
 
 const ARROWS: readonly TokenType[] = ["->", "<-", "<->", "--"];
 
-const ARCH_KEYWORDS = ["theme", "direction", "pins", "stack", "layout", "zone", "system", "component"];
-const GROUP_KEYWORDS = ["label", "system", "component"];
-const COMPONENT_KEYWORDS = ["label", "size", "importance", "category", "pin", ...SIDES, "hint", "count", "meta"];
+const ARCH_KEYWORDS = ["theme", "direction", "pins", "stack", "view", "layout", "zone", "system", "component"];
+const GROUP_KEYWORDS = ["label", "show", "system", "component"];
+const COMPONENT_KEYWORDS = ["label", "size", "importance", "category", "pin", ...SIDES, "hint", "count", "meta", "show"];
 const DEFINE_KEYWORDS = ["label", "size", "category", "shape", "icon", "pin", ...SIDES];
-const CONNECTION_KEYWORDS = ["label", "type"];
+const CONNECTION_KEYWORDS = ["label", "type", "show"];
 const LAYOUT_KEYWORDS = ["mode", "pin", "grid"];
 
 /** Thrown after a syntax error has been reported and caught at statement level. */
@@ -220,20 +218,45 @@ export function parse(source: string): ParseResult<SyntaxTree> {
     return node<CategoryStmt>(start, { kind: "Category", value: ident() });
   };
 
-  const pin = (): PinStmt => {
+  /** `show in overview, detailed` — at least one view, separated by commas. */
+  const show = (): ShowStmt => {
+    const start = next();
+    expectWord(["in"] as const);
+    const views: Ident[] = [ident()];
+    while (at(",")) {
+      next();
+      views.push(ident());
+    }
+    return node<ShowStmt>(start, { kind: "Show", views });
+  };
+
+  /** `allowShow`: pins in `define` have no `show in` — views belong to the instance. */
+  const pin = (allowShow = true): PinStmt => {
     if (!atWord("pin")) return unknownStatement(["pin"], "a side block");
     const start = next();
     const signal = operand(COMPONENT_KEYWORDS);
     const name = operand(COMPONENT_KEYWORDS);
     const pinLabel = at("string") ? string() : undefined;
-    return node<PinStmt>(start, { kind: "Pin", signal, name, ...(pinLabel && { label: pinLabel }) });
+    const n = node<PinStmt>(start, { kind: "Pin", signal, name, ...(pinLabel && { label: pinLabel }) });
+    if (!at("{")) return n;
+    if (!allowShow) {
+      report(diagnostic("E001", "`show in` is only allowed in a component, not in `define`", peek().span));
+      throw BAIL;
+    }
+    next();
+    const pinStmt = (): ShowStmt => {
+      if (atWord("show")) return show();
+      return unknownStatement(["show"], "a pin");
+    };
+    const { items, closingTrivia } = block(pinStmt, ["show"]);
+    return withClosing(node<PinStmt>(start, { ...n, body: items }), closingTrivia);
   };
 
-  const sideBlock = (): SideBlock => {
+  const sideBlock = (allowShow = true): SideBlock => {
     const start = next();
     const side = start.text as Side;
     expect("{", "`{`");
-    const { items, closingTrivia } = block(pin, ["pin"]);
+    const { items, closingTrivia } = block(() => pin(allowShow), ["pin"]);
     return withClosing(node<SideBlock>(start, { kind: "SideBlock", side, pins: items }), closingTrivia);
   };
 
@@ -289,6 +312,7 @@ export function parse(source: string): ParseResult<SyntaxTree> {
         case "hint": return hint();
         case "count": return count();
         case "meta": return meta();
+        case "show": return show();
       }
     }
     return unknownStatement(COMPONENT_KEYWORDS, "a component");
@@ -315,6 +339,7 @@ export function parse(source: string): ParseResult<SyntaxTree> {
   const groupStmt = (context: string) => (): GroupStmt | undefined => {
     if (isReserved()) return skipReserved();
     if (atWord("label")) return label();
+    if (atWord("show")) return show();
     if (atWord("system")) return system();
     if (atWord("component")) return component();
     if (atWord("zone")) {
@@ -364,8 +389,9 @@ export function parse(source: string): ParseResult<SyntaxTree> {
     const n = node<ConnectionNode>(start, { kind: "Connection", from, arrow, to });
     if (!at("{")) return n;
     next();
-    const connectionStmt = (): LabelStmt | TypeStmt => {
+    const connectionStmt = (): LabelStmt | TypeStmt | ShowStmt => {
       if (atWord("label")) return label();
+      if (atWord("show")) return show();
       if (atWord("type")) {
         const typeStart = next();
         return node<TypeStmt>(typeStart, { kind: "Type", value: ident() });
@@ -444,6 +470,22 @@ export function parse(source: string): ParseResult<SyntaxTree> {
     return withClosing(node<LayoutStmt>(start, { kind: "Layout", body: items }), closingTrivia);
   };
 
+  // ── Views ────────────────────────────────────────────────────
+
+  const view = (): ViewNode => {
+    const start = next();
+    const id = operand(ARCH_KEYWORDS);
+    const n = node<ViewNode>(start, { kind: "View", id, body: [] });
+    if (!at("{")) return n;
+    next();
+    const viewStmt = (): LabelStmt => {
+      if (atWord("label")) return label();
+      return unknownStatement(["label"], "a view");
+    };
+    const { items, closingTrivia } = block(viewStmt, ["label"]);
+    return withClosing(node<ViewNode>(start, { ...n, body: items }), closingTrivia);
+  };
+
   // ── Architecture ─────────────────────────────────────────────
 
   const archStmt = (): Statement | undefined => {
@@ -469,6 +511,7 @@ export function parse(source: string): ParseResult<SyntaxTree> {
           const start = next();
           return node<StackStmt>(start, { kind: "Stack", value: expectWord<StackMode>(STACK_MODES) });
         }
+        case "view": return view();
         case "layout": return layout();
         case "zone": return zone();
         case "system": return system();
@@ -507,8 +550,8 @@ export function parse(source: string): ParseResult<SyntaxTree> {
           const start = next();
           return node<IconStmt>(start, { kind: "Icon", value: ident() });
         }
-        case "pin": return pin();
-        case "left": case "right": case "top": case "bottom": return sideBlock();
+        case "pin": return pin(false);
+        case "left": case "right": case "top": case "bottom": return sideBlock(false);
         case "importance": case "hint": case "meta":
           report(diagnostic("E001", `\`${t.text}\` is only allowed in a component, not in \`define\``, t.span));
           throw BAIL;

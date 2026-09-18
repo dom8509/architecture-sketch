@@ -34,13 +34,26 @@ export interface ArchitectureNode extends SyntaxNode {
 }
 
 export type Statement =
-  | ThemeStmt | DirectionStmt | PinsStmt | StackStmt | LayoutStmt
+  | ThemeStmt | DirectionStmt | PinsStmt | StackStmt | ViewNode | LayoutStmt
   | ZoneNode | SystemNode | ComponentNode | ConnectionNode;
 
 export interface ThemeStmt extends SyntaxNode { kind: "Theme"; name: Ident }
 export interface DirectionStmt extends SyntaxNode { kind: "Direction"; value: Direction }
 export interface PinsStmt extends SyntaxNode { kind: "Pins"; value: PinDisplay }
 export interface StackStmt extends SyntaxNode { kind: "Stack"; value: StackMode }
+
+/** `view overview { label "Overview" }` — a level of abstraction of the same source. */
+export interface ViewNode extends SyntaxNode {
+  kind: "View";
+  id: Ident;
+  body: LabelStmt[];
+}
+
+/** `show in overview, detailed` — restricts an element to the listed views. */
+export interface ShowStmt extends SyntaxNode {
+  kind: "Show";
+  views: Ident[];
+}
 
 export interface LayoutStmt extends SyntaxNode {
   kind: "Layout";
@@ -54,7 +67,7 @@ export interface GridRow extends SyntaxNode { kind: "GridRow"; cells: GridCell[]
 /** `id` is missing for an empty cell (`.`). */
 export interface GridCell extends SyntaxNode { kind: "GridCell"; id?: Ident }
 
-export type GroupStmt = LabelStmt | SystemNode | ComponentNode;
+export type GroupStmt = LabelStmt | ShowStmt | SystemNode | ComponentNode;
 
 export interface ZoneNode extends SyntaxNode {
   kind: "Zone";
@@ -79,7 +92,7 @@ export interface ComponentNode extends SyntaxNode {
 
 export type ComponentStmt =
   | LabelStmt | SizeStmt | ImportanceStmt | CategoryStmt
-  | PinStmt | SideBlock | HintStmt | CountStmt | MetaBlock;
+  | PinStmt | SideBlock | HintStmt | CountStmt | MetaBlock | ShowStmt;
 
 export interface LabelStmt extends SyntaxNode { kind: "Label"; value: StringLit }
 export interface SizeStmt extends SyntaxNode { kind: "Size"; value: Size }
@@ -91,6 +104,8 @@ export interface PinStmt extends SyntaxNode {
   signal: Ident;
   name: Ident;
   label?: StringLit;
+  /** Only `show in …` so far; missing without a block. */
+  body?: ShowStmt[];
 }
 
 export interface SideBlock extends SyntaxNode {
@@ -121,7 +136,7 @@ export interface ConnectionNode extends SyntaxNode {
   from: EndpointNode;
   arrow: Arrow;
   to: EndpointNode;
-  body?: (LabelStmt | TypeStmt)[];
+  body?: (LabelStmt | TypeStmt | ShowStmt)[];
 }
 
 export interface EndpointNode extends SyntaxNode {

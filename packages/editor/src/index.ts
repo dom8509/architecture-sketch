@@ -5,3 +5,4 @@ export { sysarchCompletion } from "./complete.js";
 export { Preview } from "./preview.js";
 export { scopeSvg } from "./scope.js";
 export { SplitPane, type SplitOptions, type SplitState } from "./split.js";
+export { ViewSelect } from "./views.js";

@@ -32,19 +32,11 @@ Every milestone is usable on its own and ends with green tests.
 
 - `use "nxp-s32k.archlib"` — project-specific libraries, resolvable relative to the file
   or within the Obsidian vault
-- Views:
-  ```sysarch
-  view overview
-  view interface
-  view detailed
-
-  component mcu: microcontroller {
-      show in overview, interface
-      pin spi SPI_CLK { show in detailed }
-  }
-  ```
-  → `architecture-overview.svg`, `architecture-interface.svg`,
-  `architecture-detailed.svg` from a single source
+- **Views — done.** `view <id>` and `show in <view>` restrict components, pins, groups and
+  connections to a level of abstraction; `sysarch render` writes one file per view
+  (`architecture-overview.svg`, `architecture-interface.svg`, `architecture-detailed.svg`
+  from a single source), the web app and the Obsidian plugin offer a selector. Rules in
+  [02 DSL](02-dsl.md), section 4.5.
 - `sysarch render` for Markdown files with several code blocks
 - Bus as a shared rail (`component can0: bus`) that several participants attach to
 - Icons from project-specific libraries via `use`

@@ -1,0 +1,53 @@
+// Window lifter — one source, three views: overview for the presentation,
+// interface for the discussion with the supplier, detailed for the schematic review.
+// Switch views in the web app and in Obsidian with the selector next to the diagram.
+
+architecture "Window lifter" {
+    theme automotive-light
+    direction LR
+
+    view overview { label "Overview" }
+    view interface { label "Interfaces" }
+    view detailed { label "Detail" }
+
+    zone supply {
+        label "Power"
+        component battery: battery { label "KL30" }
+        component regulator: power_supply { show in interface, detailed }
+    }
+
+    zone control {
+        label "Processing"
+        system ecu {
+            label "Door ECU"
+            component mcu: microcontroller {
+                label "BCM"
+                left {
+                    pin power VDD { show in interface, detailed }
+                    pin ground GND { show in detailed }
+                }
+                right {
+                    pin pwm HB_PWM { show in interface, detailed }
+                    pin analog IS { show in detailed }
+                    pin digital CAN_TX { show in interface, detailed }
+                }
+            }
+            component hb: half_bridge { show in detailed }
+            component trx: can_transceiver { show in interface, detailed }
+        }
+    }
+
+    zone actuation {
+        label "Actuation"
+        component motor: motor { label "Window motor" }
+    }
+
+    battery -> regulator.VIN  { label "KL30" show in interface, detailed }
+    battery -> mcu            { label "12 V" show in overview }
+    regulator.VOUT -> mcu.VDD { label "5 V" type power }
+    mcu.HB_PWM -> hb.IN       { label "PWM" }
+    hb.IS -> mcu.IS           { label "Current" }
+    hb.OUT -> motor           { label "Motor output" }
+    mcu -> motor              { label "Window up/down" show in overview, interface }
+    mcu.CAN_TX -> trx.TXD
+}

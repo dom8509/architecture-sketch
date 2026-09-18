@@ -89,7 +89,10 @@ describe("Diagrams in the documentation", () => {
   const md = new MarkdownIt({ html: true });
   const diagrams = pages().flatMap((file) =>
     md.parse(page(file), {})
-      .filter((t) => t.type === "fence" && t.info.trim() === "sysarch" && isDiagram(t.content))
+      .filter((t) => {
+        const [lang, ...flags] = t.info.trim().split(/\s+/);
+        return t.type === "fence" && lang === "sysarch" && !flags.includes("code-only") && isDiagram(t.content);
+      })
       .map((t) => ({ where: `${file}:${(t.map?.[0] ?? 0) + 1}`, code: t.content })),
   );
 

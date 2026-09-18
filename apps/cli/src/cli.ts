@@ -2,8 +2,8 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSy
 import { basename, dirname, extname, join } from "node:path";
 import { parseArgs } from "node:util";
 import {
-  compile, format, hasErrors, loadLibrary, standardLibrary, THEMES,
-  type Diagnostic, type Severity,
+  compile, format, hasErrors, loadLibrary, projectView, standardLibrary, THEMES,
+  type ArchitectureModel, type Diagnostic, type Severity,
 } from "@sysarch/core";
 import { toReactFlow } from "@sysarch/export-reactflow";
 import { architectureScene, renderSvg } from "@sysarch/render-svg";
@@ -25,7 +25,7 @@ const HELP = `sysarch ${VERSION} — Architecture-as-Code for system architectur
 
 Usage:
   sysarch render <files…> [--out <directory|file|->] [--theme <name>]
-                 [--format svg|png|reactflow] [--scale 1|2|3]
+                 [--format svg|png|reactflow] [--scale 1|2|3] [--view <name>]
   sysarch check  <files…> [--max-warnings <n>] [--format text|json] [--verbose]
   sysarch fmt    <files…> [--check]
 
@@ -34,7 +34,8 @@ Files:    .arch files (render) or .arch/.archlib (check, fmt); directories are
 
 render    Renders to SVG (.svg), PNG (.png, default --scale 2) or React Flow JSON
           (.reactflow.json). Without --out next to the source, with --out - to stdout
-          (not for PNG).
+          (not for PNG). A document with \`view\` declarations renders one file per view
+          (architecture-overview.svg); --view <name> picks a single one.
 check     Reports diagnostics as file:line:column: severity CODE: message.
           Exit 1 on errors or on more warnings than --max-warnings.
           Infos (I…) only with --verbose, always in the JSON format.
@@ -88,6 +89,7 @@ function render(args: readonly string[], io: Io): number {
       format: { type: "string", default: "svg" },
       theme: { type: "string" },
       scale: { type: "string" },
+      view: { type: "string" },
     },
   });
   const outputFormat = values.format as OutputFormat;
@@ -122,22 +124,44 @@ function render(args: readonly string[], io: Io): number {
       failed = true;
       continue;
     }
-    const scene = architectureScene(model, values.theme);
-    const output = outputFormat === "png" ? renderPng(scene, scale)
-      : outputFormat === "reactflow" ? JSON.stringify(toReactFlow(model, scene), null, 2) + "\n"
-      : renderSvg(scene);
-    if (out === "-") {
-      io.stdout(output as string);
-      continue;
+    if (values.view !== undefined && !model.views.some((v) => v.id === values.view)) {
+      const known = model.views.map((v) => v.id).join(", ");
+      throw new UsageError(known
+        ? `${file} does not declare the view \`${values.view}\`; available: ${known}`
+        : `${file} declares no views, so --view ${values.view} cannot be rendered`);
     }
-    const target = singleTarget ? out! : join(out ?? dirname(file), basename(file, extname(file)) + extension);
-    if (written.has(target)) throw new UsageError(`Several inputs write to ${target}`);
-    written.add(target);
-    mkdirSync(dirname(target), { recursive: true });
-    writeFileSync(target, output);
-    io.stderr(`${file} → ${target}\n`);
+    // One output per view, unless a single view is requested or the document declares none.
+    const views: (string | undefined)[] = values.view !== undefined ? [values.view]
+      : model.views.length > 0 ? model.views.map((v) => v.id)
+      : [undefined];
+    if (singleTarget && views.length > 1) {
+      throw new UsageError(`--out ${out} requires a single diagram; pass --view <${model.views.map((v) => v.id).join("|")}>`);
+    }
+
+    for (const view of views) {
+      const output = renderModel(view === undefined ? model : projectView(model, view));
+      if (out === "-") {
+        io.stdout(output as string);
+        continue;
+      }
+      const suffix = view === undefined ? "" : `-${view}`;
+      const target = singleTarget ? out!
+        : join(out ?? dirname(file), basename(file, extname(file)) + suffix + extension);
+      if (written.has(target)) throw new UsageError(`Several inputs write to ${target}`);
+      written.add(target);
+      mkdirSync(dirname(target), { recursive: true });
+      writeFileSync(target, output);
+      io.stderr(`${file} → ${target}\n`);
+    }
   }
   return failed ? FAILED : OK;
+
+  function renderModel(model: ArchitectureModel): string | Uint8Array {
+    const scene = architectureScene(model, values.theme);
+    return outputFormat === "png" ? renderPng(scene, scale)
+      : outputFormat === "reactflow" ? JSON.stringify(toReactFlow(model, scene), null, 2) + "\n"
+      : renderSvg(scene);
+  }
 }
 
 // ── check ──────────────────────────────────────────────────────

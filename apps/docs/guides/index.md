@@ -12,6 +12,7 @@ Each guide solves one task from start to finish. The basics are covered by the
 | [Zones and systems](./zones-and-systems) | splitting diagrams into bands and framing ECUs |
 | [Controlling the layout](./layout) | flow direction, grid, spanning cells and hints |
 | [Presentation views](./presentation) | hiding pins, stacking repeated elements, projector theme |
+| [Views](./views) | several levels of abstraction from one source with `view` and `show in` |
 | [Custom templates](./templates) | creating your own building blocks with `define` and `extends` |
 
 ## Tools

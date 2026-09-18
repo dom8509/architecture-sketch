@@ -12,7 +12,11 @@ export const isDiagram = (code) => /^architecture\s+"/m.test(code);
 /** If the block sets a theme itself, there is no dark variant. */
 export const hasTheme = (code) => /^\s*theme\s+\S+/m.test(code);
 
-export const blockKey = (code) => createHash("sha256").update(code).digest("hex").slice(0, 16);
+/** `view=<id>` on the fence renders only that view of the block. */
+export const viewFlag = (flags) => flags.find((f) => f.startsWith("view="))?.slice("view=".length) ?? "";
+
+export const blockKey = (code, view = "") =>
+  createHash("sha256").update(view ? `${view}\u0000${code}` : code).digest("hex").slice(0, 16);
 
 /** The web app's `#src=…` fragment (deflate-raw, base64url — as in apps/web/src/share.ts). */
 export const shareFragment = (code) => `#src=${deflateRawSync(Buffer.from(code)).toString("base64url")}`;

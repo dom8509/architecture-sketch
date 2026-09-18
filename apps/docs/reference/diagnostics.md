@@ -142,6 +142,21 @@ define m {
 
 Shapes: `rounded`, `rect`, `circle`, `hexagon`, `cylinder`. Icons: see [icons](./icons).
 
+## E112
+
+**Unknown view in `show in`** — with a suggestion.
+
+```sysarch code-only
+view overview
+
+component mcu: microcontroller {
+    show in overviw
+}
+```
+
+Only views declared with `view <id>` in the same architecture can be named. Without any
+`view`, `show in` has nothing to refer to.
+
 ## W201
 
 **Connection between incompatible signal kinds**, such as `power` → `can`.
@@ -160,6 +175,31 @@ Set `layout { mode assisted }` or remove the hint.
 **A local template overrides a library template** of the same name.
 
 If you only want to extend the library, pick a new name and derive from it with `extends`.
+
+## W204
+
+**`show in` does not overlap with the views of the surroundings** — the element is shown
+in no view at all.
+
+```sysarch code-only
+view overview
+view detailed
+
+component mcu: microcontroller {
+    show in overview
+    pin can CAN_TX { show in detailed }   // the component is not in `detailed`
+}
+```
+
+`show in` only narrows: a pin is never shown without its component, a component never
+without its zone. Widen the surroundings or narrow the element differently.
+
+## W205
+
+**A view shows no component.**
+
+Either the `show in` statements never name this view, or every component that names it is
+hidden by its surroundings. Rendering it would produce an empty diagram.
 
 ## I301
 

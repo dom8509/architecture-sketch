@@ -1,6 +1,6 @@
 # Language
 
-An overview of every construct of the language in v0.1. The full specification, with grammar
+An overview of every construct of the language. The full specification, with grammar
 and all the rules, is in [02 DSL](/concept/02-dsl).
 
 File extensions: `.arch` for architectures, `.archlib` for libraries. Code block language in
@@ -19,13 +19,15 @@ architecture "Title" {
     pins all                     // all | connected | none
     stack none                   // none | identical
 
+    view <id> { label "…" }      // levels of abstraction, see below
+
     layout { … }                 // mode, pin spacing, grid
 
     zone <id> { … }              // label, system, component
     system <id> { … }            // label, system, component
     component <id>[: <template>] { … }
 
-    <a>[.<PIN>] -> <b>[.<PIN>] { label "…" type <kind> }
+    <a>[.<PIN>] -> <b>[.<PIN>] { label "…" type <kind> show in <view> }
 }
 ```
 
@@ -51,7 +53,9 @@ component <id>[: <template>] {
     hint column 3
     meta { voltage "12 V" }
 
-    pin <kind> <NAME> ["Label"]
+    show in <view>[, <view>]
+
+    pin <kind> <NAME> ["Label"] { show in <view> }
     left { pin … }   right { pin … }   top { pin … }   bottom { pin … }
 }
 ```
@@ -93,6 +97,31 @@ zone <id> {
 Zones only at the top level; systems nested as deeply as you like. Once zones are used, every
 component lives in a zone. See [Zones and systems](/guides/zones-and-systems).
 
+## Views
+
+```sysarch code-only
+view overview { label "Overview" }
+view detailed
+
+zone z { show in overview, detailed }
+component mcu: microcontroller {
+    show in overview, detailed
+    pin can CAN_TX { show in detailed }
+}
+a.X -> b.Y { show in detailed }
+```
+
+- `view <id>` declares a level of abstraction; `label` names it, otherwise the ID is used.
+- `show in` restricts zones, systems, components, pins and connections to the listed views —
+  it is not allowed in `define`.
+- Without `show in` an element is shown everywhere its surroundings are shown; `show in`
+  only narrows. If nothing is left, that is [W204](./diagnostics#w204).
+- Without any `view` in the document nothing changes — there is exactly one diagram.
+- `sysarch render` writes one file per view (`architecture-overview.svg`); `--view <name>`
+  picks a single one. The web app and the Obsidian plugin show a selector.
+
+See [Views](/guides/views).
+
 ## Layout
 
 ```sysarch code-only
@@ -129,5 +158,5 @@ See [Custom templates](/guides/templates), [library](./library) and [icons](./ic
 
 ## Reserved for later versions
 
-`use "file.archlib"` · `view <id>` · `show in <view>` · `interface` · `rule` — the parser
-reports [E110](./diagnostics#e110).
+`use "file.archlib"` · `interface` · `rule` — the parser reports
+[E110](./diagnostics#e110).

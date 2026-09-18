@@ -6,7 +6,7 @@ import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "nod
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  CATEGORIES, compile, DIAGNOSTIC_CODES, SIGNAL_GROUPS, SIGNAL_KINDS, standardLibrary, THEMES,
+  CATEGORIES, compile, DIAGNOSTIC_CODES, projectView, SIGNAL_GROUPS, SIGNAL_KINDS, standardLibrary, THEMES,
   type Category, type IconDef, type SignalGroup, type TemplateDef,
 } from "@sysarch/core";
 import { AUTOMOTIVE_ARCHLIB } from "../../../packages/core/src/library/generated.js";
@@ -14,7 +14,7 @@ import { classify } from "../../../packages/editor/src/highlight.js";
 import { renderArchitecture } from "@sysarch/render-svg";
 import MarkdownIt from "markdown-it";
 import { run } from "../../cli/src/cli.js";
-import { blockKey, hasTheme, isDiagram, shareFragment } from "../.vitepress/blocks.mjs";
+import { blockKey, hasTheme, isDiagram, shareFragment, viewFlag } from "../.vitepress/blocks.mjs";
 
 const DOCS = fileURLToPath(new URL("..", import.meta.url));
 const ROOT = join(DOCS, "../..");
@@ -72,8 +72,9 @@ function check(where: string, source: string) {
 }
 
 /** Renders light and — without `theme` in the source — dark; returns the public paths. */
-function renderVariants(source: string, name: string): { light: string; dark?: string } {
-  const { value: model } = compile(source);
+function renderVariants(source: string, name: string, view = ""): { light: string; dark?: string } {
+  const { value: whole } = compile(source);
+  const model = view ? projectView(whole, view) : whole;
   if (hasTheme(source)) {
     write(join(PUBLIC, `${name}.svg`), renderArchitecture(model));
     return { light: `/generated/${name}.svg` };
@@ -282,13 +283,17 @@ function blocks() {
       const [lang, ...flags] = token.info.trim().split(/\s+/);
       if (token.type !== "fence" || lang !== "sysarch") continue;
       const code = token.content;
-      const key = blockKey(code);
+      const view = viewFlag(flags);
+      const key = blockKey(code, view);
       if (manifest[key]?.light) continue;
       const block: Block = { html: highlight(code) };
       // `sysarch code-only`: deliberately broken or incomplete examples
       if (isDiagram(code) && !flags.includes("code-only")) {
         check(`${where}:${(token.map?.[0] ?? 0) + 2}`, code);
-        Object.assign(block, renderVariants(code, `diagrams/${key}`), { share: shareFragment(code) });
+        if (view && !compile(code).value.views.some((v) => v.id === view)) {
+          failures.push(`${where}: block does not declare the view \`${view}\``);
+        }
+        Object.assign(block, renderVariants(code, `diagrams/${key}`, view), { share: shareFragment(code) });
       }
       manifest[key] = block;
     }

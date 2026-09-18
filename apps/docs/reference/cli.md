@@ -21,6 +21,7 @@ The output of `sysarch --help` — taken from the CLI on every build:
 | `--format svg\|png\|reactflow` | extensions `.svg`, `.png`, `.reactflow.json`; default `svg` |
 | `--scale 1\|2\|3` | PNG only, default `2` |
 | `--theme <name>` | overrides the theme of the source |
+| `--view <name>` | renders only this view; without it a document with views produces one file per view (`<name>-<view>.svg`) |
 
 ### `check`
 

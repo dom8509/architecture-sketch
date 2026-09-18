@@ -1,4 +1,4 @@
-import { THEMES } from "@sysarch/core";
+import { THEMES, type View } from "@sysarch/core";
 import { SplitPane, SysarchEditor, type SplitState } from "@sysarch/editor";
 import { PNG_SCALES, svgToPng, type PngScale } from "@sysarch/export-png";
 import { toReactFlow } from "@sysarch/export-reactflow";
@@ -71,11 +71,33 @@ setFileName(fileName);
 
 // save the draft automatically
 let draftTimer: ReturnType<typeof setTimeout> | undefined;
-editor.onUpdate(({ source }) => {
+editor.onUpdate(({ source, model }) => {
   clearTimeout(draftTimer);
   draftTimer = setTimeout(() => localStorage.setItem(DRAFT_KEY, source), 300);
   document.title = `${editor.current.model.title || "sysarch"} — sysarch`;
+  syncViews(model.views);
 });
+
+// ── views ──────────────────────────────────────────────────────
+
+const viewSelect = $<HTMLSelectElement>("view");
+let viewIds = "";
+
+/** The selector only appears once the source declares views; the choice survives edits. */
+function syncViews(views: readonly View[]) {
+  const ids = views.map((v) => v.id).join(",");
+  if (ids === viewIds) return;
+  viewIds = ids;
+  const selected = viewSelect.value;
+  viewSelect.replaceChildren(new Option("everything", ""));
+  for (const view of views) viewSelect.add(new Option(view.label, view.id));
+  viewSelect.value = views.some((v) => v.id === selected) ? selected : "";
+  $("view-group").hidden = views.length === 0;
+  // only when the selection really changed — `syncViews` runs on every keystroke
+  if ((viewSelect.value || undefined) !== editor.current.view) editor.setView(viewSelect.value || undefined);
+}
+viewSelect.addEventListener("change", () => editor.setView(viewSelect.value || undefined));
+syncViews(editor.current.model.views);
 
 // ── file ───────────────────────────────────────────────────────
 
@@ -124,7 +146,8 @@ const themeSelect = $<HTMLSelectElement>("theme");
 for (const theme of THEMES) themeSelect.add(new Option(theme, theme));
 themeSelect.addEventListener("change", () => editor.setTheme(themeSelect.value || undefined));
 
-const exportName = (extension: string) => fileName.replace(/\.[^.]*$/, "") + extension;
+const exportName = (extension: string) =>
+  fileName.replace(/\.[^.]*$/, "") + (editor.current.view ? `-${editor.current.view}` : "") + extension;
 
 $("export-svg").addEventListener("click", () => {
   const svg = editor.svg;
@@ -154,9 +177,9 @@ $("export-png").addEventListener("click", async () => {
 });
 
 $("export-reactflow").addEventListener("click", () => {
-  const { model, svg } = editor.current;
+  const { rendered, svg } = editor.current;
   if (svg === undefined) return toast("The source contains errors — React Flow needs a valid model");
-  const flow = toReactFlow(model, architectureScene(model, themeSelect.value || undefined));
+  const flow = toReactFlow(rendered, architectureScene(rendered, themeSelect.value || undefined));
   download(exportName(".reactflow.json"), JSON.stringify(flow, null, 2) + "\n", "application/json");
 });
 
