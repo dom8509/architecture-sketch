@@ -46,7 +46,7 @@ export function sysarchCompletion(current: () => Analysis | undefined) {
       };
     }
 
-    if (/(?:\bcomponent\s+[A-Za-z_][A-Za-z0-9_]*\s*:|\bextends)\s*$/.test(before)) {
+    if (/(?:\b(?:component|external)\s+[A-Za-z_][A-Za-z0-9_]*\s*:|\bextends)\s*$/.test(before)) {
       const options: Completion[] = [...standardLibrary().templates.values()].map((t) => ({
         label: t.name, type: "class", ...(t.category && { detail: t.category }),
       }));

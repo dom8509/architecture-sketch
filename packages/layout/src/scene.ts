@@ -56,6 +56,8 @@ export interface SceneShape extends SceneBase, Rect {
   fill: string;
   stroke: string;
   strokeWidth: number;
+  /** Dashed contour — `external` components. */
+  dash?: number[];
   /**
    * Multiple element: `layers` cards behind, each offset by `offset` towards the upper right.
    * The front card is `stackFront(hull, layers × offset)`; the renderer draws back to front.

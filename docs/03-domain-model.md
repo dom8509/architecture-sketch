@@ -120,6 +120,7 @@ type Statement =
 interface ComponentNode extends SyntaxNode {
   kind: "Component";
   id: Ident;
+  external?: true;           // declared with `external` instead of `component`
   template?: Ident;
   body?: ComponentStmt[];
 }
@@ -164,6 +165,7 @@ type PinAddress = `${ComponentId}.${string}`;
 
 interface Component {
   id: ComponentId;
+  external: boolean;                     // context, not part of the described system
   template: string;                      // "block" if none was given
   shape: Shape;                          // from the template, default "rounded"
   icon?: string;                         // name from the icon library
@@ -280,6 +282,7 @@ interface Theme {
     padding: number;
     minWidth: Record<Size, number>;
     minHeight: Record<Size, number>;
+    externalDash: number[];              // contour of an `external` component
   };
   categories: Record<Category, { fill: string; border: string; text: string }>;
   icon: { size: Record<Size, number>; gap: number; strokeWidth: number };  // strokeWidth on the 24×24 grid

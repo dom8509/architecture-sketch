@@ -84,6 +84,7 @@ export default defineConfig({
           { text: "Overview", link: "/guides/" },
           { text: "Pins and connections", link: "/guides/pins-and-connections" },
           { text: "Zones and systems", link: "/guides/zones-and-systems" },
+          { text: "External components", link: "/guides/external" },
           { text: "Controlling the layout", link: "/guides/layout" },
           { text: "Presentation views", link: "/guides/presentation" },
           { text: "Views", link: "/guides/views" },

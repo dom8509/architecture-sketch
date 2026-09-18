@@ -225,6 +225,9 @@ mcu ●─────────┐
 - No connections that "tunnel" through system frames; they run over the frame border.
 - No bundling of bus lines into a shared rail (candidate for v0.2: a `bus` component as a
   horizontal rail).
+- No rule of its own for `external` components. They belong at the edge of the diagram, but
+  the layout treats them like every other component — `grid` and `hint` place them
+  ([02 DSL](02-dsl.md), section 4.2).
 - Large diagrams (> 100 components) are not the target; views will cover that later.
 
 ## Testability

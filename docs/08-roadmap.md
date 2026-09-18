@@ -36,7 +36,13 @@ Every milestone is usable on its own and ends with green tests.
   connections to a level of abstraction; `sysarch render` writes one file per view
   (`architecture-overview.svg`, `architecture-interface.svg`, `architecture-detailed.svg`
   from a single source), the web app and the Obsidian plugin offer a selector. Rules in
-  [02 DSL](02-dsl.md), section 4.5.
+  [02 DSL](02-dsl.md), section 4.6.
+- **External components — done.** `external <id>: <template>` marks motors, buses,
+  connectors, sensors and test equipment as context: a dashed contour makes the system
+  boundary visible without colour, `I301` stays silent on them, and later plausibility
+  rules must not expect complete interfaces there. Rules in
+  [02 DSL](02-dsl.md), section 4.2; example
+  [`examples/system-context.arch`](../examples/system-context.arch).
 - `sysarch render` for Markdown files with several code blocks
 - Bus as a shared rail (`component can0: bus`) that several participants attach to
 - Icons from project-specific libraries via `use`
@@ -93,10 +99,6 @@ Collected, not yet scheduled for a version. Sorted by the topic they belong to.
   across several pages or diagrams. This is a rendering decision, not a model change —
   the connection stays in the model, only the view resolves it to a label. Belongs next
   to the views from v0.2.
-- **External components** — motors, buses, connectors, sensors, test equipment:
-  everything that is part of the context but not part of the system being described.
-  Needs its own shape and its own semantics in the plausibility rules (an external
-  component has no internal structure and is never fully specified).
 
 ### Starting from the schematic
 

@@ -170,7 +170,8 @@ export function format(source: string): ParseResult<string> {
     return { header, entries, closing: closing.rest };
   };
 
-  const componentHead = (c: ComponentNode) => `component ${c.id.name}${c.template ? ": " + c.template.name : ""}`;
+  const componentHead = (c: ComponentNode) =>
+    `${c.external ? "external" : "component"} ${c.id.name}${c.template ? ": " + c.template.name : ""}`;
   const endpoint = (e: EndpointNode) => e.component.name + (e.pin ? "." + e.pin.name : "");
   const connectionHead = (c: ConnectionNode) => `${endpoint(c.from)} ${c.arrow} ${endpoint(c.to)}`;
 

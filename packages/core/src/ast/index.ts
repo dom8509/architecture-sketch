@@ -86,6 +86,8 @@ export interface SystemNode extends SyntaxNode {
 export interface ComponentNode extends SyntaxNode {
   kind: "Component";
   id: Ident;
+  /** Declared with `external` instead of `component`: part of the context, not of the system. */
+  external?: true;
   template?: Ident;
   body?: ComponentStmt[];
 }

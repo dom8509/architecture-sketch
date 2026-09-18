@@ -1,0 +1,616 @@
+{
+  "nodes": [
+    {
+      "id": "can_body",
+      "type": "bus",
+      "position": {
+        "x": 48,
+        "y": 112
+      },
+      "width": 96,
+      "height": 64,
+      "data": {
+        "label": "Body CAN",
+        "external": true,
+        "category": "communication",
+        "importance": "secondary",
+        "size": "small",
+        "shape": "rect",
+        "icon": {
+          "name": "bus",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M2 9h20M2 15h20",
+              "mode": "stroke"
+            },
+            {
+              "d": "M6 9V4M12 15v5M18 9V4",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [],
+        "meta": {}
+      }
+    },
+    {
+      "id": "x1",
+      "type": "connector",
+      "position": {
+        "x": 256,
+        "y": 112
+      },
+      "width": 96,
+      "height": 64,
+      "data": {
+        "label": "X1",
+        "external": true,
+        "category": "external",
+        "importance": "secondary",
+        "size": "small",
+        "shape": "rect",
+        "icon": {
+          "name": "connector",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M7 5h8a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-8a1 1 0 0 1 -1 -1v-12a1 1 0 0 1 1 -1Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M16 9h5M16 15h5",
+              "mode": "stroke"
+            },
+            {
+              "d": "M2 12h4",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [],
+        "meta": {}
+      }
+    },
+    {
+      "id": "door_switch",
+      "type": "sensor",
+      "position": {
+        "x": 32,
+        "y": 304
+      },
+      "width": 128,
+      "height": 128,
+      "data": {
+        "label": "Door switch",
+        "external": true,
+        "category": "sensor",
+        "importance": "secondary",
+        "size": "small",
+        "shape": "circle",
+        "icon": {
+          "name": "sensor",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M9 12a3 3 0 1 0 6 0a3 3 0 1 0 -6 0Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M6.3 6.3a8 8 0 0 0 0 11.4",
+              "mode": "stroke"
+            },
+            {
+              "d": "M17.7 6.3a8 8 0 0 1 0 11.4",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [],
+        "meta": {}
+      }
+    },
+    {
+      "id": "window_motor",
+      "type": "motor",
+      "position": {
+        "x": 1280,
+        "y": 112
+      },
+      "width": 160,
+      "height": 160,
+      "data": {
+        "label": "Window motor",
+        "external": true,
+        "category": "actuator",
+        "importance": "secondary",
+        "size": "small",
+        "shape": "circle",
+        "icon": {
+          "name": "motor",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M8 16V8l4 5 4-5v8",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "A",
+            "label": "A",
+            "kind": "power",
+            "side": "left",
+            "offset": 112
+          },
+          {
+            "id": "B",
+            "label": "B",
+            "kind": "power",
+            "side": "left",
+            "offset": 128
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "ecu",
+      "type": "group",
+      "position": {
+        "x": 432,
+        "y": 80
+      },
+      "style": {
+        "width": 704,
+        "height": 176
+      },
+      "data": {
+        "label": "Door ECU",
+        "groupType": "system"
+      }
+    },
+    {
+      "id": "trx",
+      "type": "can_transceiver",
+      "parentId": "ecu",
+      "extent": "parent",
+      "position": {
+        "x": 16,
+        "y": 32
+      },
+      "width": 160,
+      "height": 112,
+      "data": {
+        "label": "CAN Transceiver",
+        "category": "communication",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "can",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M2 9h20M2 15h20",
+              "mode": "stroke"
+            },
+            {
+              "d": "M7 9v6M17 9v6",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "TXD",
+            "label": "TXD",
+            "kind": "digital",
+            "side": "right",
+            "offset": 64
+          },
+          {
+            "id": "RXD",
+            "label": "RXD",
+            "kind": "digital",
+            "side": "right",
+            "offset": 80
+          },
+          {
+            "id": "STB",
+            "label": "STB",
+            "kind": "digital",
+            "side": "left",
+            "offset": 48
+          },
+          {
+            "id": "CANH",
+            "label": "CANH",
+            "kind": "can",
+            "side": "left",
+            "offset": 64
+          },
+          {
+            "id": "CANL",
+            "label": "CANL",
+            "kind": "can",
+            "side": "left",
+            "offset": 80
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "mcu",
+      "type": "microcontroller",
+      "parentId": "ecu",
+      "extent": "parent",
+      "position": {
+        "x": 240,
+        "y": 32
+      },
+      "width": 208,
+      "height": 96,
+      "data": {
+        "label": "BCM",
+        "category": "controller",
+        "importance": "primary",
+        "size": "large",
+        "shape": "rounded",
+        "icon": {
+          "name": "chip",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M7 6h10a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1v-10a1 1 0 0 1 1 -1Z",
+              "mode": "stroke"
+            },
+            {
+              "d": "M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "SW_IN",
+            "label": "SW_IN",
+            "kind": "digital",
+            "side": "left",
+            "offset": 64
+          },
+          {
+            "id": "CAN_RX",
+            "label": "CAN_RX",
+            "kind": "digital",
+            "side": "left",
+            "offset": 80
+          },
+          {
+            "id": "CAN_TX",
+            "label": "CAN_TX",
+            "kind": "digital",
+            "side": "right",
+            "offset": 64
+          },
+          {
+            "id": "HB_PWM",
+            "label": "HB_PWM",
+            "kind": "pwm",
+            "side": "right",
+            "offset": 80
+          }
+        ],
+        "meta": {}
+      }
+    },
+    {
+      "id": "hb",
+      "type": "half_bridge",
+      "parentId": "ecu",
+      "extent": "parent",
+      "position": {
+        "x": 528,
+        "y": 48
+      },
+      "width": 160,
+      "height": 112,
+      "data": {
+        "label": "Half Bridge",
+        "category": "power",
+        "importance": "secondary",
+        "size": "medium",
+        "shape": "rounded",
+        "icon": {
+          "name": "bridge",
+          "viewBox": "0 0 24 24",
+          "elements": [
+            {
+              "d": "M5 3v18M19 3v18",
+              "mode": "stroke"
+            },
+            {
+              "d": "M5 12h14",
+              "mode": "stroke"
+            },
+            {
+              "d": "M10 9l3 3-3 3",
+              "mode": "stroke"
+            }
+          ]
+        },
+        "pins": [
+          {
+            "id": "VS",
+            "label": "VS",
+            "kind": "power",
+            "side": "left",
+            "offset": 48
+          },
+          {
+            "id": "IN",
+            "label": "IN",
+            "kind": "digital",
+            "side": "left",
+            "offset": 64
+          },
+          {
+            "id": "OUT",
+            "label": "OUT",
+            "kind": "power",
+            "side": "right",
+            "offset": 64
+          },
+          {
+            "id": "IS",
+            "label": "IS",
+            "kind": "analog",
+            "side": "bottom",
+            "offset": 64
+          },
+          {
+            "id": "GND",
+            "label": "GND",
+            "kind": "ground",
+            "side": "bottom",
+            "offset": 112
+          }
+        ],
+        "meta": {}
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "can_body->x1#1",
+      "source": "can_body",
+      "sourceHandle": "__body_right",
+      "target": "x1",
+      "targetHandle": "__body_left",
+      "type": "step",
+      "label": "CAN",
+      "className": "sa-edge sa-group-bus sa-kind-can",
+      "data": {
+        "kind": "can",
+        "direction": "none",
+        "points": [
+          [
+            144,
+            144
+          ],
+          [
+            256,
+            144
+          ]
+        ]
+      }
+    },
+    {
+      "id": "x1->trx.CANH#1",
+      "source": "x1",
+      "sourceHandle": "__body_right",
+      "target": "trx",
+      "targetHandle": "CANH",
+      "type": "step",
+      "className": "sa-edge sa-group-bus sa-kind-can",
+      "data": {
+        "kind": "can",
+        "direction": "none",
+        "points": [
+          [
+            352,
+            144
+          ],
+          [
+            416,
+            144
+          ],
+          [
+            416,
+            176
+          ],
+          [
+            448,
+            176
+          ]
+        ]
+      }
+    },
+    {
+      "id": "trx.RXD->mcu.CAN_RX#1",
+      "source": "trx",
+      "sourceHandle": "RXD",
+      "target": "mcu",
+      "targetHandle": "CAN_RX",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-digital",
+      "data": {
+        "kind": "digital",
+        "direction": "forward",
+        "points": [
+          [
+            608,
+            192
+          ],
+          [
+            672,
+            192
+          ]
+        ]
+      }
+    },
+    {
+      "id": "mcu.CAN_TX->trx.TXD#1",
+      "source": "mcu",
+      "sourceHandle": "CAN_TX",
+      "target": "trx",
+      "targetHandle": "TXD",
+      "type": "step",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-digital",
+      "data": {
+        "kind": "digital",
+        "direction": "forward",
+        "points": [
+          [
+            880,
+            176
+          ],
+          [
+            896,
+            176
+          ],
+          [
+            896,
+            96
+          ],
+          [
+            624,
+            96
+          ],
+          [
+            624,
+            176
+          ],
+          [
+            608,
+            176
+          ]
+        ]
+      }
+    },
+    {
+      "id": "door_switch->mcu.SW_IN#1",
+      "source": "door_switch",
+      "sourceHandle": "__body_right",
+      "target": "mcu",
+      "targetHandle": "SW_IN",
+      "type": "step",
+      "label": "Door contact",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-digital",
+      "data": {
+        "kind": "digital",
+        "direction": "forward",
+        "points": [
+          [
+            160,
+            368
+          ],
+          [
+            640,
+            368
+          ],
+          [
+            640,
+            176
+          ],
+          [
+            672,
+            176
+          ]
+        ]
+      }
+    },
+    {
+      "id": "mcu.HB_PWM->hb.IN#1",
+      "source": "mcu",
+      "sourceHandle": "HB_PWM",
+      "target": "hb",
+      "targetHandle": "IN",
+      "type": "step",
+      "label": "PWM",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-single sa-kind-pwm",
+      "data": {
+        "kind": "pwm",
+        "direction": "forward",
+        "points": [
+          [
+            880,
+            192
+          ],
+          [
+            960,
+            192
+          ]
+        ]
+      }
+    },
+    {
+      "id": "hb.OUT->window_motor.A#1",
+      "source": "hb",
+      "sourceHandle": "OUT",
+      "target": "window_motor",
+      "targetHandle": "A",
+      "type": "step",
+      "label": "Window up/down",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "className": "sa-edge sa-group-supply sa-kind-power",
+      "data": {
+        "kind": "power",
+        "direction": "forward",
+        "points": [
+          [
+            1120,
+            192
+          ],
+          [
+            1264,
+            192
+          ],
+          [
+            1264,
+            224
+          ],
+          [
+            1280,
+            224
+          ]
+        ]
+      }
+    }
+  ],
+  "viewport": {
+    "x": 0,
+    "y": 0,
+    "zoom": 1
+  }
+}

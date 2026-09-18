@@ -16,12 +16,23 @@ describe("classify", () => {
   });
 });
 
+describe("classify: external", () => {
+  it("highlights `external` like `component` and marks the declared id", () => {
+    const source = `architecture "A" {\n    external m: motor\n}`;
+    const classes = classify(source).map((r) => `${source.slice(r.start, r.end)}:${r.class}`);
+    expect(classes).toContain("external:keyword");
+    expect(classes).toContain("m:definition");
+    expect(classes).toContain("motor:template");
+  });
+});
+
 describe("Autocomplete", () => {
   const source = [
     `define local_part { label "L" }`,
     `architecture "A" {`,
     `    component trx: can_transceiver`,
     `    component mcu: `,
+    `    external x1: `,
     `    component x { pin  }`,
     `    trx.`,
     `    trx -> mcu { type e }`,
@@ -40,6 +51,10 @@ describe("Autocomplete", () => {
     const names = labels(at("component mcu: "));
     expect(names).toContain("microcontroller");
     expect(names).toContain("local_part");
+  });
+
+  it("template names after `:` on an `external` declaration", () => {
+    expect(labels(at("external x1: "))).toContain("connector");
   });
 
   it("pin names after `component.`", () => {

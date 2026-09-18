@@ -94,13 +94,13 @@ function shape(s: SceneShape): string {
   const front = stackFront(s, layers * offset);
   const cards: string[] = [];
   for (let k = layers; k >= 0; k--) {
-    cards.push(outline({ ...front, x: front.x + k * offset, y: front.y - k * offset, shape: s.shape, radius: s.radius, fill: s.fill, stroke: s.stroke, strokeWidth: s.strokeWidth, type: "shape" }));
+    cards.push(outline({ ...front, x: front.x + k * offset, y: front.y - k * offset, shape: s.shape, radius: s.radius, fill: s.fill, stroke: s.stroke, strokeWidth: s.strokeWidth, ...(s.dash && { dash: s.dash }), type: "shape" }));
   }
   return `<g${common(s)}>${cards.join("")}</g>`;
 }
 
 function outline(s: SceneShape): string {
-  const paint = ` fill="${s.fill}" stroke="${s.stroke}" stroke-width="${num(s.strokeWidth)}"`;
+  const paint = ` fill="${s.fill}" stroke="${s.stroke}" stroke-width="${num(s.strokeWidth)}"${dash(s.dash)}`;
   const { x, y, width, height } = s;
   switch (s.shape) {
     case "rounded":

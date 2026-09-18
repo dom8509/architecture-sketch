@@ -48,6 +48,11 @@ export interface View {
 
 export interface Component {
   id: ComponentId;
+  /**
+   * Declared with `external`: part of the context, not of the described system. Drawn with a
+   * dashed contour; rules never expect a complete set of interfaces on it.
+   */
+  external: boolean;
   /** "block" if none is given. */
   template: string;
   shape: Shape;
@@ -259,6 +264,7 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
 
     const component: Component = {
       id: node.id.name,
+      external: node.external === true,
       template: template.name,
       shape: template.shape ?? "rounded",
       ...(template.icon && { icon: template.icon }),
@@ -503,7 +509,8 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
         pin.side = model.direction === "LR" ? (towardsEnd ? "right" : "left") : (towardsEnd ? "bottom" : "top");
       }
       // With `pins connected|none` unconnected pins are not drawn — no hint needed.
-      if (!connected.has(pinAddress) && model.pins === "all") {
+      // External components are never fully specified: a loose pin is the normal case there.
+      if (!connected.has(pinAddress) && model.pins === "all" && !component.external) {
         diagnostics.push(diagnostic("I301", `Pin \`${pinAddress}\` is not connected`, pin.origin));
       }
     }

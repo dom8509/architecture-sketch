@@ -92,6 +92,17 @@ describe("format", () => {
     expect(semantics(fmt(source))).toEqual(semantics(source));
   });
 
+  it("keeps the `external` keyword and sorts it with the components", () => {
+    const source = arch(["external  m:motor{label \"Motor\"}", "component a", "a -> m"].join("\n"));
+    expect(fmt(source)).toBe(arch([
+      '    external m: motor { label "Motor" }',
+      "    component a",
+      "",
+      "    a -> m",
+    ].join("\n")));
+    expect(semantics(fmt(source))).toEqual(semantics(source));
+  });
+
   it("writes count like hint, on its own as a single line", () => {
     expect(fmt(arch("component a {\n count   3\n}"))).toBe(arch("    component a { count 3 }"));
     expect(fmt(arch("component a { label \"A\" count 3 }"))).toBe(arch("    component a {\n        label \"A\"\n        count 3\n    }"));

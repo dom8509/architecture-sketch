@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { compile, parse, type ComponentNode, type ConnectionNode, type GridNode, type LayoutStmt } from "../src/index.js";
+import { compile, parse, type ComponentNode, type ConnectionNode, type GridNode, type LayoutStmt, type SystemNode, type ZoneNode } from "../src/index.js";
 
 const examplesDir = join(import.meta.dirname, "..", "..", "..", "examples");
 const examples = readdirSync(examplesDir).filter((f) => f.endsWith(".arch")).sort();
@@ -37,6 +37,17 @@ describe("parse", () => {
     const { value, diagnostics } = parse('architecture "A" {\n component power: block\n component theme\n power -> theme\n theme.X -- power\n}');
     expect(diagnostics).toEqual([]);
     expect(value.architecture!.body.map((s) => s.kind)).toEqual(["Component", "Component", "Connection", "Connection"]);
+  });
+
+  it("reads `external` as a component with the external flag", () => {
+    const source = 'architecture "A" {\n zone z { external x1: connector\n system s { external m: motor } }\n component a\n}';
+    const { value, diagnostics } = parse(source);
+    expect(diagnostics).toEqual([]);
+    const zone = value.architecture!.body[0] as ZoneNode;
+    expect(zone.body.map((s) => (s as ComponentNode).external)).toEqual([true, undefined]);
+    const system = zone.body[1] as SystemNode;
+    expect(system.body[0]).toMatchObject({ kind: "Component", id: { name: "m" }, external: true });
+    expect((value.architecture!.body[1] as ComponentNode).external).toBeUndefined();
   });
 
   it("splits grid rows at line breaks", () => {

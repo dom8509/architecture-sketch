@@ -38,7 +38,7 @@ function outline(shape: ComponentData["shape"], w: number, h: number): string {
 
 export function SysarchNode({ data, width = 0, height = 0 }: NodeProps<Node<ComponentData & Record<string, unknown>>>) {
   return (
-    <div className={`sa-node sa-cat-${data.category} sa-importance-${data.importance}`} style={{ width, height }}>
+    <div className={`sa-node sa-cat-${data.category} sa-importance-${data.importance}${data.external ? " sa-external" : ""}`} style={{ width, height }}>
       <svg className="sa-node-shape" width={width} height={height}>
         <path d={outline(data.shape, width, height)} />
       </svg>

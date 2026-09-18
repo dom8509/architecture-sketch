@@ -28,6 +28,17 @@ describe("renderSvg", () => {
     expect(svg).toContain(">×3<");
   });
 
+  it("draws external components with a dashed contour, in every theme", () => {
+    const source = `architecture "A" { component a: microcontroller\n external m: motor }`;
+    for (const name of ["automotive-light", "automotive-dark", "presentation", "technical"]) {
+      const theme = getTheme(name);
+      const svg = renderSvg(layout(compile(source).value, theme));
+      const dash = theme.component.externalDash.join(" ");
+      expect(svg, name).toMatch(new RegExp(`class="sa-component[^"]*sa-external" data-ref="component:m"[^>]*stroke-dasharray="${dash}"`));
+      expect(svg, name).not.toMatch(/data-ref="component:a"[^>]*stroke-dasharray/);
+    }
+  });
+
   it("is deterministic", () => {
     expect(renderSvg(scene())).toBe(renderSvg(scene()));
   });

@@ -21,11 +21,6 @@ define heater extends load {
     icon heater
 }
 
-define valve extends actuator {
-    label "Valve"
-    icon valve
-}
-
 define window_motor extends motor {
     label "Window Motor"
     icon window

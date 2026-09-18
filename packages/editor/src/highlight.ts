@@ -6,7 +6,7 @@ import {
 } from "@sysarch/core";
 
 const KEYWORDS = new Set([
-  "architecture", "theme", "direction", "pins", "stack", "view", "show", "in", "layout", "mode", "grid", "zone", "system", "component",
+  "architecture", "theme", "direction", "pins", "stack", "view", "show", "in", "layout", "mode", "grid", "zone", "system", "component", "external",
   "label", "size", "importance", "category", "pin", ...SIDES, "hint", "count", "row", "column", "meta",
   "define", "extends", "shape", "icon", "type",
 ]);
@@ -15,7 +15,7 @@ const VALUE_KEYWORDS = new Set(["theme", "direction", "pins", "stack", "mode", "
 const VALUES = new Set<string>([
   ...SIGNAL_KINDS, ...SIZES, ...IMPORTANCES, ...DIRECTIONS, ...PIN_DISPLAYS, ...STACK_MODES, ...LAYOUT_MODES, ...SHAPES, ...CATEGORIES, ...THEMES, "none",
 ]);
-const DECLARING = new Set(["component", "zone", "system", "define", "view"]);
+const DECLARING = new Set(["component", "external", "zone", "system", "define", "view"]);
 
 export type TokenClass =
   | "keyword" | "value" | "definition" | "template" | "pin" | "string" | "number"
