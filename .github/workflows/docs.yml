@@ -1,7 +1,7 @@
-name: Dokumentation
+name: Documentation
 
-# Baut Dokumentation und Web-App bei jedem Push auf main neu und veröffentlicht beides auf
-# GitHub Pages: https://dom8509.github.io/sysarch/ (Web-App unter /app/).
+# Rebuilds the documentation and the web app on every push to main and publishes both to
+# GitHub Pages: https://dom8509.github.io/sysarch/ (web app under /app/).
 on:
   push:
     branches: [main]
@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # „Zuletzt geändert“ aus der Git-Historie
+          fetch-depth: 0 # "Last updated" comes from the git history
       - uses: actions/setup-node@v4
         with:
           node-version: 22

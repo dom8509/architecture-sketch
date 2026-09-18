@@ -1,15 +1,15 @@
 import { rankEnd, type LEdge, type LNode } from "./graph.js";
 
 /**
- * Phase 1 + 2: Ränge je Zone (nur zoneninterne Kanten), Zonen hintereinander gereiht.
+ * Phases 1 + 2: ranks per zone (zone-internal edges only), zones chained one after another.
  *
- * - Zyklen werden per Tiefensuche in Deklarationsreihenfolge gebrochen; Rückwärtskanten
- *   zählen umgedreht und werden als Rückführung markiert.
- * - Rang = längster Pfad; Quellen rücken an ihren nächsten Nachfolger heran.
- * - Komponenten ganz ohne Verbindung bekommen einen eigenen Rang am Ende ihrer Zone,
- *   damit sie keine bestehende Position verschieben.
- * - Feste Spalten aus `grid`/`hint` sind globale Ränge; die übrigen Knoten ordnen sich darum.
- * - Ein Knoten über mehrere Spalten belegt die Ränge `rank … rank + mainSpan − 1`.
+ * - Cycles are broken by depth-first search in declaration order; back edges count reversed
+ *   and are marked as feedback.
+ * - Rank = longest path; sources move up to their nearest successor.
+ * - Components without any connection get a rank of their own at the end of their zone so
+ *   they do not shift any existing position.
+ * - Fixed columns from `grid`/`hint` are global ranks; the remaining nodes arrange around them.
+ * - A node spanning several columns occupies the ranks `rank … rank + mainSpan − 1`.
  */
 export function assignRanks(nodes: readonly LNode[], edges: readonly LEdge[], zoneCount: number): void {
   const connected = new Set<LNode>();
@@ -25,12 +25,12 @@ export function assignRanks(nodes: readonly LNode[], edges: readonly LEdge[], zo
     if (members.length === 0) continue;
     const internal = edges.filter((e) => e.source.zone === zone && e.target.zone === zone && e.source !== e.target);
 
-    // ── Zyklen brechen ───────────────────────────────────────
+    // ── Break cycles ─────────────────────────────────────────
     const outgoing = new Map<LNode, LEdge[]>(members.map((n) => [n, []]));
     for (const e of internal) outgoing.get(e.source)!.push(e);
     const state = new Map<LNode, "active" | "done">();
     const visit = (start: LNode) => {
-      // Iterativ, damit tiefe Ketten den Stack nicht sprengen.
+      // Iterative so that deep chains do not blow the stack.
       const stack: { node: LNode; next: number }[] = [{ node: start, next: 0 }];
       state.set(start, "active");
       while (stack.length) {
@@ -61,7 +61,7 @@ export function assignRanks(nodes: readonly LNode[], edges: readonly LEdge[], zo
       succs.get(from)!.push(to);
     }
 
-    // Topologische Reihenfolge, Gleichstand nach Deklaration.
+    // Topological order, ties by declaration order.
     const indegree = new Map<LNode, number>(members.map((n) => [n, preds.get(n)!.length]));
     const ready = members.filter((n) => indegree.get(n) === 0);
     const topo: LNode[] = [];
@@ -88,7 +88,7 @@ export function assignRanks(nodes: readonly LNode[], edges: readonly LEdge[], zo
       local.set(n, rank);
     }
 
-    // Kompaktierung: Quellen rücken an ihren nächsten Nachfolger.
+    // Compaction: sources move up to their nearest successor.
     for (const n of [...topo].reverse()) {
       if (preds.get(n)!.length > 0 || succs.get(n)!.length === 0 || fixedLocal(n) !== undefined) continue;
       const nearest = Math.min(...succs.get(n)!.map((s) => local.get(s)!));

@@ -6,13 +6,13 @@ export interface Size2 {
   height: number;
 }
 
-/** Geometrie einer Form — gemeinsam genutzt von Layout und Renderer. */
+/** Geometry of a shape — shared by layout and renderer. */
 export interface ShapeGeometry {
-  /** Innenbereich für Icon + Label, relativ zur Hülle. */
+  /** Inner area for icon + label, relative to the hull. */
   inner(hull: Rect): Rect;
-  /** Kleinste Hülle, deren Innenbereich `content` aufnimmt. */
+  /** Smallest hull whose inner area holds `content`. */
   hullFor(content: Size2): Size2;
-  /** Punkt auf der Kontur für einen Pin an Seite `side` und Querkoordinate `t` (absolut). */
+  /** Point on the contour for a pin on side `side` at cross coordinate `t` (absolute). */
   contour(hull: Rect, side: Side, t: number): Point;
 }
 
@@ -25,7 +25,7 @@ const inset = (r: Rect, dx: number, dy: number): Rect => ({
   x: r.x + dx, y: r.y + dy, width: Math.max(0, r.width - 2 * dx), height: Math.max(0, r.height - 2 * dy),
 });
 
-/** Punkt auf dem Hüllrechteck. */
+/** Point on the hull rectangle. */
 function edge(hull: Rect, side: Side, t: number): Point {
   switch (side) {
     case "left": return { x: hull.x, y: t };
@@ -77,7 +77,7 @@ function circle(p: ShapeParams): ShapeGeometry {
   };
 }
 
-/** Spitzen links/rechts, Spitzentiefe = ¼ Höhe. */
+/** Tips on the left and right, tip depth = ¼ of the height. */
 function hexagon(p: ShapeParams): ShapeGeometry {
   return {
     inner: (hull) => {
@@ -98,7 +98,7 @@ function hexagon(p: ShapeParams): ShapeGeometry {
   };
 }
 
-/** Ellipsenhöhe = 1 Grid-Einheit. */
+/** Ellipse height = 1 grid unit. */
 function cylinder(p: ShapeParams): ShapeGeometry {
   const ry = p.grid / 2;
   return {
@@ -122,15 +122,15 @@ function cylinder(p: ShapeParams): ShapeGeometry {
   };
 }
 
-/** Vordere Karte eines Stapels: unten links in der Hülle, `depth` kleiner. */
+/** Front card of a stack: bottom left inside the hull, smaller by `depth`. */
 export function stackFront(hull: Rect, depth: number): Rect {
   return { x: hull.x, y: hull.y + depth, width: hull.width - depth, height: hull.height - depth };
 }
 
 /**
- * Gestapelte Mehrfachelemente (`count`): Die hinteren Karten liegen nach oben rechts versetzt
- * innerhalb der Hülle. Innenbereich und Kontur gehören zur vorderen Karte; Pins oben und
- * rechts erhalten wie bei Kreisen einen Stummel bis zur Hülle.
+ * Stacked multiple elements (`count`): the cards behind sit offset towards the upper right
+ * inside the hull. Inner area and contour belong to the front card; pins on the top and on
+ * the right get a stub up to the hull, as with circles.
  */
 export function stackedGeometry(base: ShapeGeometry, depth: number): ShapeGeometry {
   return {

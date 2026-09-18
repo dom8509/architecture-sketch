@@ -1,13 +1,13 @@
 import { BaseEdge, Handle, Position, type Edge, type EdgeProps, type Node, type NodeProps } from "@xyflow/react";
 import type { ComponentData, ConnectionEdge, PinData } from "@sysarch/export-reactflow";
 
-// Custom Node und Custom Edge, wie eine Zielanwendung sie schreiben würde: nur aus dem
-// exportierten JSON, ohne Zugriff auf die sysarch-Bibliothek.
+// Custom node and custom edge as a consuming application would write them: purely from the
+// exported JSON, without access to the sysarch library.
 
 const POSITIONS = { left: Position.Left, right: Position.Right, top: Position.Top, bottom: Position.Bottom } as const;
 type Side = keyof typeof POSITIONS;
 
-/** Jeder Anschluss ist Quelle und Ziel zugleich — die Richtung steht in der Kante. */
+/** Every port is source and target at once — the direction lives on the edge. */
 function Port({ id, side, offset, className }: { id: string; side: Side; offset?: number; className: string }) {
   const along = offset === undefined ? "50%" : offset;
   const style = side === "left" || side === "right" ? { top: along } : { left: along };
@@ -69,7 +69,7 @@ export function SysarchNode({ data, width = 0, height = 0 }: NodeProps<Node<Comp
 
 type EdgeData = ConnectionEdge["data"] & Record<string, unknown>;
 
-/** Übernimmt die geroutete Geometrie aus `data.points`, statt selbst zu routen. */
+/** Takes the routed geometry from `data.points` instead of routing itself. */
 export function SysarchEdge({ id, data, label, markerStart, markerEnd, style }: EdgeProps<Edge<EdgeData>>) {
   const points = data?.points ?? [];
   const path = points.map(([x, y], i) => `${i ? "L" : "M"}${x} ${y}`).join("");

@@ -8,9 +8,9 @@ import { isDark } from "./workbench.js";
 
 let instances = 0;
 
-/** Ein ```sysarch-Codeblock: inline SVG, Diagnosen darunter, Kontextmenü mit Exporten. */
+/** A ```sysarch code block: inline SVG, diagnostics below it, context menu with exports. */
 export class SysarchBlock extends MarkdownRenderChild {
-  private readonly prefix = `sab${++instances}`; // eigener Präfix neben `Preview` (sa1, sa2, …)
+  private readonly prefix = `sab${++instances}`; // own prefix alongside `Preview` (sa1, sa2, …)
   private theme: string | undefined;
   private rendered = false;
   private diagram: Diagram | undefined;
@@ -35,7 +35,7 @@ export class SysarchBlock extends MarkdownRenderChild {
     this.plugin.blocks.delete(this);
   }
 
-  /** Rendert neu, sobald sich das Theme ändert; `force` nach geänderten Einstellungen. */
+  /** Re-renders as soon as the theme changes; `force` after the settings changed. */
   render(force = false) {
     const theme = effectiveTheme(this.source, this.plugin.settings.theme, isDark());
     if (this.rendered && !force && theme === this.theme) return;
@@ -49,13 +49,13 @@ export class SysarchBlock extends MarkdownRenderChild {
     el.addClass("sysarch-block");
     if (svg !== undefined) el.createDiv({ cls: "sysarch-diagram" }).innerHTML = scopeSvg(svg, this.prefix);
 
-    // Hinweise (I…) wie in der CLI nicht ungefragt
+    // infos (I…) are not shown unasked, as in the CLI
     const shown = diagnostics.filter((d) => d.severity !== "info");
     if (shown.length === 0) return;
     const list = el.createEl("ul", { cls: "sysarch-diagnostics" });
     for (const d of shown) {
       const item = list.createEl("li", { cls: `sa-diagnostic sa-${d.severity}` });
-      const button = item.createEl("button", { attr: { type: "button", title: "Zur Stelle im Codeblock" } });
+      const button = item.createEl("button", { attr: { type: "button", title: "Go to the position in the code block" } });
       button.createSpan({ cls: "sa-diagnostic-position", text: `${d.span.line}:${d.span.column}` });
       button.createSpan({ cls: "sa-diagnostic-code", text: d.code });
       button.createSpan({ text: d.message });
@@ -66,19 +66,19 @@ export class SysarchBlock extends MarkdownRenderChild {
   private menu(event: MouseEvent) {
     event.preventDefault();
     const menu = new Menu();
-    menu.addItem((item) => item.setTitle("Quelle bearbeiten").setIcon("code").onClick(() => this.reveal(1, 0)));
-    menu.addItem((item) => item.setTitle("Im Editor öffnen").setIcon("pencil").onClick(() => this.openEditor()));
+    menu.addItem((item) => item.setTitle("Edit source").setIcon("code").onClick(() => this.reveal(1, 0)));
+    menu.addItem((item) => item.setTitle("Open in editor").setIcon("pencil").onClick(() => this.openEditor()));
     menu.addSeparator();
     addExportItems(menu, this.plugin, () => this.diagram);
     menu.showAtMouseEvent(event);
   }
 
-  /** Springt in die Notiz an eine Zeile des Codeblocks (1 = erste Zeile nach dem Zaun). */
+  /** Jumps to a line of the code block inside the note (1 = first line after the fence). */
   private async reveal(line: number, ch: number) {
     const info = this.ctx.getSectionInfo(this.containerEl);
     const leaf = this.plugin.app.workspace.getLeavesOfType("markdown")
       .find((l) => l.view instanceof MarkdownView && l.view.file?.path === this.ctx.sourcePath);
-    if (!info || !leaf) return void new Notice("sysarch: Codeblock nicht gefunden");
+    if (!info || !leaf) return void new Notice("sysarch: code block not found");
     const state = leaf.getViewState();
     if (state.state?.mode === "preview") {
       await leaf.setViewState({ ...state, state: { ...state.state, mode: "source" } });
@@ -105,7 +105,7 @@ export class SysarchBlock extends MarkdownRenderChild {
       }
       if (!written) {
         await navigator.clipboard.writeText(source);
-        new Notice("sysarch: Der Codeblock hat sich inzwischen geändert — die Quelle liegt in der Zwischenablage", 8000);
+        new Notice("sysarch: the code block has changed in the meantime — the source is on the clipboard", 8000);
       }
     }).open();
   }

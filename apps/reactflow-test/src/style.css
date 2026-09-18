@@ -6,7 +6,7 @@ header { display: flex; gap: 12px; align-items: center; padding: 8px 12px; borde
 #status[data-ok="false"] { color: #b91c1c; }
 .error { font-family: monospace; }
 
-/* Kategorien wie automotive-light */
+/* categories as in automotive-light */
 .sa-node { --fill: #fff; --border: #8a94a6; --text: #1f2937; position: relative; color: var(--text); }
 .sa-cat-power { --fill: #fff4d6; --border: #d69e00; --text: #3d2e00; }
 .sa-cat-controller { --fill: #eaf2ff; --border: #316bd6; --text: #0f2a5c; }

@@ -16,7 +16,7 @@ const examples: Record<string, string> = Object.fromEntries(
     .sort(([a], [b]) => a.localeCompare(b)),
 );
 
-const NEW_SOURCE = `architecture "Neue Architektur" {
+const NEW_SOURCE = `architecture "New architecture" {
     theme automotive-light
     direction LR
 
@@ -29,7 +29,7 @@ const NEW_SOURCE = `architecture "Neue Architektur" {
 }
 `;
 
-// ── Meldungen ──────────────────────────────────────────────────
+// ── messages ───────────────────────────────────────────────────
 
 let toastTimer: ReturnType<typeof setTimeout> | undefined;
 function toast(message: string) {
@@ -40,17 +40,17 @@ function toast(message: string) {
   toastTimer = setTimeout(() => element.classList.remove("visible"), 2500);
 }
 
-let fileName = "architektur.arch";
+let fileName = "architecture.arch";
 let fileHandle: FileHandle | undefined;
 
 async function initialSource(): Promise<string> {
   const encoded = sourceFromHash(location.hash);
   if (encoded) {
     try {
-      fileName = "geteilt.arch";
+      fileName = "shared.arch";
       return await decodeSource(encoded);
     } catch {
-      toast("Der Link enthält keine lesbare Quelle");
+      toast("The link does not contain a readable source");
     }
   }
   const draft = localStorage.getItem(DRAFT_KEY);
@@ -68,7 +68,7 @@ const editor = new SysarchEditor({
 if (location.hash) history.replaceState(null, "", location.pathname + location.search);
 setFileName(fileName);
 
-// Entwurf automatisch sichern
+// save the draft automatically
 let draftTimer: ReturnType<typeof setTimeout> | undefined;
 editor.onUpdate(({ source }) => {
   clearTimeout(draftTimer);
@@ -76,7 +76,7 @@ editor.onUpdate(({ source }) => {
   document.title = `${editor.current.model.title || "sysarch"} — sysarch`;
 });
 
-// ── Datei ──────────────────────────────────────────────────────
+// ── file ───────────────────────────────────────────────────────
 
 function setFileName(name: string) {
   fileName = name;
@@ -90,7 +90,7 @@ function load(name: string, source: string, handle?: FileHandle) {
   editor.preview.fit();
 }
 
-$("new").addEventListener("click", () => load("architektur.arch", NEW_SOURCE));
+$("new").addEventListener("click", () => load("architecture.arch", NEW_SOURCE));
 
 async function open() {
   const file = await openFile($("file-input"));
@@ -105,7 +105,7 @@ async function save() {
     fileHandle = handle;
     setFileName(handle.name);
   }
-  toast(`Gespeichert: ${fileName}`);
+  toast(`Saved: ${fileName}`);
 }
 $("save").addEventListener("click", save);
 
@@ -127,15 +127,15 @@ const exportName = (extension: string) => fileName.replace(/\.[^.]*$/, "") + ext
 
 $("export-svg").addEventListener("click", () => {
   const svg = editor.svg;
-  if (svg === undefined) return toast("Kein gültiges Diagramm zum Exportieren");
+  if (svg === undefined) return toast("No valid diagram to export");
   download(exportName(".svg"), svg, "image/svg+xml");
 });
 
 $("copy-svg").addEventListener("click", async () => {
   const svg = editor.svg;
-  if (svg === undefined) return toast("Kein gültiges Diagramm zum Kopieren");
+  if (svg === undefined) return toast("No valid diagram to copy");
   await navigator.clipboard.writeText(svg);
-  toast("SVG in die Zwischenablage kopiert");
+  toast("SVG copied to the clipboard");
 });
 
 const scaleSelect = $<HTMLSelectElement>("png-scale");
@@ -143,18 +143,18 @@ for (const scale of PNG_SCALES) scaleSelect.add(new Option(`${scale}×`, String(
 
 $("export-png").addEventListener("click", async () => {
   const svg = editor.svg;
-  if (svg === undefined) return toast("Kein gültiges Diagramm zum Exportieren");
+  if (svg === undefined) return toast("No valid diagram to export");
   try {
     const png = await svgToPng(svg, Number(scaleSelect.value) as PngScale);
     download(exportName(".png"), png, "image/png");
   } catch {
-    toast("PNG konnte nicht erzeugt werden");
+    toast("PNG could not be created");
   }
 });
 
 $("export-reactflow").addEventListener("click", () => {
   const { model, svg } = editor.current;
-  if (svg === undefined) return toast("Die Quelle enthält Fehler — React Flow braucht ein gültiges Modell");
+  if (svg === undefined) return toast("The source contains errors — React Flow needs a valid model");
   const flow = toReactFlow(model, architectureScene(model, themeSelect.value || undefined));
   download(exportName(".reactflow.json"), JSON.stringify(flow, null, 2) + "\n", "application/json");
 });
@@ -162,10 +162,10 @@ $("export-reactflow").addEventListener("click", () => {
 $("share").addEventListener("click", async () => {
   const url = `${location.origin}${location.pathname}#src=${await encodeSource(editor.source)}`;
   await navigator.clipboard.writeText(url);
-  toast(url.length > 8000 ? "Link kopiert — er ist sehr lang und passt nicht überall" : "Link kopiert");
+  toast(url.length > 8000 ? "Link copied — it is very long and will not fit everywhere" : "Link copied");
 });
 
-// ── Präsentation ───────────────────────────────────────────────
+// ── presentation ───────────────────────────────────────────────
 
 async function present(on: boolean) {
   document.body.classList.toggle("presenting", on);
@@ -180,7 +180,7 @@ document.addEventListener("fullscreenchange", () => {
 });
 $("fit").addEventListener("click", () => editor.preview.fit());
 
-// ── Tastatur & Splitter ────────────────────────────────────────
+// ── keyboard & splitter ────────────────────────────────────────
 
 document.addEventListener("keydown", (e) => {
   const mod = e.metaKey || e.ctrlKey;

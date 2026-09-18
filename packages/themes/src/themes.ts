@@ -10,9 +10,9 @@ export interface TextStyle {
 export interface LineStyle {
   width: number;
   color: string;
-  /** Gestrichelt. */
+  /** Dashed. */
   dash?: number[];
-  /** Doppellinie für Busse: `width` ist die Gesamtbreite, innen bleibt ein Drittel frei. */
+  /** Double line for buses: `width` is the total width, the inner third stays blank. */
   double?: boolean;
   endMarker: "arrow" | "ground" | "none";
 }
@@ -23,23 +23,23 @@ export interface CategoryColors {
   text: string;
 }
 
-/** Design-Tokens. Nur Themes kennen Pixel und Farben (D3, D20). */
+/** Design tokens. Only themes know about pixels and colors (D3, D20). */
 export interface Theme {
   name: string;
   canvas: { background: string; padding: number };
   typography: {
-    /** Muss in den Font-Metriken vorhanden sein. */
+    /** Must be present in the font metrics. */
     fontFamily: string;
     title: TextStyle;
     component: TextStyle;
     componentPrimary: TextStyle;
-    /** Farbe wird durch die Textfarbe der Kategorie ersetzt. */
+    /** The color is replaced by the category's text color. */
     pin: TextStyle;
     connection: TextStyle;
     group: TextStyle;
   };
   spacing: {
-    /** Alle Koordinaten von Komponenten, Pins und Pfaden sind Vielfache davon. */
+    /** All component, pin and path coordinates are multiples of this. */
     grid: number;
     nodeGapMain: number;
     nodeGapCross: number;
@@ -58,11 +58,11 @@ export interface Theme {
   icon: {
     size: Record<Size, number>;
     gap: number;
-    /** Strichstärke im 24×24-Raster des Icons. */
+    /** Stroke width in the icon's 24x24 grid. */
     strokeWidth: number;
   };
   lines: Record<SignalGroup, LineStyle>;
-  /** Kantenlängen der Marker in px; `hop` = Radius der Brücke, mit der eine Leitung eine andere überspringt. */
+  /** Marker edge lengths in px; `hop` = radius of the bridge with which one line jumps over another. */
   markers: { arrow: number; ground: number; pin: number; hop: number };
   zone: { fill: string; border: string };
   system: { border: string; width: number; radius: number; dash?: number[] };
@@ -181,7 +181,7 @@ const INK = "#000000";
 const PAPER = "#FFFFFF";
 const mono: CategoryColors = { fill: PAPER, border: INK, text: INK };
 
-/** Schwarz-weiß: Signalgruppen unterscheiden sich nur über Stärke, Muster und Marker. */
+/** Black and white: signal groups differ only by width, dash pattern and markers. */
 const technical: Theme = {
   ...automotiveLight,
   name: "technical",
@@ -216,7 +216,7 @@ export const themes: Readonly<Record<string, Theme>> = {
   technical,
 };
 
-/** Theme nach Name; unbekannte Namen fallen auf `automotive-light` zurück (E109 meldet der Resolver). */
+/** Theme by name; unknown names fall back to `automotive-light` (the resolver reports E109). */
 export function getTheme(name: string): Theme {
   return themes[name] ?? automotiveLight;
 }

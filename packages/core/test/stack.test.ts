@@ -10,12 +10,12 @@ const stacked = (body: string) => {
 const summary = (m: ReturnType<typeof stacked>) => [...m.components.values()].map((c) => `${c.id}:${c.label}×${c.count}`);
 
 describe("stack identical", () => {
-  it("ändert ohne `stack identical` nichts", () => {
+  it("changes nothing without `stack identical`", () => {
     const { value } = compile(arch(" component a1: half_bridge { label \"HB 1\" }\n component a2: half_bridge { label \"HB 2\" }"));
     expect(stackIdentical(value)).toBe(value);
   });
 
-  it("fasst gleich verschaltete Komponenten zusammen, auch über Ketten", () => {
+  it("merges identically wired components, including across chains", () => {
     const m = stacked(` stack identical
  component mcu: microcontroller
  component hb1: half_bridge { label "Half Bridge 1" }
@@ -35,7 +35,7 @@ describe("stack identical", () => {
       .toEqual(["mcu.->hb1.IN", "hb1.OUT->m1."]);
   });
 
-  it("lässt unterschiedlich verschaltete Komponenten getrennt", () => {
+  it("keeps differently wired components separate", () => {
     const m = stacked(` stack identical
  component mcu: microcontroller
  component s1: sensor { label "Sensor 1" }
@@ -47,17 +47,17 @@ describe("stack identical", () => {
     expect(summary(m)).toEqual(["mcu:MCU×1", "s1:Sensor×2", "s3:Sensor 3×1"]);
   });
 
-  it("fasst unterschiedlich benannte Bauteile nie zusammen", () => {
+  it("never merges parts with different names", () => {
     const m = stacked(` stack identical
  component mcu: microcontroller
- component temp: sensor { label "Temperatur" }
- component cur: sensor { label "Strom" }
+ component temp: sensor { label "Temperature" }
+ component cur: sensor { label "Current" }
  temp -> mcu
  cur -> mcu`);
-    expect(summary(m)).toEqual(["mcu:MCU×1", "temp:Temperatur×1", "cur:Strom×1"]);
+    expect(summary(m)).toEqual(["mcu:MCU×1", "temp:Temperature×1", "cur:Current×1"]);
   });
 
-  it("bleibt innerhalb von Systemen und entfernt Zusammengefasstes aus Gruppen und Grid", () => {
+  it("stays within systems and removes merged components from groups and grid", () => {
     const m = stacked(` stack identical
  layout { grid {
   a1 | a2 | b1
@@ -69,7 +69,7 @@ describe("stack identical", () => {
     expect(m.grid!.rows).toEqual([["a1", null, "b1"]]);
   });
 
-  it("summiert vorhandene Anzahlen", () => {
+  it("sums up existing counts", () => {
     const m = stacked(` stack identical
  component a1 { label "Load 1" count 2 }
  component a2 { label "Load 2" count 2 }`);
@@ -82,10 +82,10 @@ describe("labelStem", () => {
     ["Half Bridge 3", "Half Bridge"],
     ["HB1", "HB"],
     ["HB12", "HB"],
-    ["Strom B", "Strom"],
+    ["Current B", "Current"],
     ["Motor_4", "Motor"],
     ["S32K344", "S32K344"],
-    ["Temperatur", "Temperatur"],
+    ["Temperature", "Temperature"],
     ["7", "7"],
   ])("%s → %s", (label, stem) => {
     expect(labelStem(label)).toBe(stem);

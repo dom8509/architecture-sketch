@@ -7,29 +7,29 @@ const body = (scene: SceneGraph, id: string) =>
   scene.items.find((i): i is SceneShape => i.type === "shape" && i.ref === `component:${id}`)!;
 const path = (scene: SceneGraph, id: string) => {
   const item = scene.items.find((i) => i.type === "path" && i.ref === `connection:${id}`);
-  if (item?.type !== "path") throw new Error(`Verbindung ${id} fehlt`);
+  if (item?.type !== "path") throw new Error(`connection ${id} missing`);
   return item.points;
 };
 
-describe("Ränge und Flussrichtung", () => {
-  it("ordnet Quelle vor Ziel an (LR: links → rechts)", () => {
+describe("ranks and flow direction", () => {
+  it("places the source before the target (LR: left → right)", () => {
     const scene = render(`architecture "T" { component a  component b  component c  a -> b  b -> c }`);
     expect(body(scene, "a").x).toBeLessThan(body(scene, "b").x);
     expect(body(scene, "b").x).toBeLessThan(body(scene, "c").x);
   });
 
-  it("ordnet bei TB von oben nach unten an", () => {
+  it("orders top to bottom for TB", () => {
     const scene = render(`architecture "T" { direction TB  component a  component b  a -> b }`);
     expect(body(scene, "a").y).toBeLessThan(body(scene, "b").y);
     expect(body(scene, "a").x).toBe(body(scene, "b").x);
   });
 
-  it("führt eine gerade Verbindung ohne Knick, wenn die Pins ausgerichtet werden können", () => {
+  it("routes a connection straight without a bend when the pins can be aligned", () => {
     const scene = render(`architecture "T" { component a  component b  a -> b }`);
     expect(path(scene, "a->b#1")).toHaveLength(2);
   });
 
-  it("bricht Zyklen und führt die Rückführung unterhalb (LR)", () => {
+  it("breaks cycles and routes the feedback edge below (LR)", () => {
     const scene = render(`architecture "T" { component a  component b  a -> b  b -> a }`);
     expect(body(scene, "a").x).toBeLessThan(body(scene, "b").x);
     const back = path(scene, "b->a#1");
@@ -37,7 +37,7 @@ describe("Ränge und Flussrichtung", () => {
     expect(Math.max(...back.map((p) => p.y))).toBeGreaterThan(bottom);
   });
 
-  it("reiht Zonen in Deklarationsreihenfolge, auch gegen die Kantenrichtung", () => {
+  it("chains zones in declaration order, even against the edge direction", () => {
     const scene = render(`architecture "T" {
       zone first { component a }
       zone second { component b }
@@ -48,7 +48,7 @@ describe("Ränge und Flussrichtung", () => {
     expect(zones.map((z) => z.ref)).toEqual(["zone:first", "zone:second"]);
   });
 
-  it("hält Systemmitglieder im Rahmen zusammen", () => {
+  it("keeps system members together inside the frame", () => {
     const scene = render(`architecture "T" {
       component x
       system s { label "S" component a  component b }
@@ -56,7 +56,7 @@ describe("Ränge und Flussrichtung", () => {
       x -> a  x -> y  x -> b
     }`);
     const frame = scene.items.find((i) => i.type === "rect" && i.ref === "system:s");
-    if (frame?.type !== "rect") throw new Error("Rahmen fehlt");
+    if (frame?.type !== "rect") throw new Error("frame missing");
     for (const id of ["a", "b"]) {
       const s = body(scene, id);
       expect(s.y).toBeGreaterThan(frame.y);
@@ -69,7 +69,7 @@ describe("Ränge und Flussrichtung", () => {
 });
 
 describe("Overrides", () => {
-  it("setzt Spalten und Zeilen aus dem Grid", () => {
+  it("applies columns and rows from the grid", () => {
     const scene = render(`architecture "T" {
       layout { grid {
         b | a
@@ -82,7 +82,7 @@ describe("Overrides", () => {
     expect(body(scene, "b").y).toBeLessThan(body(scene, "c").y);
   });
 
-  it("streckt eine Komponente über mehrere Spalten; Nachbarn darüber und darunter docken gerade an", () => {
+  it("stretches a component across several columns; neighbors above and below attach straight", () => {
     const scene = render(`architecture "T" {
       layout { grid {
         .   | a   | b   | .
@@ -104,14 +104,14 @@ describe("Overrides", () => {
     expect(body(scene, "c").y).toBeGreaterThan(mcu.y + mcu.height);
     expect(body(scene, "sbc").x + body(scene, "sbc").width).toBeLessThan(mcu.x);
     expect(body(scene, "co").x).toBeGreaterThan(mcu.x + mcu.width);
-    // Verbindungen nach oben und unten ohne Knick.
+    // Connections upwards and downwards without a bend.
     for (const id of ["a", "b", "c", "d"]) {
       const path = scene.items.find((i) => i.type === "path" && i.ref?.startsWith("connection:") && i.ref.includes(id));
       expect(path?.type === "path" && path.points.length, id).toBe(2);
     }
   });
 
-  it("streckt eine Komponente über mehrere Zeilen", () => {
+  it("stretches a component across several rows", () => {
     const scene = render(`architecture "T" {
       layout { grid {
         a | mcu
@@ -125,7 +125,7 @@ describe("Overrides", () => {
     expect(mcu.y + mcu.height).toBe(body(scene, "c").y + body(scene, "c").height);
   });
 
-  it("hält feste Zeilen gegen die Pin-Ausrichtung", () => {
+  it("keeps fixed rows against the pin alignment", () => {
     const scene = render(`architecture "T" {
       layout { grid {
         .   | top
@@ -137,7 +137,7 @@ describe("Overrides", () => {
     expect(body(scene, "top").y + body(scene, "top").height).toBeLessThanOrEqual(body(scene, "src").y);
   });
 
-  it("count stapelt Karten innerhalb der Hülle und zeigt die Anzahl", () => {
+  it("count stacks cards inside the hull and shows the count", () => {
     const scene = render(`architecture "T" {
       component one: half_bridge
       component two: half_bridge { count 2 }
@@ -146,18 +146,18 @@ describe("Overrides", () => {
     const shape = (id: string) => scene.items.find((i) => i.type === "shape" && i.ref === `component:${id}`)!;
     const one = shape("one");
     expect(one.type === "shape" && one.stack).toBeUndefined();
-    // Stapeltiefe = halbe Grid-Einheit, höchstens zwei hintere Karten.
+    // Stack depth = half a grid unit, at most two cards behind.
     const grid = getTheme("automotive-light").spacing.grid;
     expect(shape("two")).toMatchObject({ stack: { layers: 1, offset: grid / 2 } });
     expect(shape("many")).toMatchObject({ stack: { layers: 2, offset: grid / 4 } });
     const count = scene.items.find((i) => i.type === "text" && i.className === "sa-label sa-component-count" && i.ref === "component:many");
     expect(count?.type === "text" && count.lines).toEqual(["×8"]);
-    // Pins rechts sitzen weiter auf der Hülle (mit Stummel über die hinteren Karten).
+    // Pins on the right still sit on the hull (with a stub across the cards behind).
     const out = scene.items.find((i) => i.type === "marker" && i.ref === "pin:many.OUT");
     expect(out?.type === "marker" && out.x).toBe(body(scene, "many").x + body(scene, "many").width);
   });
 
-  it("stack identical zeichnet gleich verschaltete Komponenten als einen Stapel", () => {
+  it("stack identical draws identically wired components as a single stack", () => {
     const scene = render(`architecture "T" {
       stack identical
       component mcu: microcontroller
@@ -175,7 +175,7 @@ describe("Overrides", () => {
     expect(count?.type === "text" && count.lines).toEqual(["×3"]);
   });
 
-  it("pins connected zeichnet nur verbundene Pins, pins none keine", () => {
+  it("pins connected draws only connected pins, pins none draws none", () => {
     const source = (mode: string) => `architecture "T" {
       pins ${mode}
       component psu: power_supply
@@ -189,12 +189,12 @@ describe("Overrides", () => {
     const none = render(source("none"));
     expect(pinRefs(none)).toEqual([]);
     expect(none.items.some((i) => i.type === "text" && i.className === "sa-label sa-pin-label")).toBe(false);
-    // Die Verbindung bleibt, jetzt als Körperanschluss.
+    // The connection remains, now as a body port.
     expect(none.items.filter((i) => i.type === "path" && i.ref?.startsWith("connection:"))).toHaveLength(1);
     expect(body(none, "psu").height).toBeLessThan(body(render(source("all")), "psu").height);
   });
 
-  it("wendet hint column in mode assisted an", () => {
+  it("applies hint column in mode assisted", () => {
     const scene = render(`architecture "T" {
       layout { mode assisted }
       component a { hint column 3 }
@@ -205,8 +205,8 @@ describe("Overrides", () => {
   });
 });
 
-describe("Szene", () => {
-  it("zeichnet in der Reihenfolge Zonen → Systeme → Verbindungen → Komponenten → Icons → Pins → Labels", () => {
+describe("scene", () => {
+  it("draws in the order zones → systems → connections → components → icons → pins → labels", () => {
     const scene = render(`architecture "T" {
       zone z { label "Z" system s { label "S" component mcu: microcontroller { pin can TX } component trx: can_transceiver } }
       mcu.TX -> trx.TXD { label "TX"  type can }
@@ -220,7 +220,7 @@ describe("Szene", () => {
     expect(scene.icons.map((i) => i.name)).toEqual(["can", "chip"]);
   });
 
-  it("markiert Masseverbindungen mit dem Masse-Symbol und bidirektionale mit zwei Pfeilen", () => {
+  it("marks ground connections with the ground symbol and bidirectional ones with two arrows", () => {
     const scene = render(`architecture "T" {
       component a { pin ground G  pin can C }
       component b { pin ground G  pin can C }
@@ -232,18 +232,18 @@ describe("Szene", () => {
     expect(markers.filter((m) => m.ref === "connection:a.C->b.C#1")).toHaveLength(2);
   });
 
-  it("setzt Pfeilspitzen vor den Pin-Marker, damit sie nicht verdeckt werden", () => {
+  it("puts arrow heads in front of the pin marker so they are not covered", () => {
     const scene = render(`architecture "T" { component a { pin digital O } component b { pin digital I } a.O -> b.I }`);
     const arrow = scene.items.find((i) => i.type === "marker" && i.shape === "arrow");
     const pin = scene.items.find((i) => i.type === "marker" && i.ref === "pin:b.I");
-    if (arrow?.type !== "marker" || pin?.type !== "marker") throw new Error("Marker fehlen");
+    if (arrow?.type !== "marker" || pin?.type !== "marker") throw new Error("markers missing");
     expect(arrow.angle).toBe(0);
     expect(arrow.x).toBeLessThanOrEqual(pin.x - pin.size / 2);
     expect(arrow.y).toBe(pin.y);
   });
 
-  it("überspringt kreuzende Leitungen mit einer Brücke auf dem waagerechten Segment", () => {
-    // Im Body Control Module kreuzen sich u. a. die CAN-Leitungen der MCU.
+  it("hops over crossing lines with an arc on the horizontal segment", () => {
+    // In the body control module the CAN lines of the MCU cross, among others.
     const scene = render(examples().find((e) => e.name === "body-control-module")!.source);
     const paths = scene.items.filter((i) => i.type === "path" && i.className?.startsWith("sa-connection"));
     const hops = paths.flatMap((p) => (p.type === "path" ? p.hops ?? [] : []));

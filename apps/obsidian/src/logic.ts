@@ -1,9 +1,9 @@
 import { CATEGORIES, parse, type Category, type Library, type TemplateDef } from "@sysarch/core";
 
-// Reine Funktionen des Plugins — ohne Obsidian-API, damit Vitest sie direkt prüfen kann.
+// The plugin's pure functions — no Obsidian API, so that Vitest can test them directly.
 
-/** Vorlage für neue Codeblöcke und `.arch`-Dateien; ohne `theme`, damit sie dem Obsidian-Modus folgt. */
-export const NEW_SOURCE = `architecture "Neue Architektur" {
+/** Template for new code blocks and `.arch` files; without `theme`, so that it follows the Obsidian mode. */
+export const NEW_SOURCE = `architecture "New architecture" {
     direction LR
 
     component battery: battery { label "KL30" }
@@ -15,12 +15,12 @@ export const NEW_SOURCE = `architecture "Neue Architektur" {
 }
 `;
 
-/** `auto` folgt dem Obsidian-Modus; sonst ein Name aus `THEMES`. */
+/** `auto` follows the Obsidian mode; otherwise a name from `THEMES`. */
 export type ThemeSetting = string;
 
 /**
- * Theme für die Darstellung: Ein `theme` in der Quelle hat Vorrang (dann `undefined`, der
- * Renderer nimmt das der Quelle), sonst die Einstellung, bei `auto` hell bzw. dunkel.
+ * Theme for rendering: a `theme` in the source wins (then `undefined`, and the renderer
+ * takes the one from the source), otherwise the setting, and for `auto` light or dark.
  */
 export function effectiveTheme(source: string, setting: ThemeSetting, dark: boolean): string | undefined {
   const architecture = parse(source).value.architecture;
@@ -29,20 +29,19 @@ export function effectiveTheme(source: string, setting: ThemeSetting, dark: bool
   return dark ? "automotive-dark" : "automotive-light";
 }
 
-/** Dateiname ohne Endung: Titel der Architektur als Slug, sonst der Name der Notiz. */
+/** File name without extension: the architecture title as a slug, otherwise the note name. */
 export function exportBaseName(title: string, noteName: string): string {
   const slug = title
     .normalize("NFC")
     .toLowerCase()
     .replace(/[^\p{L}\p{N}]+/gu, "-")
     .replace(/^-+|-+$/g, "");
-  return slug || noteName || "architektur";
+  return slug || noteName || "architecture";
 }
 
 /**
- * Ersetzt den Inhalt eines Codeblocks (Zeilen zwischen den Zäunen `lineStart` und `lineEnd`).
- * Gibt `undefined` zurück, wenn der Block inzwischen nicht mehr `expected` enthält — dann
- * wird nichts überschrieben.
+ * Replaces the content of a code block (the lines between the fences `lineStart` and `lineEnd`).
+ * Returns `undefined` if the block no longer contains `expected` — nothing is overwritten then.
  */
 export function replaceBlock(text: string, lineStart: number, lineEnd: number, expected: string, replacement: string): string | undefined {
   const eol = text.includes("\r\n") ? "\r\n" : "\n";
@@ -59,16 +58,16 @@ function trimEnd(text: string): string {
   return text.replace(/\n+$/, "");
 }
 
-/** Überschriften der Bibliotheksansicht, in der Reihenfolge von `CATEGORIES`. */
+/** Headings of the library view, in the order of `CATEGORIES`. */
 export const CATEGORY_TITLES: Record<Category, string> = {
-  power: "Versorgung",
-  controller: "Steuergeräte & Controller",
-  communication: "Kommunikation",
-  sensor: "Sensorik",
-  actuator: "Aktorik",
+  power: "Power supply",
+  controller: "ECUs & controllers",
+  communication: "Communication",
+  sensor: "Sensors",
+  actuator: "Actuators",
   software: "Software",
-  external: "Extern",
-  generic: "Generisch",
+  external: "External",
+  generic: "Generic",
 };
 
 export interface LibraryGroup {
@@ -78,8 +77,8 @@ export interface LibraryGroup {
 }
 
 /**
- * Templates nach Kategorie gruppiert und nach Namen sortiert; `query` filtert über Name, Label,
- * Icon und Pins (Groß-/Kleinschreibung egal). Leere Gruppen fallen weg.
+ * Templates grouped by category and sorted by name; `query` filters over name, label, icon and
+ * pins (case-insensitive). Empty groups are dropped.
  */
 export function libraryGroups(library: Library, query = ""): LibraryGroup[] {
   const needle = query.trim().toLowerCase();
@@ -97,12 +96,12 @@ export function libraryGroups(library: Library, query = ""): LibraryGroup[] {
     .filter((group) => group.templates.length > 0);
 }
 
-/** Minimale Architektur mit genau einer Komponente des Templates — für die Vorschau. */
+/** Minimal architecture with exactly one component of the template — for the preview. */
 export function templatePreviewSource(template: TemplateDef): string {
   return `architecture "${template.name}" {\n    component ${template.name}: ${template.name}\n}\n`;
 }
 
-/** Zeile zum Einfügen in eine Quelle. */
+/** The line to insert into a source. */
 export function componentSnippet(template: TemplateDef): string {
   return `component ${template.name}: ${template.name}`;
 }

@@ -1,4 +1,4 @@
-/** Öffnen/Speichern über die File System Access API, sonst Upload/Download. */
+/** Open/save via the File System Access API, otherwise upload/download. */
 
 interface FileHandle {
   name: string;
@@ -18,7 +18,7 @@ declare global {
   }
 }
 
-const TYPES = [{ description: "sysarch-Architektur", accept: { "text/plain": [".arch"] } }];
+const TYPES = [{ description: "sysarch architecture", accept: { "text/plain": [".arch"] } }];
 
 export interface OpenedFile {
   name: string;
@@ -51,7 +51,7 @@ export async function openFile(fallback: HTMLInputElement): Promise<OpenedFile |
   });
 }
 
-/** Schreibt in den Handle bzw. fragt nach einem Ziel; ohne API wird heruntergeladen. Liefert den (neuen) Handle. */
+/** Writes to the handle or asks for a target; without the API it downloads. Returns the (new) handle. */
 export async function saveFile(name: string, text: string, handle?: FileHandle): Promise<FileHandle | undefined | null> {
   try {
     if (!handle && window.showSaveFilePicker) handle = await window.showSaveFilePicker({ suggestedName: name, types: TYPES });

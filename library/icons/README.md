@@ -1,14 +1,15 @@
-# Icon-Bibliothek
+# Icon library
 
-Ein Icon pro Datei, Dateiname = Icon-Name (`motor.svg` → `icon motor`).
+One icon per file, file name = icon name (`motor.svg` → `icon motor`).
 
-Regeln (werden beim Build geprüft, Verstöße brechen den Build):
+Rules (checked at build time; violations break the build):
 
-- `viewBox="0 0 24 24"`, einfarbig, keine festen Farben
-- erlaubt: `path`, `circle`, `rect`, `line`, `polyline`, `polygon`, `g`
-- verboten: `image`, `text`, externe `use`-Referenzen, `style`, `script`, Filter, Verläufe, Masken
-- Strichstärke und Farbe setzt das Theme
+- `viewBox="0 0 24 24"`, single colour, no hard-coded colours
+- allowed: `path`, `circle`, `rect`, `line`, `polyline`, `polygon`, `g`
+- forbidden: `image`, `text`, external `use` references, `style`, `script`, filters,
+  gradients, masks
+- stroke width and colour are set by the theme
 
-Der mitgelieferte Satz ist in [05 Rendering & Export](../../docs/05-rendering-export.md#icons)
-aufgelistet. `npm run build:icons` prüft die Dateien und bettet sie zusammen mit
-`automotive.archlib` in `@sysarch/core` ein.
+The bundled set is listed in [05 Rendering & Export](../../docs/05-rendering-export.md#icons).
+`npm run build:icons` validates the files and embeds them, together with
+`automotive.archlib`, into `@sysarch/core`.

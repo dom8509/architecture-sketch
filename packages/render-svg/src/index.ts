@@ -9,7 +9,7 @@ import { base64, buildFontSubset } from "./font.js";
 export { buildFontSubset } from "./font.js";
 
 export interface RenderOptions {
-  /** Schrift-Subset per `@font-face` einbetten (Standard: ja). */
+  /** Embed the font subset via `@font-face` (default: yes). */
   embedFont?: boolean;
   glyphs?: FontGlyphs;
   metrics?: FontMetrics;
@@ -18,22 +18,22 @@ export interface RenderOptions {
 const FALLBACK_FONTS = "'Helvetica Neue', Arial, sans-serif";
 
 /**
- * Semantic Model → SceneGraph; `theme` überschreibt das Theme der Quelle. Gemeinsamer Schritt
- * aller Exporte (SVG, PNG, React Flow), damit sie dieselbe Geometrie zeigen.
+ * Semantic model → scene graph; `theme` overrides the theme of the source. Shared step of
+ * all exports (SVG, PNG, React Flow) so that they show the same geometry.
  */
 export function architectureScene(model: ArchitectureModel, theme?: string): SceneGraph {
   return layout(model, getTheme(theme ?? model.theme));
 }
 
 /**
- * Semantic Model → SVG über Layout und Renderer. Einziger Weg von CLI und Editor zum SVG —
- * deshalb sind beide Ausgaben byte-gleich.
+ * Semantic model → SVG via layout and renderer. The only path from CLI and editor to SVG —
+ * which is why both outputs are byte-identical.
  */
 export function renderArchitecture(model: ArchitectureModel, theme?: string): string {
   return renderSvg(architectureScene(model, theme));
 }
 
-/** SceneGraph → eigenständiges SVG 1.1. Deterministisch: feste Attributreihenfolge, zwei Nachkommastellen. */
+/** Scene graph → standalone SVG 1.1. Deterministic: fixed attribute order, two decimal places. */
 export function renderSvg(scene: SceneGraph, options: RenderOptions = {}): string {
   const out: string[] = [];
   const w = num(scene.width);
@@ -70,7 +70,7 @@ function renderItem(item: SceneItem): string {
   }
 }
 
-// ── Elemente ───────────────────────────────────────────────────
+// ── Elements ───────────────────────────────────────────────────
 
 function common(item: SceneItem): string {
   return `${item.className ? ` class="${item.className}"` : ""}${item.ref ? ` data-ref="${escape(item.ref)}"` : ""}`;
@@ -89,7 +89,7 @@ function rect(r: SceneRect): string {
 
 function shape(s: SceneShape): string {
   if (!s.stack) return outline(s);
-  // Mehrfachelement: hintere Karten zuerst, jede nach oben rechts versetzt, vorne die kleinere Karte.
+  // Multiplicity: back cards first, each offset up and to the right, the smaller card in front.
   const { layers, offset } = s.stack;
   const front = stackFront(s, layers * offset);
   const cards: string[] = [];
@@ -136,7 +136,7 @@ function pathData(points: readonly Point[]): string {
   return points.map((p, i) => `${i ? "L" : "M"}${num(p.x)} ${num(p.y)}`).join("");
 }
 
-/** Pfaddaten mit Brücken: Auf waagerechten Segmenten ersetzt ein Halbkreis nach oben die Kreuzung. */
+/** Path data with bridges: on horizontal segments an upward semicircle replaces the crossing. */
 function hoppedPathData(p: ScenePath): string {
   const r = p.hopRadius ?? 0;
   if (!p.hops?.length || r <= 0) return pathData(p.points);
@@ -168,7 +168,7 @@ function path(p: ScenePath): string {
   return `<path${common(p)} d="${d}" fill="none" stroke="${p.stroke}" stroke-width="${num(p.strokeWidth)}"${dash(p.dash)}/>`;
 }
 
-/** Punkt in Markerkoordinaten (u entlang der Richtung, v quer dazu) → absolut. */
+/** Point in marker coordinates (u along the direction, v across it) → absolute. */
 function rotate(m: SceneMarker, u: number, v: number): Point {
   switch (m.angle) {
     case 0: return { x: m.x + u, y: m.y + v };
@@ -230,18 +230,18 @@ function text(t: SceneText): string {
   );
 }
 
-// ── Schrift ────────────────────────────────────────────────────
+// ── Font ───────────────────────────────────────────────────────
 
 export interface FontSubset {
   family: string;
   weight: number;
-  /** TrueType-Datei mit genau den Zeichen, die die Szene in diesem Schnitt verwendet. */
+  /** TrueType file with exactly the characters the scene uses in this weight. */
   data: Uint8Array;
 }
 
 /**
- * Schrift-Subsets je verwendetem Schnitt, nach Gewicht sortiert — dieselben Dateien, die das
- * SVG per `@font-face` einbettet. Rasterisierer ohne `@font-face`-Unterstützung (resvg) laden sie direkt.
+ * Font subsets per used weight, sorted by weight — the same files the SVG embeds via
+ * `@font-face`. Rasterizers without `@font-face` support (resvg) load them directly.
  */
 export function fontSubsets(scene: SceneGraph, glyphs: FontGlyphs = INTER_GLYPHS, metrics: FontMetrics = INTER_METRICS): FontSubset[] {
   const byWeight = new Map<number, Set<string>>();
@@ -263,7 +263,7 @@ function fontFaces(scene: SceneGraph, glyphs: FontGlyphs, metrics: FontMetrics):
     .join("");
 }
 
-// ── Formatierung ───────────────────────────────────────────────
+// ── Formatting ─────────────────────────────────────────────────
 
 export function num(value: number): string {
   const rounded = Math.round(value * 100) / 100;

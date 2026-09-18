@@ -1,7 +1,7 @@
 {
   "name": "@sysarch/export-reactflow",
   "version": "0.1.0",
-  "description": "sysarch React-Flow-Export: Semantic Model + Scene Graph → ReactFlowJsonObject, ohne React-Abhängigkeit",
+  "description": "sysarch React Flow export: semantic model + scene graph → ReactFlowJsonObject, without a React dependency",
   "license": "MIT",
   "type": "module",
   "main": "dist/index.js",

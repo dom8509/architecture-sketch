@@ -6,42 +6,42 @@ import { normalizePath, Notice, type Menu } from "obsidian";
 import { exportBaseName } from "./logic.js";
 import type SysarchPlugin from "./main.js";
 
-/** Ein fehlerfrei gerendertes Diagramm, wie es exportiert wird. */
+/** A diagram that rendered without errors, as it gets exported. */
 export interface Diagram {
   model: ArchitectureModel;
-  /** Unverändertes SVG — byte-gleich mit CLI und Web-App. */
+  /** The unmodified SVG — byte-identical to the CLI and the web app. */
   svg: string;
-  /** Theme der Darstellung; `undefined` = aus der Quelle. */
+  /** Theme used for rendering; `undefined` = from the source. */
   theme: string | undefined;
-  /** Notiz bzw. `.arch`-Datei, zu der das Diagramm gehört. */
+  /** The note or `.arch` file the diagram belongs to. */
   sourcePath: string;
 }
 
-/** Export-Einträge für Kontext- und Dateimenüs; `diagram()` liefert `undefined` bei Fehlern in der Quelle. */
+/** Export entries for context and file menus; `diagram()` returns `undefined` on errors in the source. */
 export function addExportItems(menu: Menu, plugin: SysarchPlugin, diagram: () => Diagram | undefined) {
   const run = (action: (d: Diagram) => Promise<void>) => async () => {
     const d = diagram();
-    if (!d) return void new Notice("sysarch: Die Quelle enthält Fehler — nichts zu exportieren");
+    if (!d) return void new Notice("sysarch: the source contains errors — nothing to export");
     try {
       await action(d);
     } catch (error) {
       console.error("sysarch", error);
-      new Notice(`sysarch: Export fehlgeschlagen — ${error instanceof Error ? error.message : String(error)}`);
+      new Notice(`sysarch: export failed — ${error instanceof Error ? error.message : String(error)}`);
     }
   };
 
-  menu.addItem((item) => item.setTitle("SVG exportieren").setIcon("image-file").onClick(run(async (d) => {
+  menu.addItem((item) => item.setTitle("Export SVG").setIcon("image-file").onClick(run(async (d) => {
     await saved(plugin, d, ".svg", d.svg);
   })));
-  menu.addItem((item) => item.setTitle("PNG exportieren").setIcon("image").onClick(run(async (d) => {
+  menu.addItem((item) => item.setTitle("Export PNG").setIcon("image").onClick(run(async (d) => {
     const png = await svgToPng(d.svg, plugin.settings.pngScale);
     await saved(plugin, d, ".png", await png.arrayBuffer());
   })));
-  menu.addItem((item) => item.setTitle("SVG kopieren").setIcon("copy").onClick(run(async (d) => {
+  menu.addItem((item) => item.setTitle("Copy SVG").setIcon("copy").onClick(run(async (d) => {
     await navigator.clipboard.writeText(d.svg);
-    new Notice("SVG in die Zwischenablage kopiert");
+    new Notice("SVG copied to the clipboard");
   })));
-  menu.addItem((item) => item.setTitle("React Flow JSON exportieren").setIcon("braces").onClick(run(async (d) => {
+  menu.addItem((item) => item.setTitle("Export React Flow JSON").setIcon("braces").onClick(run(async (d) => {
     const flow = toReactFlow(d.model, architectureScene(d.model, d.theme));
     await saved(plugin, d, ".reactflow.json", JSON.stringify(flow, null, 2) + "\n");
   })));
@@ -50,12 +50,12 @@ export function addExportItems(menu: Menu, plugin: SysarchPlugin, diagram: () =>
 async function saved(plugin: SysarchPlugin, d: Diagram, extension: string, data: string | ArrayBuffer) {
   const noteName = d.sourcePath.slice(d.sourcePath.lastIndexOf("/") + 1).replace(/\.[^.]*$/, "");
   const path = await writeExport(plugin, d.sourcePath, exportBaseName(d.model.title, noteName) + extension, data);
-  new Notice(`Exportiert: ${path}`);
+  new Notice(`Exported: ${path}`);
 }
 
 /**
- * Schreibt in den Exportordner bzw. den Anhangsordner der Notiz. Ein erneuter Export
- * überschreibt die gleichnamige Datei, damit Einbettungen (`![[door-ecu.svg]]`) aktuell bleiben.
+ * Writes into the export folder or the attachment folder of the note. Exporting again
+ * overwrites the file of the same name, so that embeds (`![[door-ecu.svg]]`) stay up to date.
  */
 async function writeExport(plugin: SysarchPlugin, sourcePath: string, name: string, data: string | ArrayBuffer): Promise<string> {
   const { vault, fileManager } = plugin.app;

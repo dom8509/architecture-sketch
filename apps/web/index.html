@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -9,43 +9,43 @@
   <body>
     <header class="toolbar">
       <strong class="brand">sysarch</strong>
-      <span class="file" id="file-name">Entwurf</span>
+      <span class="file" id="file-name">Draft</span>
       <div class="group">
-        <button type="button" id="new" title="Neue Architektur">Neu</button>
-        <button type="button" id="open" title="Datei öffnen (⌘O)">Öffnen</button>
-        <button type="button" id="save" title="Speichern (⌘S)">Speichern</button>
-        <select id="example" title="Beispiel laden">
-          <option value="">Beispiele…</option>
+        <button type="button" id="new" title="New architecture">New</button>
+        <button type="button" id="open" title="Open file (⌘O)">Open</button>
+        <button type="button" id="save" title="Save (⌘S)">Save</button>
+        <select id="example" title="Load example">
+          <option value="">Examples…</option>
         </select>
       </div>
       <div class="group">
         <label>Theme
-          <select id="theme"><option value="">aus der Quelle</option></select>
+          <select id="theme"><option value="">from the source</option></select>
         </label>
       </div>
       <div class="group">
         <span class="label">Export:</span>
         <button type="button" id="export-svg">SVG</button>
-        <button type="button" id="copy-svg">SVG kopieren</button>
+        <button type="button" id="copy-svg">Copy SVG</button>
         <button type="button" id="export-png">PNG</button>
-        <select id="png-scale" title="PNG-Skalierung"></select>
-        <button type="button" id="export-reactflow" title="Knoten, Pins und geroutete Kanten für React Flow">React Flow</button>
+        <select id="png-scale" title="PNG scale"></select>
+        <button type="button" id="export-reactflow" title="Nodes, pins and routed edges for React Flow">React Flow</button>
       </div>
       <div class="group end">
-        <button type="button" id="share" title="Link mit der Quelle im URL-Fragment kopieren">Link teilen</button>
-        <button type="button" id="present" title="Präsentationsmodus (Esc beendet)">Präsentation</button>
+        <button type="button" id="share" title="Copy a link with the source in the URL fragment">Share link</button>
+        <button type="button" id="present" title="Presentation mode (Esc exits)">Present</button>
       </div>
     </header>
     <main class="workspace">
-      <section class="pane editor-pane" id="editor" aria-label="DSL-Editor"></section>
+      <section class="pane editor-pane" id="editor" aria-label="DSL editor"></section>
       <div class="splitter" id="splitter" role="separator" aria-orientation="vertical"></div>
-      <section class="pane preview-pane" id="preview" aria-label="Vorschau">
+      <section class="pane preview-pane" id="preview" aria-label="Preview">
         <div class="preview-tools">
-          <button type="button" id="fit" title="Einpassen (Doppelklick)">Einpassen</button>
+          <button type="button" id="fit" title="Fit to view (double-click)">Fit</button>
         </div>
       </section>
     </main>
-    <footer id="diagnostics" aria-label="Diagnosen"></footer>
+    <footer id="diagnostics" aria-label="Diagnostics"></footer>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <input type="file" id="file-input" accept=".arch,.txt,text/plain" hidden />
     <script type="module" src="./src/main.ts"></script>

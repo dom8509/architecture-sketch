@@ -13,7 +13,7 @@ describe("scopeSvg", () => {
   const svg = renderArchitecture(model);
   const scoped = scopeSvg(svg, "sa7");
 
-  it("benennt Schrift, IDs und Verweise um", () => {
+  it("renames font, ids and references", () => {
     expect(svg).toContain(`font-family:"Inter"`);
     expect(scoped).not.toMatch(/font-family[:=]"Inter\b/);
     expect(scoped).toContain(`font-family:"sa7-Inter"`);
@@ -22,14 +22,14 @@ describe("scopeSvg", () => {
     expect(scoped).toContain(`aria-labelledby="sa7-title"`);
   });
 
-  it("jeder Verweis zeigt auf ein vorhandenes Symbol", () => {
+  it("every reference points at an existing symbol", () => {
     const ids = new Set([...scoped.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]));
     const refs = [...scoped.matchAll(/href="#([^"]+)"/g)].map((m) => m[1]);
     expect(refs.length).toBeGreaterThan(0);
     for (const ref of refs) expect(ids).toContain(ref);
   });
 
-  it("lässt Klassen und data-ref unverändert", () => {
+  it("leaves classes and data-ref unchanged", () => {
     const classes = (text: string) => [...text.matchAll(/(class|data-ref)="[^"]*"/g)].map((m) => m[0]);
     expect(classes(scoped)).toEqual(classes(svg));
   });

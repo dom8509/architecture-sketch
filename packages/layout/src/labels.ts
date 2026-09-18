@@ -5,14 +5,14 @@ export interface LabelRequest {
   width: number;
   height: number;
   points: Point[];
-  /** Freizuhaltende Länge an den Enden (Marker). */
+  /** Length to keep clear at the ends (markers). */
   endClearance: number;
 }
 
 /**
- * Phase 8: Verbindungslabels. Kandidaten: Mitte des längsten Segments, Segment am
- * Quell-Pin, Segment am Ziel-Pin, danach weitere Punkte entlang aller Segmente.
- * Gewählt wird der erste Kandidat ohne Überlappung; sonst der erste Kandidat.
+ * Phase 8: connection labels. Candidates: midpoint of the longest segment, the segment at
+ * the source pin, the segment at the target pin, then further points along all segments.
+ * The first candidate without overlap wins; otherwise the first candidate.
  */
 export function placeLabel(
   request: LabelRequest,
@@ -44,7 +44,7 @@ export function placeLabel(
     const { point, segment } = c;
     const box = { x: point.x - width / 2, y: point.y - height / 2, width, height };
     const horizontal = segment.a.y === segment.b.y;
-    // Das Label muss auf seinem Segment liegen, Ende-Marker bleiben frei.
+    // The label must sit on its segment; end markers stay clear.
     const span = horizontal ? width : height;
     const lo = horizontal ? Math.min(segment.a.x, segment.b.x) : Math.min(segment.a.y, segment.b.y);
     const hi = horizontal ? Math.max(segment.a.x, segment.b.x) : Math.max(segment.a.y, segment.b.y);

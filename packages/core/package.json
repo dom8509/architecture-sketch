@@ -1,7 +1,7 @@
 {
   "name": "@sysarch/core",
   "version": "0.1.0",
-  "description": "sysarch Sprache: Lexer, Parser, AST, Resolver, Diagnosen",
+  "description": "sysarch language: lexer, parser, AST, resolver, diagnostics",
   "license": "MIT",
   "type": "module",
   "main": "dist/index.js",

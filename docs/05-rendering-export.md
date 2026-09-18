@@ -1,53 +1,54 @@
 # 05 — Rendering & Export
 
-## Grundsatz: SVG ist die einzige Darstellung
+## Principle: SVG is the only rendering
 
 ```
-                         ┌─► Vorschau (inline SVG im DOM)
-DSL → Model → Scene ─► SVG ┼─► .svg Datei / Zwischenablage
-                         └─► PNG (SVG rasterisiert)
+                         ┌─► preview (inline SVG in the DOM)
+DSL → Model → Scene ─► SVG ┼─► .svg file / clipboard
+                         └─► PNG (rasterised SVG)
                │
                └────────► React Flow JSON
 ```
 
-Das Brainstorming sah einen zusätzlichen Canvas-Renderer für die Vorschau vor.
-**Entscheidung:** Die Vorschau zeigt direkt den SVG-String, der auch exportiert wird.
-Ein zweiter Renderer wäre genau die Quelle für „im Editor sieht es anders aus als im PNG“,
-die vermieden werden soll. Canvas wird nur zum Rasterisieren verwendet.
+The brainstorming phase foresaw an additional canvas renderer for the preview.
+**Decision:** the preview shows exactly the SVG string that is also exported.
+A second renderer would be precisely the source of "it looks different in the editor than
+in the PNG" that we want to avoid. Canvas is used only for rasterising.
 
-Beim Einfügen ins DOM benennt `scopeSvg` (`@sysarch/editor`) die eingebettete Schriftfamilie
-und alle `id`s pro Diagramm um (`Inter` → `sa3-Inter`, `sa-icon-chip` → `sa3-icon-chip`).
-`@font-face` und `id` gelten im HTML-Dokument global: Ohne Präfix ersetzte das Schrift-Subset
-eines Diagramms die gleichnamige Oberflächenschrift, und zwei Diagramme auf einer Seite
-verwiesen gegenseitig auf ihre Icon-Symbole. Geometrie und Darstellung bleiben gleich; Exporte
-und `Analysis.svg` nutzen das unveränderte, byte-gleiche SVG ([D23](entscheidungen.md)).
+When inserting into the DOM, `scopeSvg` (`@sysarch/editor`) renames the embedded font
+family and all `id`s per diagram (`Inter` → `sa3-Inter`, `sa-icon-chip` →
+`sa3-icon-chip`). `@font-face` and `id` are global within an HTML document: without a
+prefix, a diagram's font subset would replace the identically named UI font, and two
+diagrams on one page would reference each other's icon symbols. Geometry and appearance
+stay the same; exports and `Analysis.svg` use the unchanged, byte-identical SVG
+([D23](decisions.md)).
 
 ---
 
 ## Themes
 
-v0.1 liefert vier Themes als Design-Tokens (siehe [Theme-Typ](03-domaenenmodell.md#4-theme)):
+v0.1 ships four themes as design tokens (see [the theme type](03-domain-model.md#4-theme)):
 
-| Theme | Einsatz |
-|-------|---------|
-| `automotive-light` | Standard, Dokumentation, Obsidian hell |
-| `automotive-dark` | Obsidian dunkel, Bildschirm |
-| `presentation` | größere Schrift, kräftigere Linien, breitere Abstände — für Beamer |
-| `technical` | schwarz-weiß, druckoptimiert, Unterscheidung nur über Linienform |
+| Theme | Use |
+|-------|-----|
+| `automotive-light` | default, documentation, Obsidian light |
+| `automotive-dark` | Obsidian dark, screen |
+| `presentation` | larger type, heavier lines, wider spacing — for projectors |
+| `technical` | black and white, print-optimised, distinguished by line style only |
 
-Regeln für jedes Theme:
+Rules for every theme:
 
-- **Farbe ist nie der einzige Informationsträger.** Signalgruppen unterscheiden sich
-  immer auch über Linienstärke, Strichmuster oder Endmarker. `technical` ist der Test
-  dafür: Das Diagramm muss ohne Farbe vollständig lesbar sein.
-- Kontrast Text/Hintergrund mindestens WCAG AA.
-- Schrift: **Inter** (OFL-Lizenz) in den Schnitten 400, 500 und 600 — Metriken
-  (Advance-Widths, GPOS-Kerning) und TrueType-Konturen werden von `scripts/build-font.ts`
-  erzeugt und eingecheckt. Der SVG-Export bettet je verwendetem Schnitt eine per Aufruf
-  erzeugte TrueType-Datei mit genau den verwendeten Zeichen und deren Kerning-Paaren
-  (`kern`-Tabelle) per `@font-face` ein.
+- **Colour is never the only carrier of information.** Signal groups always differ in line
+  weight, dash pattern or end marker as well. `technical` is the test for this: the
+  diagram must be fully readable without colour.
+- Text/background contrast at least WCAG AA.
+- Type: **Inter** (OFL licence) in weights 400, 500 and 600 — metrics (advance widths,
+  GPOS kerning) and TrueType outlines are produced by `scripts/build-font.ts` and checked
+  in. For each weight used, the SVG export embeds a TrueType file generated per call, via
+  `@font-face`, containing exactly the characters used and their kerning pairs (`kern`
+  table).
 
-Beispiel `automotive-light` (Auszug):
+Example `automotive-light` (excerpt):
 
 ```ts
 categories: {
@@ -58,99 +59,98 @@ categories: {
 }
 ```
 
-## Linienformen
+## Line styles
 
-| Signalgruppe | Arten | Linie | Endmarker |
-|--------------|-------|-------|-----------|
-| Versorgung | `power` | dick (2,5 px), durchgezogen | Pfeil |
-| Versorgung | `ground` | dick, durchgezogen | Masse-Symbol am Ziel |
-| Einzelsignal | `signal` `digital` `analog` `pwm` | normal (1,5 px), durchgezogen | Pfeil |
-| Bus | `bus` `can` `lin` `spi` `i2c` `uart` `ethernet` | Doppellinie | Pfeil (bzw. beidseitig bei `<->`) |
-| Diagnose | `diagnostic` `debug` | normal, gestrichelt | Pfeil |
+| Signal group | Kinds | Line | End marker |
+|--------------|-------|------|------------|
+| Supply | `power` | thick (2.5 px), solid | arrow |
+| Supply | `ground` | thick, solid | ground symbol at the target |
+| Single signal | `signal` `digital` `analog` `pwm` | normal (1.5 px), solid | arrow |
+| Bus | `bus` `can` `lin` `spi` `i2c` `uart` `ethernet` | double line | arrow (both ends with `<->`) |
+| Diagnostics | `diagnostic` `debug` | normal, dashed | arrow |
 
-Pfeilspitzen folgen `direction`: `forward` → am Ziel, `bidirectional` → beidseitig,
-`none` → keine. Endet eine Verbindung an einem Pin, sitzt die Spitze vor dem Pin-Marker,
-damit sie vollständig sichtbar bleibt. An Kreuzungen überspringt die waagerechte Leitung
-die senkrechte mit einer Brücke.
+Arrowheads follow `direction`: `forward` → at the target, `bidirectional` → at both ends,
+`none` → none. If a connection ends at a pin, the head sits in front of the pin marker so
+that it stays fully visible. At crossings, the horizontal line hops over the vertical one.
 
-## Komponentendarstellung
+## Component rendering
 
-Der Renderer kennt nur **Primitive**: Form (fünf feste Formen), Pfad, Text, Marker
-(Pfeil, Masse, Pin, Knotenpunkt) und Icon. Die Darstellung einer Komponente ergibt sich
-vollständig aus ihrem Template: Form, Icon, Kategorie (Farbe), Label und Pins.
+The renderer knows only **primitives**: shape (five fixed shapes), path, text, marker
+(arrow, ground, pin, junction) and icon. A component's appearance follows entirely from
+its template: shape, icon, category (colour), label and pins.
 
 ```
 ┌──────────────────────┐            ╭───────╮
-│  ⚡ Half Bridge 1     │          ●─┤   ⟳   │     ← circle: Stummel von der
-│                      │            │ Motor │        Kontur zur Hüllkante
+│  ⚡ Half Bridge 1     │          ●─┤   ⟳   │     ← circle: stub from the
+│                      │            │ Motor │        contour to the hull edge
 ● VS              OUT  ●            ╰───────╯
 ● IN                   │
 └────────●────●────────┘
          IS   GND
 ```
 
-### Formen
+### Shapes
 
-`rounded` · `rect` · `circle` · `hexagon` · `cylinder` — Geometrie und Pin-Andockung in
-[04 Layout](04-layout.md#formen-und-pins). Eine Form ist ein reiner Pfad; Füllung,
-Rahmen und Rahmenstärke kommen weiter aus Kategorie und `importance`.
+`rounded` · `rect` · `circle` · `hexagon` · `cylinder` — geometry and pin attachment in
+[04 Layout](04-layout.md#shapes-and-pins). A shape is a pure path; fill, border and border
+weight still come from the category and `importance`.
 
 ### Icons
 
-**Quelle:** `library/icons/<name>.svg` — ein Icon pro Datei, Dateiname = Icon-Name.
+**Source:** `library/icons/<name>.svg` — one icon per file, file name = icon name.
 
-**Regeln für Icon-Dateien** (geprüft beim Build, Verstöße brechen den Build):
+**Rules for icon files** (checked at build time, violations break the build):
 
-- `viewBox="0 0 24 24"`, einfarbig, keine festen Farben (werden entfernt)
-- erlaubte Elemente: `path`, `circle`, `rect`, `line`, `polyline`, `polygon`, `g`
-- verboten: `image`, `text`, `use` mit externen Referenzen, `style`, `script`,
-  Filter, Verläufe, Masken
-- alles wird zur Build-Zeit in reine Pfaddaten (`IconDef`) umgewandelt
+- `viewBox="0 0 24 24"`, single colour, no fixed colours (they are stripped)
+- allowed elements: `path`, `circle`, `rect`, `line`, `polyline`, `polygon`, `g`
+- forbidden: `image`, `text`, `use` with external references, `style`, `script`,
+  filters, gradients, masks
+- everything is converted to pure path data (`IconDef`) at build time
 
-Dadurch kann ein Icon das Erscheinungsbild nicht sprengen: Es übernimmt Farbe und
-Strichstärke aus dem Theme, hat eine vom Theme bestimmte Größe
-(`icon.size[size]`) und funktioniert in hell, dunkel und `technical` gleichermaßen.
+An icon therefore cannot break the visual language: it takes colour and stroke weight from
+the theme, has a size determined by the theme (`icon.size[size]`) and works equally well
+in light, dark and `technical`.
 
-**Mitgelieferter Satz v0.1** (eigene Zeichnungen, gleiche Strichstärke und Raster):
+**Bundled set in v0.1** (drawn in house, same stroke weight and grid):
 
-| Bereich | Icons |
-|---------|-------|
-| Versorgung | `battery`, `power`, `regulator`, `fuse`, `relay`, `ground` |
-| Rechnen & Speicher | `chip`, `soc`, `memory`, `watchdog`, `clock` |
-| Kommunikation | `can`, `lin`, `ethernet`, `switch`, `bus`, `connector` |
-| Leistung & Aktorik | `bridge`, `motor`, `window`, `valve`, `lamp`, `heater` |
-| Sensorik | `sensor`, `temperature`, `current`, `position` |
-| Sonstiges | `ecu`, `software`, `cloud`, `vehicle` |
+| Area | Icons |
+|------|-------|
+| Supply | `battery`, `power`, `regulator`, `fuse`, `relay`, `ground` |
+| Compute & memory | `chip`, `soc`, `memory`, `watchdog`, `clock` |
+| Communication | `can`, `lin`, `ethernet`, `switch`, `bus`, `connector` |
+| Power & actuation | `bridge`, `motor`, `window`, `valve`, `lamp`, `heater` |
+| Sensing | `sensor`, `temperature`, `current`, `position` |
+| Other | `ecu`, `software`, `cloud`, `vehicle` |
 
-**Eigene Icons eines Teams:** SVG in `library/icons/` ablegen und bauen. Ab v0.2 können
-sie mit `use` aus projektspezifischen Bibliotheken kommen.
+**A team's own icons:** drop the SVG into `library/icons/` and build. From v0.2 they can
+come from project-specific libraries via `use`.
 
-**Keine Bilder:** Raster-Bilder (PNG/JPG), URLs und pro Diagramm eingebettete Grafiken
-sind ausgeschlossen (Entscheidung D17).
+**No images:** raster images (PNG/JPG), URLs and graphics embedded per diagram are ruled
+out (decision D17).
 
 ---
 
-## SVG-Export
+## SVG export
 
-- Ein eigenständiges SVG 1.1 ohne externe Referenzen.
-- `viewBox` in Scene-Graph-Einheiten, `width`/`height` in px.
-- Formen als `<path>` bzw. `<rect>`, Stummel als eigene `<path>`-Elemente.
-- Jedes verwendete Icon genau einmal als `<symbol id="sa-icon-<name>">` in `<defs>`,
-  Verwendung per `<use href="#sa-icon-<name>">` mit `color` der Kategorie. Nicht verwendete
-  Icons werden nicht eingebettet.
-- Stabile Klassen und `data-ref`-Attribute (`data-ref="pin:mcu.CAN_TX"`) für
-  Hit-Testing in der Vorschau und für Nachbearbeitung.
-- Deterministische Ausgabe: feste Attributreihenfolge, Zahlen auf zwei Nachkommastellen
-  gerundet, keine generierten IDs außer aus Modell-IDs abgeleiteten.
-- `<title>` aus dem Architekturtitel für Barrierefreiheit.
-- Verbindungslabels liegen auf einem Rechteck in Hintergrundfarbe (Halo), damit auch
-  Wortzwischenräume die Linie verdecken.
-- Doppellinien sind zwei deckungsgleiche Pfade: außen in Linienfarbe, innen ein Drittel
-  so breit in Hintergrundfarbe.
+- A standalone SVG 1.1 without external references.
+- `viewBox` in scene graph units, `width`/`height` in px.
+- Shapes as `<path>` or `<rect>`, stubs as separate `<path>` elements.
+- Every icon used exactly once as `<symbol id="sa-icon-<name>">` in `<defs>`, used via
+  `<use href="#sa-icon-<name>">` with the category's `color`. Unused icons are not
+  embedded.
+- Stable classes and `data-ref` attributes (`data-ref="pin:mcu.CAN_TX"`) for hit testing
+  in the preview and for post-processing.
+- Deterministic output: fixed attribute order, numbers rounded to two decimals, no
+  generated IDs other than those derived from model IDs.
+- `<title>` from the architecture title for accessibility.
+- Connection labels sit on a rectangle in the background colour (halo) so that the spaces
+  between words also cover the line.
+- Double lines are two coincident paths: the outer one in the line colour, the inner one a
+  third as wide in the background colour.
 
-## PNG-Export
+## PNG export
 
-**Browser / Obsidian** (keine Bibliothek):
+**Browser / Obsidian** (no library):
 
 ```ts
 const img = new Image();
@@ -161,37 +161,37 @@ canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
 const blob = await canvas.convertToBlob({ type: "image/png" });
 ```
 
-- Skalierung 1×, 2× (Standard), 3×.
-- Die Schrift ist im SVG eingebettet; vor dem Rasterisieren wird `document.fonts.ready`
-  abgewartet.
+- Scale 1×, 2× (default), 3×.
+- The font is embedded in the SVG; `document.fonts.ready` is awaited before rasterising.
 
-- Umgesetzt als `svgToPng(svg, scale)` in `@sysarch/export-png`; ohne `OffscreenCanvas`
-  fällt es auf ein `<canvas>`-Element zurück.
+- Implemented as `svgToPng(svg, scale)` in `@sysarch/export-png`; without
+  `OffscreenCanvas` it falls back to a `<canvas>` element.
 
-**CLI** (Node hat kein Canvas): Rasterisierung mit `@resvg/resvg-js`. Das ist die einzige
-Rendering-Abhängigkeit im Projekt und liegt ausschließlich in `apps/cli`.
+**CLI** (Node has no canvas): rasterising with `@resvg/resvg-js`. This is the only
+rendering dependency in the project and lives exclusively in `apps/cli`.
 
-- resvg unterstützt kein `@font-face`. Die CLI schreibt deshalb dieselben Schrift-Subsets,
-  die das SVG einbettet (`fontSubsets` aus `render-svg`), in ein temporäres Verzeichnis und
-  lädt nur diese (`loadSystemFonts: false`) — PNG aus CLI und Browser zeigen dieselbe Schrift.
+- resvg does not support `@font-face`. The CLI therefore writes the same font subsets that
+  the SVG embeds (`fontSubsets` from `render-svg`) into a temporary directory and loads
+  only those (`loadSystemFonts: false`) — PNGs from the CLI and the browser show the same
+  type.
 
-## React-Flow-Export
+## React Flow export
 
-Ziel ist ein `ReactFlowJsonObject` (`{ nodes, edges, viewport }`), das in eine
-React-Flow-Anwendung mit passenden Custom Nodes geladen werden kann. Der Exporter selbst
-braucht **keine** React-Flow-Abhängigkeit — er erzeugt nur JSON.
+The goal is a `ReactFlowJsonObject` (`{ nodes, edges, viewport }`) that can be loaded into
+a React Flow application with matching custom nodes. The exporter itself needs **no**
+React Flow dependency — it only produces JSON.
 
-`toReactFlow(model, scene)` in `@sysarch/export-reactflow` liest die Geometrie aus dem
-Scene Graph (über `ref`) und die Semantik aus dem Modell; dadurch passt das JSON exakt zum
-SVG. Golden Files: `tests/golden/*.reactflow.json`.
+`toReactFlow(model, scene)` in `@sysarch/export-reactflow` reads the geometry from the
+scene graph (via `ref`) and the semantics from the model; the JSON therefore matches the
+SVG exactly. Golden files: `tests/golden/*.reactflow.json`.
 
 | sysarch | React Flow |
 |---------|------------|
-| `Component` | Node, `type` = Template-Name, `position` aus Scene Graph |
-| `Pin` | Eintrag in `data.pins`, wird im Custom Node zu `<Handle id=NAME>` |
-| `Connection` | Edge mit `sourceHandle`/`targetHandle`, `type: "step"` |
-| `zone` / `system` | Group-Node; Mitglieder erhalten `parentId` und relative Position |
-| `SignalKind` | `edge.data.kind`, Stil über `className` |
+| `Component` | node, `type` = template name, `position` from the scene graph |
+| `Pin` | entry in `data.pins`, becomes `<Handle id=NAME>` in the custom node |
+| `Connection` | edge with `sourceHandle`/`targetHandle`, `type: "step"` |
+| `zone` / `system` | group node; members get `parentId` and a relative position |
+| `SignalKind` | `edge.data.kind`, styled via `className` |
 
 ```json
 {
@@ -243,21 +243,21 @@ SVG. Golden Files: `tests/golden/*.reactflow.json`.
 }
 ```
 
-- Körperanschlüsse erhalten virtuelle Handles `__body_<side>`; die Seite ist die, an der
-  die geroutete Leitung die Hülle erreicht.
-- Eltern stehen in `nodes` vor ihren Kindern (von React Flow verlangt); verschachtelte
-  Systeme hängen an ihrer Zone bzw. ihrem System.
-- `markerEnd` bei `forward`, zusätzlich `markerStart` bei `bidirectional`, keiner bei `none`.
-  Das Massesymbol hat in React Flow keine Entsprechung — die Zielanwendung erkennt es an
-  `data.kind`.
-- `data.icon` enthält die vollständigen Pfaddaten, damit die Zielanwendung das Icon ohne
-  Zugriff auf die sysarch-Bibliothek darstellen kann. `data.shape` und `offset` der Pins
-  beziehen sich auf die Hülle.
-- `data.points` enthält die geroutete Geometrie, damit eine Custom-Edge den Pfad exakt
-  übernehmen kann statt neu zu routen.
-- **Abnahme:** `apps/reactflow-test` (React 19, `@xyflow/react` 12) lädt jedes Beispiel bzw.
-  ein von der CLI exportiertes JSON mit Custom Nodes (Form, Icon, Pins als `<Handle>`) und
-  einer Custom Edge, die `data.points` übernimmt. Die Statusleiste vergleicht gezeichnete
-  Knoten und Kanten mit dem JSON und zeigt jede `onError`-Meldung von React Flow.
-- Zusätzlich wird ein Referenzpaket `@sysarch/reactflow-nodes` (später) die passenden
-  Custom Nodes mit Theme-CSS liefern — getrennt vom Core.
+- Body attachments get virtual handles `__body_<side>`; the side is the one where the
+  routed line reaches the hull.
+- Parents come before their children in `nodes` (required by React Flow); nested systems
+  hang off their zone or system.
+- `markerEnd` with `forward`, plus `markerStart` with `bidirectional`, none with `none`.
+  The ground symbol has no React Flow equivalent — the target application recognises it
+  from `data.kind`.
+- `data.icon` contains the full path data so that the target application can render the
+  icon without access to the sysarch library. `data.shape` and the pins' `offset` refer to
+  the hull.
+- `data.points` contains the routed geometry so that a custom edge can adopt the path
+  exactly instead of routing it again.
+- **Acceptance:** `apps/reactflow-test` (React 19, `@xyflow/react` 12) loads every example
+  or a JSON exported by the CLI, with custom nodes (shape, icon, pins as `<Handle>`) and a
+  custom edge that adopts `data.points`. The status bar compares the drawn nodes and edges
+  with the JSON and shows every `onError` message from React Flow.
+- In addition, a reference package `@sysarch/reactflow-nodes` (later) will ship the
+  matching custom nodes with theme CSS — separate from the core.

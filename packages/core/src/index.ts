@@ -21,7 +21,7 @@ import { parse } from "./parser/index.js";
 import { resolve, type ArchitectureModel } from "./resolve/index.js";
 import type { Library } from "./resolve/library.js";
 
-/** Parsen und Auflösen in einem Schritt; Diagnosen beider Stufen in Quelltextreihenfolge. */
+/** Parse and resolve in one step; diagnostics of both stages in source order. */
 export function compile(source: string, library: Library = standardLibrary()): ParseResult<ArchitectureModel> {
   const parsed = parse(source);
   const resolved = resolve(parsed.value, library);

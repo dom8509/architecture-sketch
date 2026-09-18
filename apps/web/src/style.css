@@ -40,7 +40,7 @@ button, select {
 button:hover, select:hover { border-color: #94a3b8; }
 button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
-/* ── Werkzeugleiste ─────────────────────────────────────────── */
+/* ── toolbar ────────────────────────────────────────────────── */
 
 .toolbar {
   display: flex;
@@ -58,7 +58,7 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); o
 .group .label { color: var(--muted); }
 .group.end { margin-left: auto; }
 
-/* ── Arbeitsfläche ──────────────────────────────────────────── */
+/* ── workspace ──────────────────────────────────────────────── */
 
 .workspace {
   display: grid;
@@ -90,7 +90,7 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); o
 .sa-preview-canvas > svg { display: block; box-shadow: 0 1px 4px rgb(15 23 42 / 0.15); }
 .sa-preview.sa-stale .sa-preview-canvas { opacity: 0.55; filter: grayscale(0.6); transition: opacity 0.2s; }
 .sa-preview.sa-stale::after {
-  content: "Fehler im Quelltext — letzter gültiger Stand";
+  content: "Error in the source — showing the last valid state";
   position: absolute;
   left: 12px;
   bottom: 12px;
@@ -101,7 +101,7 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); o
   font-size: 12px;
 }
 
-/* ── Diagnosen ──────────────────────────────────────────────── */
+/* ── diagnostics ────────────────────────────────────────────── */
 
 .sa-diagnostics {
   max-height: 26vh;
@@ -136,7 +136,7 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); o
 .sa-warning .sa-diagnostic-code { color: var(--warning); }
 .sa-info .sa-diagnostic-code { color: var(--info); }
 
-/* ── Präsentation ───────────────────────────────────────────── */
+/* ── presentation ───────────────────────────────────────────── */
 
 body.presenting .toolbar > :not(.group:has(#theme)),
 body.presenting .editor-pane,
@@ -147,7 +147,7 @@ body.presenting .toolbar:hover { opacity: 1; }
 body.presenting .workspace { grid-template-columns: 1fr; grid-row: 1 / -1; }
 body.presenting .sa-preview { background: var(--bg); cursor: default; }
 
-/* ── Meldung ────────────────────────────────────────────────── */
+/* ── toast ──────────────────────────────────────────────────── */
 
 .toast {
   position: fixed;

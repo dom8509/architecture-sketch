@@ -2,27 +2,27 @@ import type { IconDef, Shape } from "@sysarch/core";
 import type { TextStyle } from "@sysarch/themes";
 
 /**
- * Renderer-neutrale, vollständig ausgerechnete Szene: absolute Koordinaten, aufgelöste
- * Farben, gemessene und umbrochene Texte. Ein Renderer trifft keine Entscheidungen mehr.
+ * Renderer-neutral, fully computed scene: absolute coordinates, resolved colors, measured
+ * and wrapped text. A renderer makes no decisions of its own.
  */
 export interface SceneGraph {
   width: number;
   height: number;
   background: string;
-  /** Architekturtitel für `<title>`. */
+  /** Architecture title for `<title>`. */
   title: string;
-  /** Alle verwendeten Icons, nach Name sortiert. */
+  /** All icons in use, sorted by name. */
   icons: IconDef[];
-  /** Zeichenreihenfolge: Zonen → Systeme → Verbindungen → Komponenten → Icons → Pins → Labels. */
+  /** Draw order: zones → systems → connections → components → icons → pins → labels. */
   items: SceneItem[];
 }
 
 export type SceneItem = SceneRect | SceneShape | ScenePath | SceneText | SceneMarker | SceneIcon;
 
 export interface SceneBase {
-  /** Rückverweis für Hit-Testing und Quellsprung, z. B. "component:mcu", "pin:mcu.CAN_TX". */
+  /** Back reference for hit testing and jump-to-source, e.g. "component:mcu", "pin:mcu.CAN_TX". */
   ref?: string;
-  /** Stabile CSS-Klasse im SVG, z. B. "sa-component sa-cat-power". */
+  /** Stable CSS class in the SVG, e.g. "sa-component sa-cat-power". */
   className?: string;
 }
 
@@ -47,49 +47,49 @@ export interface SceneRect extends SceneBase, Rect {
   dash?: number[];
 }
 
-/** Komponentenkörper; x/y/width/height ist die Hülle, die Kontur ergibt sich aus `shape`. */
+/** Component body; x/y/width/height is the hull, the contour follows from `shape`. */
 export interface SceneShape extends SceneBase, Rect {
   type: "shape";
   shape: Shape;
-  /** "rounded": Eckenradius; "cylinder": halbe Ellipsenhöhe; sonst 0. */
+  /** "rounded": corner radius; "cylinder": half the ellipse height; otherwise 0. */
   radius: number;
   fill: string;
   stroke: string;
   strokeWidth: number;
   /**
-   * Mehrfachelement: `layers` hintere Karten, je `offset` nach oben rechts versetzt. Die vordere
-   * Karte ist `stackFront(hülle, layers × offset)`; der Renderer zeichnet hinten zuerst.
+   * Multiple element: `layers` cards behind, each offset by `offset` towards the upper right.
+   * The front card is `stackFront(hull, layers × offset)`; the renderer draws back to front.
    */
   stack?: { layers: number; offset: number };
 }
 
 export interface SceneIcon extends SceneBase {
   type: "icon";
-  /** Verweis auf `SceneGraph.icons`, im SVG als `<symbol>`. */
+  /** Reference into `SceneGraph.icons`, a `<symbol>` in the SVG. */
   name: string;
   x: number;
   y: number;
   size: number;
   color: string;
-  /** Strichstärke im 24×24-Raster des Icons. */
+  /** Stroke width in the icon's 24×24 grid. */
   strokeWidth: number;
 }
 
 export interface ScenePath extends SceneBase {
   type: "path";
-  /** Nur orthogonale Segmente: aufeinanderfolgende Punkte teilen x oder y. */
+  /** Orthogonal segments only: consecutive points share x or y. */
   points: Point[];
   stroke: string;
   strokeWidth: number;
   dash?: number[];
   double?: boolean;
   /**
-   * Kreuzungen, an denen dieser Pfad die kreuzende Leitung mit einem Bogen überspringt.
-   * Liegen immer auf waagerechten Segmenten; der Bogen wölbt sich nach oben.
+   * Crossings where this path hops over the crossing line with an arc. Always on horizontal
+   * segments; the arc bulges upwards.
    */
   hops?: Point[];
   hopRadius?: number;
-  /** Füllfarbe zwischen den Linien einer Doppellinie (Hintergrund). */
+  /** Fill color between the two strokes of a double line (background). */
   gap?: string;
 }
 
@@ -99,16 +99,16 @@ export interface SceneText extends SceneBase {
   y: number;
   anchor: "start" | "middle" | "end";
   baseline: "top" | "middle" | "bottom";
-  /** Umbrochen bereits im Layout. */
+  /** Already wrapped by the layout. */
   lines: string[];
   style: TextStyle & { fontFamily: string };
-  /** Zeilenhöhe in px. */
+  /** Line height in px. */
   lineHeight: number;
-  /** Abstand Zeilenoberkante → Grundlinie in px. */
+  /** Distance from the top of the line to the baseline, in px. */
   ascent: number;
-  /** Gemessene Breite der breitesten Zeile in px. */
+  /** Measured width of the widest line, in px. */
   width: number;
-  /** Optionaler Hintergrund, damit Verbindungslabels Linien nicht überlagern. */
+  /** Optional backdrop so that connection labels do not sit on top of lines. */
   halo?: string;
 }
 
@@ -117,7 +117,7 @@ export interface SceneMarker extends SceneBase {
   shape: "arrow" | "ground" | "pin" | "junction";
   x: number;
   y: number;
-  /** Richtung, in die der Marker zeigt: 0 = +x, 90 = +y, 180 = −x, 270 = −y. */
+  /** Direction the marker points in: 0 = +x, 90 = +y, 180 = −x, 270 = −y. */
   angle: 0 | 90 | 180 | 270;
   size: number;
   fill: string;
@@ -125,7 +125,7 @@ export interface SceneMarker extends SceneBase {
   strokeWidth: number;
 }
 
-/** Begrenzungsrechteck eines Texts. */
+/** Bounding box of a text. */
 export function textBounds(text: SceneText): Rect {
   const height = text.lines.length * text.lineHeight;
   const x = text.anchor === "start" ? text.x : text.anchor === "middle" ? text.x - text.width / 2 : text.x - text.width;

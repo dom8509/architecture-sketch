@@ -1,4 +1,4 @@
-/** Quellbereich, 0-basierte Offsets, 1-basierte Zeile/Spalte für Meldungen. */
+/** Source range; 0-based offsets, 1-based line/column for messages. */
 export interface Span {
   start: number;
   end: number;
@@ -11,9 +11,9 @@ export type Side = "left" | "right" | "top" | "bottom";
 export type Size = "small" | "medium" | "large";
 export type Importance = "primary" | "secondary";
 export type LayoutMode = "strict" | "assisted";
-/** Welche Pins gezeichnet werden: alle, nur verbundene, keine. */
+/** Which pins are drawn: all, only connected ones, none. */
 export type PinDisplay = "all" | "connected" | "none";
-/** Gleich verschaltete Komponenten automatisch zu einem Stapel zusammenfassen? */
+/** Automatically merge identically wired components into a stack? */
 export type StackMode = "none" | "identical";
 export type Arrow = "->" | "<-" | "<->" | "--";
 
@@ -64,7 +64,7 @@ export const SIGNAL_GROUPS: Readonly<Record<SignalKind, SignalGroup>> = {
 
 export const SIGNAL_KINDS = Object.keys(SIGNAL_GROUPS) as SignalKind[];
 
-/** Themes aus v0.1 (05-rendering-export.md). Die Token selbst liegen in @sysarch/themes. */
+/** Themes from v0.1 (05-rendering-export.md). The tokens themselves live in @sysarch/themes. */
 export const THEMES: readonly string[] = [
   "automotive-light", "automotive-dark", "presentation", "technical",
 ];

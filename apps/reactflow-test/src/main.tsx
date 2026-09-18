@@ -19,7 +19,7 @@ const examples: Record<string, string> = Object.fromEntries(
 
 function exportExample(name: string): ReactFlowExport {
   const { value, diagnostics } = compile(examples[name]!);
-  if (hasErrors(diagnostics)) throw new Error(`${name} enthält Fehler`);
+  if (hasErrors(diagnostics)) throw new Error(`${name} contains errors`);
   return toReactFlow(value, architectureScene(value));
 }
 
@@ -41,7 +41,7 @@ function App() {
   const errors = useRef<string[]>([]);
   const [status, setStatus] = useState<Status>();
 
-  /** Zählt nach dem Initialisieren, ob React Flow jeden Knoten und jede Kante gezeichnet hat. */
+  /** Counts after initialisation whether React Flow drew every node and every edge. */
   const measure = () => requestAnimationFrame(() => setStatus({
     errors: [...errors.current],
     nodes: document.querySelectorAll(".react-flow__node").length,
@@ -77,11 +77,11 @@ function App() {
           {!examples[name] && <option value="">{name}</option>}
           {Object.keys(examples).map((n) => <option key={n} value={n}>{n}</option>)}
         </select>
-        <label>JSON laden <input type="file" accept=".json" onChange={upload} /></label>
+        <label>Load JSON <input type="file" accept=".json" onChange={upload} /></label>
         <output id="status" data-ok={status ? String(ok) : undefined}>
           {status
-            ? `${ok ? "✓" : "✗"} ${status.nodes}/${expected.nodes} Knoten, ${status.edges}/${expected.edges} Kanten, ${status.errors.length} Fehler`
-            : "lädt…"}
+            ? `${ok ? "✓" : "✗"} ${status.nodes}/${expected.nodes} nodes, ${status.edges}/${expected.edges} edges, ${status.errors.length} errors`
+            : "loading…"}
           {status?.errors.map((e) => <div key={e} className="error">{e}</div>)}
         </output>
       </header>

@@ -1,9 +1,9 @@
 import { fontFace, type FontGlyphs, type FontMetrics } from "@sysarch/themes";
 
 /**
- * Baut aus eingebetteten Konturen eine minimale TrueType-Datei mit genau den verwendeten
- * Zeichen (plus Kerning-Paare als `kern`-Tabelle). Deterministisch: feste Zeitstempel,
- * feste Tabellenreihenfolge.
+ * Builds a minimal TrueType file from the embedded contours, containing exactly the
+ * characters in use (plus kerning pairs as a `kern` table). Deterministic: fixed
+ * timestamps, fixed table order.
  */
 export function buildFontSubset(
   glyphs: FontGlyphs,
@@ -18,7 +18,7 @@ export function buildFontSubset(
     .filter((c) => face.glyphs[c] !== undefined && c.codePointAt(0)! <= 0xffff)
     .sort((a, b) => a.codePointAt(0)! - b.codePointAt(0)!);
 
-  // ── Glyphen ──────────────────────────────────────────────────
+  // ── Glyphs ──────────────────────────────────────────────────
   interface Glyph { data: Uint8Array; advance: number; xMin: number; yMin: number; xMax: number; yMax: number; points: number; contours: number }
   const empty = (advance: number): Glyph => ({ data: new Uint8Array(0), advance, xMin: 0, yMin: 0, xMax: 0, yMax: 0, points: 0, contours: 0 });
   const list: Glyph[] = [empty(Math.round(glyphs.unitsPerEm / 2))];
@@ -42,7 +42,7 @@ export function buildFontSubset(
 
   const head = byteWriter();
   head.u32(0x00010000).u32(0x00010000).u32(0).u32(0x5f0f3cf5).u16(0x000b).u16(glyphs.unitsPerEm);
-  head.u32(0).u32(0).u32(0).u32(0); // created, modified: fest 0
+  head.u32(0).u32(0).u32(0).u32(0); // created, modified: fixed at 0
   head.i16(xMin).i16(yMin).i16(xMax).i16(yMax).u16(0).u16(8).i16(2).i16(1).i16(0);
 
   const advanceMax = Math.max(...list.map((g) => g.advance));
@@ -78,7 +78,7 @@ export function buildFontSubset(
   os2.u32(1).u32(0);
   os2.i16(glyphs.xHeight).i16(glyphs.capHeight).u16(0).u16(0x20).u16(0);
 
-  // cmap Format 4, ein Segment je Zeichen.
+  // cmap format 4, one segment per character.
   const cmap = byteWriter();
   const segCount = codes.length + 1;
   const entrySelector = Math.floor(Math.log2(segCount));
@@ -121,7 +121,7 @@ export function buildFontSubset(
     ["hmtx", hmtx.toBytes()],
   ];
 
-  // Kerning-Paare zwischen verwendeten Zeichen.
+  // Kerning pairs between the characters in use.
   const pairs: [number, number, number][] = [];
   chars.forEach((left, li) => {
     chars.forEach((right, ri) => {
@@ -145,7 +145,7 @@ export function buildFontSubset(
   tables.push(["loca", locaWriter.toBytes()], ["maxp", maxp.toBytes()], ["name", name.toBytes()], ["post", post.toBytes()]);
   tables.sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
 
-  // ── sfnt ─────────────────────────────────────────────────────
+  // ── sfnt ────────────────────────────────────────────────────
   const numTables = tables.length;
   const selector = Math.floor(Math.log2(numTables));
   const range = 2 ** selector * 16;
@@ -196,7 +196,7 @@ function encodeGlyph(encoded: string, advance: number): {
     end += c.length;
     w.u16(end);
   }
-  w.u16(0); // keine Instruktionen
+  w.u16(0); // no instructions
   for (const p of all) w.u8(p.on ? 1 : 0);
   let x = 0;
   for (const p of all) {
@@ -245,7 +245,7 @@ interface ByteWriter {
   toBytes(): Uint8Array;
 }
 
-/** Wachsender Big-Endian-Puffer, lokal innerhalb eines Aufrufs. */
+/** Growing big-endian buffer, local to a single call. */
 function byteWriter(): ByteWriter {
   const out: number[] = [];
   const w: ByteWriter = {

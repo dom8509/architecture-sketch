@@ -4,9 +4,10 @@ import { portPoint } from "./route.js";
 import type { Rect } from "./scene.js";
 
 /**
- * Körperanschlüsse (Verbindung ohne Pin) erhalten einen virtuellen Port auf der Seite zur
- * Gegenstelle; mehrere Ports auf einer Seite werden auf freie Grid-Punkte um die Mitte
- * verteilt, sortiert nach Lage der Gegenstelle. Rückführungen docken unten (LR) bzw. rechts (TB) an.
+ * Body ports (a connection without a pin) get a virtual port on the side facing the other
+ * end; several ports on one side are spread over free grid points around the middle,
+ * sorted by the position of the other end. Feedback edges attach at the bottom (LR) resp.
+ * on the right (TB).
  */
 export function assignBodyPorts(edges: readonly LEdge[], axes: Axes, grid: number): void {
   interface Request { edge: LEdge; end: "source" | "target"; node: LNode; other: LNode; side: Side }
@@ -44,7 +45,7 @@ export function assignBodyPorts(edges: readonly LEdge[], axes: Axes, grid: numbe
     const fallback = Math.max(grid, Math.round(center / grid) * grid);
     const offsets = list.map((_, i) => candidates[i] ?? fallback).sort((a, b) => a - b);
 
-    // Querlage der Gegenstelle: Rang für Querseiten, Reihenfolge für Hauptseiten.
+    // Cross position of the other end: rank for cross sides, order for main sides.
     const along = axes.side(side) === "mainStart" || axes.side(side) === "mainEnd";
     list.sort((a, b) =>
       (along ? a.other.order - b.other.order : a.other.rank - b.other.rank) ||
@@ -58,18 +59,18 @@ export function assignBodyPorts(edges: readonly LEdge[], axes: Axes, grid: numbe
   }
 }
 
-/** Liegt `a` quer hinter `b`? Im selben Rang zählt die Reihenfolge, über Ränge hinweg die feste Zeile. */
+/** Does `a` sit after `b` across? Within a rank the order counts, across ranks the fixed row. */
 function crossAfter(a: LNode, b: LNode): boolean {
   if (a.rank !== b.rank && a.fixedSlot !== undefined && b.fixedSlot !== undefined) return a.fixedSlot > b.fixedSlot;
   return a.order > b.order;
 }
 
 /**
- * Nach der Platzierung: Körperanschlüsse an Verbindungen mit einem überspannenden Knoten
- * werden nach der tatsächlichen Lage neu gesetzt. Die Gegenstelle zeigt mit der Seitenmitte
- * zum überspannenden Knoten, dieser setzt seinen Port genau gegenüber — die Leitung läuft
- * gerade, auch wenn mehrere Komponenten über bzw. unter ihm liegen. Gruppenlabels zwischen
- * beiden Knoten weicht der Port der Gegenstelle aus.
+ * After placement: body ports of connections involving a spanning node are reassigned from
+ * the actual positions. The other end points at the spanning node with the middle of its
+ * side, and the spanning node puts its port exactly opposite — the line runs straight even
+ * when several components sit above resp. below it. The port of the other end dodges group
+ * labels between the two nodes.
  */
 export function alignSpanPorts(edges: readonly LEdge[], axes: Axes, grid: number, labels: readonly Rect[] = []): void {
   const affected = edges.filter((e) => e.source !== e.target && !e.feedback && (spans(e.source) || spans(e.target)));
@@ -87,7 +88,7 @@ export function alignSpanPorts(edges: readonly LEdge[], axes: Axes, grid: number
     }
     return axes.realSide(os >= me ? "mainEnd" : "mainStart");
   };
-  // Vorläufige Ports der betroffenen Enden zählen nicht als belegt, nur schon neu gesetzte.
+  // Provisional ports of the affected ends do not count as occupied, only already reassigned ones.
   const pending = new Set<Port>(affected.flatMap((e) => [e.sourcePort, e.targetPort]).filter((p) => p.pin === undefined));
   const length = (n: LNode, side: Side) => (side === "left" || side === "right" ? n.box.height : n.box.width);
   const taken = (n: LNode, side: Side, except: Port) => {
@@ -99,7 +100,7 @@ export function alignSpanPorts(edges: readonly LEdge[], axes: Axes, grid: number
     }
     return new Set(used);
   };
-  /** Kreuzt die gerade Leitung vom Port bis zur Gegenstelle ein Gruppenlabel? */
+  /** Does the straight line from the port to the other end cross a group label? */
   const hitsLabel = (n: LNode, side: Side, offset: number, other: LNode) => {
     const p = portPoint(n, { side, offset });
     const vertical = side === "top" || side === "bottom";
@@ -110,7 +111,7 @@ export function alignSpanPorts(edges: readonly LEdge[], axes: Axes, grid: number
       ? p.x >= l.x - grid / 2 && p.x <= l.x + l.width + grid / 2 && l.y < to && l.y + l.height > from
       : p.y >= l.y - grid / 2 && p.y <= l.y + l.height + grid / 2 && l.x < to && l.x + l.width > from);
   };
-  /** Freier Grid-Punkt auf der Seite, möglichst nah an `wanted`; Label-Kreuzungen nur als Ausweg. */
+  /** Free grid point on the side, as close to `wanted` as possible; crossing a label only as a last resort. */
   const nearestFree = (n: LNode, side: Side, wanted: number, except: Port, other: LNode) => {
     const used = taken(n, side, except);
     const max = length(n, side) - grid;
@@ -130,7 +131,7 @@ export function alignSpanPorts(edges: readonly LEdge[], axes: Axes, grid: number
     else e.targetPort = port;
   };
 
-  // Erst die Enden an normalen Knoten (Seitenmitte), dann die überspannenden Enden gegenüber.
+  // First the ends on normal nodes (middle of the side), then the spanning ends opposite them.
   for (const pass of [false, true]) {
     for (const e of affected) {
       for (const end of ["source", "target"] as const) {

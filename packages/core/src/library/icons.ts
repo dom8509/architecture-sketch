@@ -1,7 +1,7 @@
 import type { IconDef } from "../resolve/library.js";
 
 const ALLOWED = new Set(["svg", "g", "path", "circle", "rect", "line", "polyline", "polygon"]);
-/** Attribute, die das Theme setzt oder die keine Wirkung auf die Geometrie haben. */
+/** Attributes set by the theme or without any effect on the geometry. */
 const PRESENTATION = new Set([
   "xmlns", "fill", "stroke", "stroke-width", "stroke-linecap", "stroke-linejoin",
   "stroke-miterlimit", "fill-rule", "clip-rule", "class", "id", "width", "height",
@@ -20,8 +20,8 @@ const num = (value: number) => {
 };
 
 /**
- * Wandelt eine Icon-Datei in reine Pfaddaten um und prüft die Regeln aus
- * library/icons/README.md. Verstöße werfen `IconError`.
+ * Converts an icon file into plain path data and checks the rules from
+ * library/icons/README.md. Violations throw `IconError`.
  */
 export function convertIcon(name: string, svg: string): IconDef {
   const fail = (message: string): never => {
@@ -30,7 +30,7 @@ export function convertIcon(name: string, svg: string): IconDef {
 
   const source = svg.replace(/<\?xml[\s\S]*?\?>/g, "").replace(/<!--[\s\S]*?-->/g, "");
   const elements: IconDef["elements"] = [];
-  /** Geerbter Füllwert je offener Ebene. */
+  /** Inherited fill value per open level. */
   const fillStack: (string | undefined)[] = [];
   let sawRoot = false;
   let pos = 0;
@@ -41,12 +41,12 @@ export function convertIcon(name: string, svg: string): IconDef {
   while (pos < source.length) {
     const lt = source.indexOf("<", pos);
     const text = source.slice(pos, lt === -1 ? source.length : lt);
-    if (text.trim() !== "") fail(`Text außerhalb von Elementen ist nicht erlaubt: \`${text.trim().slice(0, 20)}\``);
+    if (text.trim() !== "") fail(`text outside of elements is not allowed: \`${text.trim().slice(0, 20)}\``);
     if (lt === -1) break;
 
     tagPattern.lastIndex = lt;
     const match = tagPattern.exec(source);
-    if (match === null) fail(`ungültiges oder nicht unterstütztes Markup bei Offset ${lt}`);
+    if (match === null) fail(`invalid or unsupported markup at offset ${lt}`);
     const [whole, closing, tagName, rawAttributes, selfClosing] = match!;
     pos = lt + whole.length;
 
@@ -54,7 +54,7 @@ export function convertIcon(name: string, svg: string): IconDef {
       fillStack.pop();
       continue;
     }
-    if (!ALLOWED.has(tagName!)) fail(`Element \`<${tagName}>\` ist nicht erlaubt`);
+    if (!ALLOWED.has(tagName!)) fail(`element \`<${tagName}>\` is not allowed`);
 
     const element: Element = { name: tagName!, attributes: new Map() };
     for (const a of rawAttributes!.matchAll(attributePattern)) {
@@ -62,19 +62,19 @@ export function convertIcon(name: string, svg: string): IconDef {
     }
     for (const attribute of element.attributes.keys()) {
       if (attribute === "viewBox" || PRESENTATION.has(attribute) || isGeometry(element.name, attribute)) continue;
-      fail(`Attribut \`${attribute}\` an \`<${element.name}>\` ist nicht erlaubt`);
+      fail(`attribute \`${attribute}\` on \`<${element.name}>\` is not allowed`);
     }
 
     if (element.name === "svg") {
-      if (sawRoot) fail("verschachteltes `<svg>` ist nicht erlaubt");
+      if (sawRoot) fail("nested `<svg>` is not allowed");
       sawRoot = true;
       if (element.attributes.get("viewBox")?.trim().replace(/\s+/g, " ") !== "0 0 24 24") {
-        fail('`viewBox="0 0 24 24"` fehlt');
+        fail('`viewBox="0 0 24 24"` is missing');
       }
     } else if (!sawRoot) {
-      fail("Wurzelelement muss `<svg>` sein");
+      fail("root element must be `<svg>`");
     } else if (element.attributes.has("viewBox")) {
-      fail(`Attribut \`viewBox\` an \`<${element.name}>\` ist nicht erlaubt`);
+      fail(`attribute \`viewBox\` on \`<${element.name}>\` is not allowed`);
     }
 
     const fill = element.attributes.get("fill") ?? fillStack[fillStack.length - 1];
@@ -84,8 +84,8 @@ export function convertIcon(name: string, svg: string): IconDef {
     if (!selfClosing) fillStack.push(fill);
   }
 
-  if (!sawRoot) fail("kein `<svg>`-Element gefunden");
-  if (elements.length === 0) fail("enthält keine Formen");
+  if (!sawRoot) fail("no `<svg>` element found");
+  if (elements.length === 0) fail("contains no shapes");
   return { name, viewBox: "0 0 24 24", elements };
 }
 
@@ -108,18 +108,18 @@ function toPath(element: Element, fail: (message: string) => never): string {
     const raw = a.get(key);
     if (raw === undefined) {
       if (fallback !== undefined) return fallback;
-      return fail(`\`<${element.name}>\` braucht \`${key}\``);
+      return fail(`\`<${element.name}>\` needs \`${key}\``);
     }
     const value = Number(raw);
-    if (!Number.isFinite(value)) fail(`\`${key}="${raw}"\` ist keine Zahl`);
+    if (!Number.isFinite(value)) fail(`\`${key}="${raw}"\` is not a number`);
     return value;
   };
 
   switch (element.name) {
     case "path": {
       const d = a.get("d")?.trim();
-      if (!d) fail("`<path>` braucht `d`");
-      if (!/^[MmLlHhVvCcSsQqTtAaZz0-9eE.,+\-\s]+$/.test(d!)) fail("`d` enthält ungültige Zeichen");
+      if (!d) fail("`<path>` needs `d`");
+      if (!/^[MmLlHhVvCcSsQqTtAaZz0-9eE.,+\-\s]+$/.test(d!)) fail("`d` contains invalid characters");
       return d!;
     }
     case "circle": {
@@ -146,12 +146,12 @@ function toPath(element: Element, fail: (message: string) => never): string {
     case "polygon": {
       const values = (a.get("points") ?? "").trim().split(/[\s,]+/).filter(Boolean).map(Number);
       if (values.length < 4 || values.length % 2 !== 0 || values.some((v) => !Number.isFinite(v))) {
-        fail(`\`<${element.name}>\` hat ungültige \`points\``);
+        fail(`\`<${element.name}>\` has invalid \`points\``);
       }
       const pairs: string[] = [];
       for (let k = 0; k < values.length; k += 2) pairs.push(`${num(values[k]!)} ${num(values[k + 1]!)}`);
       return `M${pairs.join("L")}${element.name === "polygon" ? "Z" : ""}`;
     }
   }
-  return fail(`Element \`<${element.name}>\` ist nicht erlaubt`);
+  return fail(`element \`<${element.name}>\` is not allowed`);
 }

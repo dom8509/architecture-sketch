@@ -18,6 +18,6 @@ packages/core/src/library/generated.ts
 
 # generiert von apps/docs/scripts/generate.ts
 apps/docs/_generated
-apps/docs/konzept
+apps/docs/concept
 apps/docs/public/generated
 apps/docs/.vitepress/cache

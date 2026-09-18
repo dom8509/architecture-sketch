@@ -1,9 +1,9 @@
-// Standardbibliothek v0.1 — wird vor jedem Dokument geladen.
-// Templates legen Label, Kategorie, Größe, Form, Icon und Pins fest, nie Geometrie.
-// Formen: rounded (Standard) | rect | circle | hexagon | cylinder
-// Icons: Dateinamen aus library/icons/
+// Standard library v0.1 — loaded before every document.
+// Templates define label, category, size, shape, icon and pins, never geometry.
+// Shapes: rounded (default) | rect | circle | hexagon | cylinder
+// Icons: file names from library/icons/
 
-// ── Generisch ────────────────────────────────────────────────
+// ── Generic ──────────────────────────────────────────────────
 
 define block {
     category generic
@@ -34,7 +34,7 @@ define connector {
     size small
 }
 
-// ── Versorgung ───────────────────────────────────────────────
+// ── Power supply ─────────────────────────────────────────────
 
 define power_source {
     label "Power Source"
@@ -97,7 +97,7 @@ define ground {
     top { pin ground GND }
 }
 
-// ── Rechnen & Speicher ───────────────────────────────────────
+// ── Compute & memory ─────────────────────────────────────────
 
 define microcontroller {
     label "MCU"
@@ -147,7 +147,7 @@ define oscillator {
     right { pin signal CLK }
 }
 
-// ── Kommunikation ────────────────────────────────────────────
+// ── Communication ────────────────────────────────────────────
 
 define can_transceiver {
     label "CAN Transceiver"
@@ -191,7 +191,7 @@ define bus {
     size small
 }
 
-// ── Leistungsstufen & Aktorik ────────────────────────────────
+// ── Power stages & actuators ─────────────────────────────────
 
 define half_bridge {
     label "Half Bridge"
@@ -230,7 +230,7 @@ define motor extends actuator {
     icon motor
 }
 
-// ── Sensorik ─────────────────────────────────────────────────
+// ── Sensing ──────────────────────────────────────────────────
 
 define sensor {
     label "Sensor"

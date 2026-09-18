@@ -10,50 +10,50 @@ import { parse } from "../parser/index.js";
 
 const INDENT = "    ";
 
-/** Knoten, die eine eigene Zeile (bzw. einen eigenen Block) bilden. */
+/** Nodes that form a line (or block) of their own. */
 type Statement = Exclude<SyntaxNode, SyntaxTree>;
 
-/** Knotenarten, die innerhalb einer Anweisung stehen und nie eine eigene Zeile bekommen. */
+/** Node kinds that sit inside a statement and never get a line of their own. */
 const INLINE_KINDS = new Set(["Document", "Ident", "String", "Endpoint", "GridCell"]);
 
-/** Eigenschaften, mit denen eine Komponente als Einzeiler geschrieben wird. */
+/** Properties that allow a component to be written on a single line. */
 const COMPONENT_ONE_LINER_KINDS = new Set(["Label", "Size", "Importance", "Category", "Hint", "Count"]);
 
-/** Seitenblöcke mit höchstens so vielen Pins ohne Label passen auf eine Zeile … */
+/** Side blocks with at most this many unlabelled pins fit on one line … */
 const MAX_INLINE_PINS = 3;
-/** … sofern die Zeile ohne Ausrichtung nicht breiter wird. */
+/** … as long as the line does not grow wider than this without alignment. */
 const MAX_WIDTH = 80;
 
-/** Anweisungen, deren Inline-Blöcke untereinander bündig stehen. */
+/** Statements whose inline blocks are aligned with each other. */
 const ALIGNED_KINDS = new Set(["Connection", "SideBlock"]);
 
-/** Reihenfolge der Anweisungen in `architecture` (02-dsl.md §6). */
+/** Order of the statements in `architecture` (02-dsl.md §6). */
 const ORDER: Readonly<Record<string, number>> = {
   Theme: 0, Direction: 1, Pins: 2, Stack: 3, Layout: 4, Zone: 5, System: 5, Component: 5, Connection: 6,
 };
 
-/** Abschnitte in `architecture`, getrennt durch eine Leerzeile. */
+/** Sections in `architecture`, separated by a blank line. */
 const SECTION: Readonly<Record<string, number>> = {
   Theme: 0, Direction: 0, Pins: 0, Stack: 0, Layout: 1, Zone: 2, System: 2, Component: 2, Connection: 3,
 };
 
 interface Entry {
   node: Statement;
-  /** Kommentare und Leerzeilen auf eigenen Zeilen vor der Anweisung. */
+  /** Comments and blank lines on their own lines before the statement. */
   before: Trivia[];
-  /** Kommentare, die im Quelltext hinter der Anweisung auf derselben Zeile stehen. */
+  /** Comments that follow the statement on the same line in the source. */
   after: Trivia[];
 }
 
-/** Einzeilige Form: Kopf und optional ein Inline-Block `{ … }`, dessen `{` ausgerichtet wird. */
+/** Single-line form: head and an optional inline block `{ … }` whose `{` is aligned. */
 interface OneLine {
   head: string;
   body?: string;
 }
 
 /**
- * Kanonische Formatierung (02-dsl.md §6). Bei Syntaxfehlern bleibt der Quelltext unverändert;
- * die Diagnosen des Parsers werden zurückgegeben. Kommentare bleiben erhalten.
+ * Canonical formatting (02-dsl.md §6). On syntax errors the source stays unchanged and the
+ * parser's diagnostics are returned. Comments are preserved.
  */
 export function format(source: string): ParseResult<string> {
   const parsed = parse(source);
@@ -61,10 +61,10 @@ export function format(source: string): ParseResult<string> {
   const tree = parsed.value;
   const lines: string[] = [];
 
-  // ── Kommentare innerhalb von Anweisungen ─────────────────────
-  // Der Parser hängt Trivia an das Folgetoken. Steht ein Kommentar vor einem Token mitten in
-  // einer Anweisung (`pin /* x */ can TX`), taucht er im Syntaxbaum nicht auf. Solche Kommentare
-  // wandern vor die innerste Anweisung, die sie umschließt.
+  // ── Comments inside statements ───────────────────────────────
+  // The parser attaches trivia to the following token. A comment before a token in the middle
+  // of a statement (`pin /* x */ can TX`) does not show up in the syntax tree. Such comments
+  // are hoisted in front of the innermost statement that encloses them.
   const attached = new Set<number>();
   const statements: Statement[] = [];
   const walk = (value: unknown) => {
@@ -98,7 +98,7 @@ export function format(source: string): ParseResult<string> {
 
   // ── Trivia ───────────────────────────────────────────────────
 
-  /** Steht der Kommentar auf derselben Zeile wie das vorige Token? */
+  /** Is the comment on the same line as the previous token? */
   const isTrailing = (t: Trivia): boolean => {
     if (t.kind !== "comment") return false;
     let p = t.span.start - 1;
@@ -114,7 +114,7 @@ export function format(source: string): ParseResult<string> {
 
   const hasComment = (trivia: readonly Trivia[] | undefined) => trivia?.some((t) => t.kind === "comment") ?? false;
 
-  /** Enthält der Knoten (oder ein Kind) Kommentare? Dann gibt es keine einzeilige Form. */
+  /** Does the node (or a child) contain comments? Then there is no single-line form. */
   const containsComments = (n: SyntaxNode, self = true): boolean => {
     if (self && (hasComment(n.leadingTrivia) || hoisted.has(n))) return true;
     if (hasComment(n.closingTrivia)) return true;
@@ -125,7 +125,7 @@ export function format(source: string): ParseResult<string> {
     });
   };
 
-  // ── Ausgabe ──────────────────────────────────────────────────
+  // ── Output ───────────────────────────────────────────────────
 
   const emit = (depth: number, text: string) => lines.push(INDENT.repeat(depth) + text);
 
@@ -142,7 +142,7 @@ export function format(source: string): ParseResult<string> {
     while (lines.length > 0 && lines[lines.length - 1] === "") lines.pop();
   };
 
-  /** Kommentare auf eigenen Zeilen; Leerzeilen nur, wenn `allowBlank` (höchstens eine in Folge). */
+  /** Comments on their own lines; blank lines only if `allowBlank` (at most one in a row). */
   const printTrivia = (depth: number, trivia: readonly Trivia[], allowBlank: boolean) => {
     for (const t of trivia) {
       if (t.kind === "blankLine") {
@@ -156,7 +156,7 @@ export function format(source: string): ParseResult<string> {
 
   const str = (s: StringLit) => `"${s.value.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\n/g, "\\n")}"`;
 
-  /** Ordnet Kommentare einer Anweisungsliste zu: eigene Zeilen davor, gleiche Zeile dahinter. */
+  /** Assigns comments to a statement list: own lines before, same line after. */
   const toEntries = (items: readonly Statement[], closingTrivia: readonly Trivia[] | undefined) => {
     const header: Trivia[] = [];
     const entries: Entry[] = [];
@@ -174,7 +174,7 @@ export function format(source: string): ParseResult<string> {
   const endpoint = (e: EndpointNode) => e.component.name + (e.pin ? "." + e.pin.name : "");
   const connectionHead = (c: ConnectionNode) => `${endpoint(c.from)} ${c.arrow} ${endpoint(c.to)}`;
 
-  /** Einzeilige Form einer Anweisung, sofern sie eine hat. */
+  /** Single-line form of a statement, if it has one. */
   const oneLine = (n: Statement, depth: number): OneLine | undefined => {
     const inline = (head: string, body: readonly Statement[] | undefined, fits: boolean, separator = " "): OneLine | undefined => {
       if (containsComments(n, false)) return undefined;
@@ -228,7 +228,7 @@ export function format(source: string): ParseResult<string> {
     }
   };
 
-  /** Kopfzeile und Kinder eines immer mehrzeiligen Blocks. */
+  /** Head line and children of a block that is always multi-line. */
   const blockOf = (n: Statement): { head: string; items: Statement[] } | undefined => {
     switch (n.kind) {
       case "Architecture": {
@@ -255,7 +255,7 @@ export function format(source: string): ParseResult<string> {
   const gridRowText = (row: GridRow, widths: readonly number[]) =>
     row.cells.map((c, k) => (c.id?.name ?? ".").padEnd(widths[k] ?? 0)).join(" | ").trimEnd();
 
-  /** Schreibt eine Anweisungsliste. `sectioned`: Abschnittswechsel erzwingen eine Leerzeile. */
+  /** Writes a statement list. `sectioned`: a section change forces a blank line. */
   const printEntries = (
     depth: number,
     entries: readonly Entry[],
@@ -263,7 +263,7 @@ export function format(source: string): ParseResult<string> {
   ) => {
     const lineForms = entries.map((e) => (options.grid ? undefined : oneLine(e.node, depth)));
 
-    // Inline-Blöcke aufeinanderfolgender Verbindungen bzw. Seitenblöcke bündig ausrichten.
+    // Align the inline blocks of consecutive connections or side blocks with each other.
     const widths = new Array<number>(entries.length).fill(0);
     for (let k = 0; k < entries.length;) {
       const kind = entries[k]!.node.kind;
@@ -272,7 +272,7 @@ export function format(source: string): ParseResult<string> {
         continue;
       }
       let end = k + 1;
-      // Mehrzeilige Anweisungen, Leerzeilen und Kommentare auf eigener Zeile beenden die Gruppe.
+      // Multi-line statements, blank lines and comments on their own line end the group.
       while (end < entries.length && entries[end]!.node.kind === kind && entries[end]!.before.length === 0
         && !hoisted.has(entries[end]!.node) && lineForms[end] && lineForms[end - 1]) end++;
       let width = 0;
@@ -322,7 +322,7 @@ export function format(source: string): ParseResult<string> {
     }
     const block = blockOf(n)!;
     const { header, entries, closing } = toEntries(block.items, n.closingTrivia);
-    // Erst nach dem Zuordnen der Kommentare sortieren (stabil), damit sie an ihrer Anweisung bleiben.
+    // Sort only after assigning the comments (stable), so they stay with their statement.
     if (n.kind === "Architecture") entries.sort((x, y) => ORDER[x.node.kind]! - ORDER[y.node.kind]!);
     if (entries.length === 0 && header.length === 0 && !hasComment(closing)) {
       emit(depth, block.head + " {}");
@@ -336,7 +336,7 @@ export function format(source: string): ParseResult<string> {
     emit(depth, "}");
   };
 
-  // ── Dokument ─────────────────────────────────────────────────
+  // ── Document ─────────────────────────────────────────────────
 
   const top: Statement[] = [...tree.defines, ...(tree.architecture ? [tree.architecture] : [])];
   const { entries, closing } = toEntries(top, tree.closingTrivia);
@@ -345,11 +345,11 @@ export function format(source: string): ParseResult<string> {
   trimBlankLines();
   const value = lines.length > 0 ? lines.join("\n") + "\n" : "";
 
-  // Schutz vor Datenverlust: jeder Kommentar muss genau einmal in der Ausgabe stehen.
+  // Guard against data loss: every comment must appear exactly once in the output.
   const commentTexts = (text: string) =>
     lex(text).tokens.flatMap((t) => t.leadingTrivia).filter((t) => t.kind === "comment").map((t) => t.text).sort();
   if (commentTexts(value).join("\0") !== sourceComments.map((t) => t.text).sort().join("\0")) {
-    throw new Error("format: Kommentare stimmen nach dem Formatieren nicht überein");
+    throw new Error("format: comments do not match after formatting");
   }
   return { value, diagnostics: parsed.diagnostics };
 }

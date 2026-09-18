@@ -2,7 +2,7 @@ import { ButtonComponent, Modal } from "obsidian";
 import type SysarchPlugin from "./main.js";
 import { Workbench } from "./workbench.js";
 
-/** Editor mit Vorschau für einen Codeblock; übergibt die Quelle beim Schließen an `onClose`. */
+/** Editor with preview for a code block; hands the source to `onClose` when it closes. */
 export class EditorModal extends Modal {
   private workbench: Workbench | undefined;
   private discard = false;
@@ -20,11 +20,11 @@ export class EditorModal extends Modal {
     this.titleEl.setText("sysarch");
     this.workbench = new Workbench(this.plugin, this.contentEl.createDiv(), this.source);
     const buttons = this.contentEl.createDiv({ cls: "modal-button-container" });
-    new ButtonComponent(buttons).setButtonText("Verwerfen").onClick(() => {
+    new ButtonComponent(buttons).setButtonText("Discard").onClick(() => {
       this.discard = true;
       this.close();
     });
-    new ButtonComponent(buttons).setButtonText("Übernehmen").setCta().onClick(() => this.close());
+    new ButtonComponent(buttons).setButtonText("Apply").setCta().onClick(() => this.close());
     this.workbench.editor.view.focus();
   }
 

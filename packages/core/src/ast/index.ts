@@ -9,9 +9,9 @@ export interface Trivia {
 export interface SyntaxNode {
   kind: string;
   span: Span;
-  /** Kommentare/Leerzeilen vor dem Knoten. */
+  /** Comments/blank lines before the node. */
   leadingTrivia: Trivia[];
-  /** Kommentare/Leerzeilen vor der schließenden `}` eines Blocks. */
+  /** Comments/blank lines before the closing `}` of a block. */
   closingTrivia?: Trivia[];
 }
 
@@ -24,12 +24,12 @@ export interface SyntaxTree extends SyntaxNode {
   architecture?: ArchitectureNode;
 }
 
-// ── Architektur ──────────────────────────────────────────────
+// ── Architecture ─────────────────────────────────────────────
 
 export interface ArchitectureNode extends SyntaxNode {
   kind: "Architecture";
   title: StringLit;
-  /** Reihenfolge wie im Quelltext. */
+  /** Order as in the source text. */
   body: Statement[];
 }
 
@@ -49,7 +49,7 @@ export interface LayoutStmt extends SyntaxNode {
 export interface ModeStmt extends SyntaxNode { kind: "Mode"; value: LayoutMode }
 export interface GridNode extends SyntaxNode { kind: "Grid"; rows: GridRow[] }
 export interface GridRow extends SyntaxNode { kind: "GridRow"; cells: GridCell[] }
-/** `id` fehlt bei einer leeren Zelle (`.`). */
+/** `id` is missing for an empty cell (`.`). */
 export interface GridCell extends SyntaxNode { kind: "GridCell"; id?: Ident }
 
 export type GroupStmt = LabelStmt | SystemNode | ComponentNode;
@@ -66,7 +66,7 @@ export interface SystemNode extends SyntaxNode {
   body: GroupStmt[];
 }
 
-// ── Komponenten ──────────────────────────────────────────────
+// ── Components ───────────────────────────────────────────────
 
 export interface ComponentNode extends SyntaxNode {
   kind: "Component";
@@ -97,7 +97,7 @@ export interface SideBlock extends SyntaxNode {
   pins: PinStmt[];
 }
 
-/** Anzahl gleicher Elemente, dargestellt als gestapelte Karten. */
+/** Number of identical elements, rendered as stacked cards. */
 export interface CountStmt extends SyntaxNode { kind: "Count"; value: number }
 
 export interface HintStmt extends SyntaxNode {
@@ -112,7 +112,7 @@ export interface MetaBlock extends SyntaxNode {
 }
 export interface MetaEntry extends SyntaxNode { kind: "MetaEntry"; key: Ident; value: StringLit }
 
-// ── Verbindungen ─────────────────────────────────────────────
+// ── Connections ──────────────────────────────────────────────
 
 export interface ConnectionNode extends SyntaxNode {
   kind: "Connection";
@@ -143,5 +143,5 @@ export type DefineStmt =
   | LabelStmt | SizeStmt | CategoryStmt | ShapeStmt | IconStmt | PinStmt | SideBlock;
 
 export interface ShapeStmt extends SyntaxNode { kind: "Shape"; value: Ident }
-/** `icon none` entfernt ein geerbtes Icon. */
+/** `icon none` removes an inherited icon. */
 export interface IconStmt extends SyntaxNode { kind: "Icon"; value: Ident }

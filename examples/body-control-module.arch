@@ -1,4 +1,4 @@
-// Body Control Module — Versorgung, Ansteuerung einer Halbbrücke, CAN-Anbindung
+// Body Control Module — power supply, driving a half bridge, CAN connection
 
 architecture "Body Control Module" {
     theme automotive-light

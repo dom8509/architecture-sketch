@@ -9,8 +9,8 @@ import type SysarchPlugin from "./main.js";
 export const isDark = () => document.body.classList.contains("theme-dark");
 
 /**
- * Editor, Live-Vorschau und Diagnosen wie in der Web-App — für `.arch`-Dateien und das
- * Editor-Modal. Folgt dem Obsidian-Modus, solange die Quelle kein `theme` setzt.
+ * Editor, live preview and diagnostics as in the web app — for `.arch` files and the editor
+ * modal. Follows the Obsidian mode as long as the source does not set a `theme`.
  */
 export class Workbench {
   readonly editor: SysarchEditor;
@@ -32,13 +32,13 @@ export class Workbench {
     this.cssChange = plugin.app.workspace.on("css-change", () => this.refresh());
   }
 
-  /** Nach einem Moduswechsel oder geänderten Einstellungen. */
+  /** After a mode switch or changed settings. */
   refresh() {
     this.editor.view.dispatch({ effects: this.appearance.reconfigure(EditorView.theme({}, { dark: isDark() })) });
     this.syncTheme(this.editor.source);
   }
 
-  /** Aktueller Stand zum Exportieren; `undefined`, solange die Quelle Fehler enthält. */
+  /** The current state to export; `undefined` while the source contains errors. */
   diagram(sourcePath: string): Diagram | undefined {
     const { model, svg } = this.editor.current;
     return svg === undefined ? undefined : { model, svg, theme: this.theme, sourcePath };

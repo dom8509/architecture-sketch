@@ -5,7 +5,7 @@ const root = fileURLToPath(new URL("../../", import.meta.url));
 const src = (name: string) => `${root}packages/${name}/src/index.ts`;
 
 export default defineConfig({
-  // relative Pfade: die gebaute Seite läuft aus jedem Verzeichnis und von GitHub Pages
+  // relative paths: the built site runs from any directory and from GitHub Pages
   base: "./",
   resolve: {
     alias: {
@@ -19,6 +19,6 @@ export default defineConfig({
     },
   },
   server: { fs: { allow: [root] } },
-  // ~800 kB, davon der Großteil Glyphen des eingebetteten Schrift-Subsets
+  // ~800 kB, most of it glyphs of the embedded font subset
   build: { outDir: "dist", emptyOutDir: true, chunkSizeWarningLimit: 1200 },
 });

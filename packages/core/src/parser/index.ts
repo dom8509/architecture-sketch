@@ -12,7 +12,7 @@ import {
   type Arrow, type Direction, type Importance, type LayoutMode, type PinDisplay, type StackMode, type Side, type Size, type Span,
 } from "../types.js";
 
-/** Konstrukte späterer Versionen (02-dsl.md §4.7) mit der Version, ab der sie kommen. */
+/** Constructs from later versions (02-dsl.md §4.7) with the version that introduces them. */
 const RESERVED: Readonly<Record<string, string>> = {
   use: "v0.2",
   view: "v0.2",
@@ -30,12 +30,12 @@ const DEFINE_KEYWORDS = ["label", "size", "category", "shape", "icon", "pin", ..
 const CONNECTION_KEYWORDS = ["label", "type"];
 const LAYOUT_KEYWORDS = ["mode", "grid"];
 
-/** Wird nach dem Melden eines Syntaxfehlers geworfen und auf Anweisungsebene gefangen. */
+/** Thrown after a syntax error has been reported and caught at statement level. */
 const BAIL = Symbol("bail");
 
 /**
- * Fehlertoleranter Recursive-Descent-Parser. Liefert immer einen Syntaxbaum; nach einem
- * Fehler synchronisiert er auf die nächste `}` bzw. das nächste Anweisungs-Schlüsselwort.
+ * Error-tolerant recursive descent parser. Always returns a syntax tree; after an error it
+ * synchronises on the next `}` or the next statement keyword.
  */
 export function parse(source: string): ParseResult<SyntaxTree> {
   const lexed = lex(source);
@@ -44,7 +44,7 @@ export function parse(source: string): ParseResult<SyntaxTree> {
   let i = 0;
   let lastErrorAt = -1;
 
-  // ── Token-Zugriff ────────────────────────────────────────────
+  // ── Token access ─────────────────────────────────────────────
 
   const peek = (k = 0): Token => tokens[Math.min(i + k, tokens.length - 1)]!;
   const previous = (): Token => tokens[Math.max(i - 1, 0)]!;
@@ -58,24 +58,24 @@ export function parse(source: string): ParseResult<SyntaxTree> {
 
   const describe = (t: Token): string => {
     switch (t.type) {
-      case "eof": return "Dateiende";
+      case "eof": return "end of file";
       case "ident": return `\`${t.text}\``;
-      case "string": return `String ${t.text}`;
-      case "int": return `Zahl ${t.text}`;
-      case "invalid": return `unerwartetes Zeichen \`${t.text}\``;
+      case "string": return `string ${t.text}`;
+      case "int": return `number ${t.text}`;
+      case "invalid": return `unexpected character \`${t.text}\``;
       default: return `\`${t.text}\``;
     }
   };
 
   const report = (d: Diagnostic) => {
-    // Nur ein Syntaxfehler je Position, damit Folgefehler nicht kaskadieren.
+    // Only one syntax error per position, so follow-up errors do not cascade.
     if (d.span.start === lastErrorAt) return;
     lastErrorAt = d.span.start;
     diagnostics.push(d);
   };
 
   const fail = (expected: string, t: Token = peek()): never => {
-    report(diagnostic("E001", `Erwartet ${expected}, gefunden ${describe(t)}`, t.span));
+    report(diagnostic("E001", `Expected ${expected}, found ${describe(t)}`, t.span));
     throw BAIL;
   };
 
@@ -89,13 +89,13 @@ export function parse(source: string): ParseResult<SyntaxTree> {
     }
     const expected = words.map((w) => `\`${w}\``).join(" | ");
     if (t.type === "ident") {
-      report(withSuggestion("E001", `Erwartet ${expected}, gefunden ${describe(t)}`, t.text, t.span, words));
+      report(withSuggestion("E001", `Expected ${expected}, found ${describe(t)}`, t.text, t.span, words));
       throw BAIL;
     }
     return fail(expected);
   };
 
-  // ── Knoten ───────────────────────────────────────────────────
+  // ── Nodes ────────────────────────────────────────────────────
 
   const spanFrom = (start: Token): Span => ({
     start: start.span.start,
@@ -108,26 +108,26 @@ export function parse(source: string): ParseResult<SyntaxTree> {
     ({ ...fields, span: spanFrom(start), leadingTrivia: start.leadingTrivia }) as N;
 
   const ident = (): Ident => {
-    const t = expect("ident", "Bezeichner");
+    const t = expect("ident", "an identifier");
     return { kind: "Ident", name: t.text, span: t.span, leadingTrivia: [] };
   };
 
   /**
-   * Bezeichner innerhalb einer angefangenen Anweisung. Steht auf einer neuen Zeile ein
-   * Schlüsselwort, beginnt dort vermutlich die nächste Anweisung — die aktuelle ist unfertig.
+   * Identifier inside a statement that has already begun. If a keyword appears on a new line,
+   * the next statement probably starts there — the current one is incomplete.
    */
   const operand = (keywords: readonly string[]): Ident => {
     const t = peek();
-    if (t.type === "ident" && t.newlineBefore && keywords.includes(t.text)) fail("Bezeichner");
+    if (t.type === "ident" && t.newlineBefore && keywords.includes(t.text)) fail("an identifier");
     return ident();
   };
 
   const string = (): StringLit => {
-    const t = expect("string", "String");
+    const t = expect("string", "a string");
     return { kind: "String", value: t.value, span: t.span, leadingTrivia: [] };
   };
 
-  // ── Blöcke und Fehlerbehandlung ──────────────────────────────
+  // ── Blocks and error handling ────────────────────────────────
 
   const skipBalanced = () => {
     let depth = 0;
@@ -138,7 +138,7 @@ export function parse(source: string): ParseResult<SyntaxTree> {
     } while (depth > 0 && !at("eof"));
   };
 
-  /** Überspringt bis vor die nächste `}` oder den Beginn der nächsten Anweisung. */
+  /** Skips ahead to just before the next `}` or the start of the next statement. */
   const recover = (statementStart: number, keywords: readonly string[]) => {
     while (!at("eof") && !at("}")) {
       const t = peek();
@@ -149,8 +149,8 @@ export function parse(source: string): ParseResult<SyntaxTree> {
   };
 
   /**
-   * Liest `{ item* }` (die öffnende Klammer ist bereits gelesen). Fehler in einem Element
-   * verwerfen nur dieses Element. Fehlt die schließende Klammer, bleibt der Block erhalten.
+   * Reads `{ item* }` (the opening brace has already been consumed). An error in one item
+   * discards only that item. If the closing brace is missing, the block is kept.
    */
   const block = <T>(
     parseItem: () => T | undefined,
@@ -169,7 +169,7 @@ export function parse(source: string): ParseResult<SyntaxTree> {
     }
     const closingTrivia = peek().leadingTrivia;
     if (at("}")) next();
-    else report(diagnostic("E001", "Erwartet `}`, gefunden Dateiende", peek().span));
+    else report(diagnostic("E001", "Expected `}`, found end of file", peek().span));
     return { items, closingTrivia };
   };
 
@@ -185,10 +185,10 @@ export function parse(source: string): ParseResult<SyntaxTree> {
     return following !== "." && following !== ":" && !ARROWS.includes(following);
   };
 
-  /** Meldet ein reserviertes Konstrukt und überspringt es bis Zeilenende bzw. Blockende. */
+  /** Reports a reserved construct and skips it to the end of the line or block. */
   const skipReserved = (): undefined => {
     const t = next();
-    report(diagnostic("E110", `\`${t.text}\` ist erst ab ${RESERVED[t.text]} verfügbar`, t.span));
+    report(diagnostic("E110", `\`${t.text}\` is only available from ${RESERVED[t.text]} on`, t.span));
     while (!at("eof") && !at("}") && !peek().newlineBefore) {
       if (at("{")) skipBalanced();
       else next();
@@ -198,12 +198,12 @@ export function parse(source: string): ParseResult<SyntaxTree> {
 
   const unknownStatement = (keywords: readonly string[], context: string): never => {
     const t = peek();
-    if (t.type !== "ident") return fail(`eine Anweisung in ${context}`);
-    report(withSuggestion("E001", `Unbekannte Anweisung \`${t.text}\` in ${context}`, t.text, t.span, keywords));
+    if (t.type !== "ident") return fail(`a statement in ${context}`);
+    report(withSuggestion("E001", `Unknown statement \`${t.text}\` in ${context}`, t.text, t.span, keywords));
     throw BAIL;
   };
 
-  // ── Gemeinsame Anweisungen ───────────────────────────────────
+  // ── Shared statements ────────────────────────────────────────
 
   const label = (): LabelStmt => {
     const start = next();
@@ -221,7 +221,7 @@ export function parse(source: string): ParseResult<SyntaxTree> {
   };
 
   const pin = (): PinStmt => {
-    if (!atWord("pin")) return unknownStatement(["pin"], "einem Seitenblock");
+    if (!atWord("pin")) return unknownStatement(["pin"], "a side block");
     const start = next();
     const signal = operand(COMPONENT_KEYWORDS);
     const name = operand(COMPONENT_KEYWORDS);
@@ -237,25 +237,25 @@ export function parse(source: string): ParseResult<SyntaxTree> {
     return withClosing(node<SideBlock>(start, { kind: "SideBlock", side, pins: items }), closingTrivia);
   };
 
-  // ── Komponenten ──────────────────────────────────────────────
+  // ── Components ───────────────────────────────────────────────
 
   const hint = (): HintStmt => {
     const start = next();
     const axis = expectWord(["row", "column"] as const);
-    const value = expect("int", "eine Zahl ≥ 1");
+    const value = expect("int", "a number ≥ 1");
     const n = Number(value.text);
     if (n < 1) {
-      report(diagnostic("E001", `Erwartet eine Zahl ≥ 1, gefunden ${value.text}`, value.span));
+      report(diagnostic("E001", `Expected a number ≥ 1, found ${value.text}`, value.span));
     }
     return node<HintStmt>(start, { kind: "Hint", axis, value: Math.max(1, n) });
   };
 
   const count = (): CountStmt => {
     const start = next();
-    const value = expect("int", "eine Zahl ≥ 1");
+    const value = expect("int", "a number ≥ 1");
     const n = Number(value.text);
     if (n < 1) {
-      report(diagnostic("E001", `Erwartet eine Zahl ≥ 1, gefunden ${value.text}`, value.span));
+      report(diagnostic("E001", `Expected a number ≥ 1, found ${value.text}`, value.span));
     }
     return node<CountStmt>(start, { kind: "Count", value: Math.max(1, n) });
   };
@@ -291,7 +291,7 @@ export function parse(source: string): ParseResult<SyntaxTree> {
         case "meta": return meta();
       }
     }
-    return unknownStatement(COMPONENT_KEYWORDS, "einer Komponente");
+    return unknownStatement(COMPONENT_KEYWORDS, "a component");
   };
 
   const component = (): ComponentNode => {
@@ -310,7 +310,7 @@ export function parse(source: string): ParseResult<SyntaxTree> {
     return withClosing(node<ComponentNode>(start, { ...n, body: items }), closingTrivia);
   };
 
-  // ── Zonen und Systeme ────────────────────────────────────────
+  // ── Zones and systems ────────────────────────────────────────
 
   const groupStmt = (context: string) => (): GroupStmt | undefined => {
     if (isReserved()) return skipReserved();
@@ -318,7 +318,7 @@ export function parse(source: string): ParseResult<SyntaxTree> {
     if (atWord("system")) return system();
     if (atWord("component")) return component();
     if (atWord("zone")) {
-      report(diagnostic("E001", "Zonen sind nur auf oberster Ebene der Architektur erlaubt", peek().span));
+      report(diagnostic("E001", "Zones are only allowed at the top level of the architecture", peek().span));
       throw BAIL;
     }
     return unknownStatement(GROUP_KEYWORDS, context);
@@ -328,7 +328,7 @@ export function parse(source: string): ParseResult<SyntaxTree> {
     const start = next();
     const id = ident();
     expect("{", "`{`");
-    const { items, closingTrivia } = block(groupStmt("einem System"), GROUP_KEYWORDS);
+    const { items, closingTrivia } = block(groupStmt("a system"), GROUP_KEYWORDS);
     return withClosing(node<SystemNode>(start, { kind: "System", id, body: items }), closingTrivia);
   };
 
@@ -336,11 +336,11 @@ export function parse(source: string): ParseResult<SyntaxTree> {
     const start = next();
     const id = ident();
     expect("{", "`{`");
-    const { items, closingTrivia } = block(groupStmt("einer Zone"), GROUP_KEYWORDS);
+    const { items, closingTrivia } = block(groupStmt("a zone"), GROUP_KEYWORDS);
     return withClosing(node<ZoneNode>(start, { kind: "Zone", id, body: items }), closingTrivia);
   };
 
-  // ── Verbindungen ─────────────────────────────────────────────
+  // ── Connections ──────────────────────────────────────────────
 
   const endpoint = (): EndpointNode => {
     const start = peek();
@@ -358,7 +358,7 @@ export function parse(source: string): ParseResult<SyntaxTree> {
   const connection = (): ConnectionNode => {
     const start = peek();
     const from = endpoint();
-    if (!ARROWS.includes(peek().type)) fail("`->`, `<-`, `<->` oder `--`");
+    if (!ARROWS.includes(peek().type)) fail("`->`, `<-`, `<->` or `--`");
     const arrow = next().type as Arrow;
     const to = endpoint();
     const n = node<ConnectionNode>(start, { kind: "Connection", from, arrow, to });
@@ -370,7 +370,7 @@ export function parse(source: string): ParseResult<SyntaxTree> {
         const typeStart = next();
         return node<TypeStmt>(typeStart, { kind: "Type", value: ident() });
       }
-      return unknownStatement(CONNECTION_KEYWORDS, "einer Verbindung");
+      return unknownStatement(CONNECTION_KEYWORDS, "a connection");
     };
     const { items, closingTrivia } = block(connectionStmt, CONNECTION_KEYWORDS);
     return withClosing(node<ConnectionNode>(start, { ...n, body: items }), closingTrivia);
@@ -398,13 +398,13 @@ export function parse(source: string): ParseResult<SyntaxTree> {
             const id = ident();
             cells.push({ kind: "GridCell", id, span: t.span, leadingTrivia: [] });
           } else {
-            fail("Komponenten-ID oder `.`");
+            fail("a component ID or `.`");
           }
           if (!at("|") || peek().newlineBefore) break;
           next();
-          if (at("}") || peek().newlineBefore) fail("Zelle nach `|`");
+          if (at("}") || peek().newlineBefore) fail("a cell after `|`");
         }
-        if (!at("}") && !at("eof") && !peek().newlineBefore) fail("`|` oder Zeilenumbruch");
+        if (!at("}") && !at("eof") && !peek().newlineBefore) fail("`|` or a line break");
       } catch (e) {
         if (e !== BAIL) throw e;
         skipLine();
@@ -431,7 +431,7 @@ export function parse(source: string): ParseResult<SyntaxTree> {
     return withClosing(node<LayoutStmt>(start, { kind: "Layout", body: items }), closingTrivia);
   };
 
-  // ── Architektur ──────────────────────────────────────────────
+  // ── Architecture ─────────────────────────────────────────────
 
   const archStmt = (): Statement | undefined => {
     const following = peek(1).type;
@@ -461,11 +461,11 @@ export function parse(source: string): ParseResult<SyntaxTree> {
         case "system": return system();
         case "component": return component();
         case "define":
-          report(diagnostic("E001", "`define` muss vor `architecture` stehen", t.span));
+          report(diagnostic("E001", "`define` must come before `architecture`", t.span));
           throw BAIL;
       }
     }
-    return unknownStatement(ARCH_KEYWORDS, "der Architektur");
+    return unknownStatement(ARCH_KEYWORDS, "the architecture");
   };
 
   const architecture = (): ArchitectureNode => {
@@ -497,7 +497,7 @@ export function parse(source: string): ParseResult<SyntaxTree> {
         case "pin": return pin();
         case "left": case "right": case "top": case "bottom": return sideBlock();
         case "importance": case "hint": case "meta":
-          report(diagnostic("E001", `\`${t.text}\` ist nur in einer Komponente erlaubt, nicht in \`define\``, t.span));
+          report(diagnostic("E001", `\`${t.text}\` is only allowed in a component, not in \`define\``, t.span));
           throw BAIL;
       }
     }
@@ -520,7 +520,7 @@ export function parse(source: string): ParseResult<SyntaxTree> {
     );
   };
 
-  // ── Dokument ─────────────────────────────────────────────────
+  // ── Document ─────────────────────────────────────────────────
 
   const defines: DefineNode[] = [];
   let arch: ArchitectureNode | undefined;
@@ -530,19 +530,19 @@ export function parse(source: string): ParseResult<SyntaxTree> {
     try {
       if (atWord("define")) {
         const d = define();
-        if (arch) report(diagnostic("E001", "`define` muss vor `architecture` stehen", d.name.span));
+        if (arch) report(diagnostic("E001", "`define` must come before `architecture`", d.name.span));
         defines.push(d);
       } else if (atWord("architecture")) {
         const t = peek();
         const a = architecture();
-        if (arch) report(diagnostic("E001", "Ein Dokument enthält genau eine `architecture`", t.span));
+        if (arch) report(diagnostic("E001", "A document contains exactly one `architecture`", t.span));
         else arch = a;
       } else if (isReserved()) {
         skipReserved();
       } else if (at("}")) {
-        fail("`define` oder `architecture`");
+        fail("`define` or `architecture`");
       } else {
-        unknownStatement(["define", "architecture"], "der Datei");
+        unknownStatement(["define", "architecture"], "the file");
       }
     } catch (e) {
       if (e !== BAIL) throw e;

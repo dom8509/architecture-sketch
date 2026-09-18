@@ -1,108 +1,107 @@
-# 07 — Repository-Struktur
+# 07 — Repository structure
 
-## Zielstruktur
+## Target structure
 
 ```
 sysarch/
-├─ docs/                      Konzept (dieses Verzeichnis)
+├─ docs/                      concept (this directory)
 ├─ library/
-│  ├─ automotive.archlib      Standard-Templates, in der DSL selbst geschrieben
-│  └─ icons/                  einfarbige 24×24-SVGs, zur Build-Zeit zu IconDef bereinigt
-├─ examples/                  Beispielarchitekturen, zugleich Golden-File-Eingaben
+│  ├─ automotive.archlib      standard templates, written in the DSL itself
+│  └─ icons/                  single-colour 24×24 SVGs, cleaned into IconDef at build time
+├─ examples/                  example architectures, also the golden file inputs
 │
 ├─ packages/
 │  ├─ core/                   @sysarch/core
 │  │  ├─ lexer/
-│  │  ├─ parser/              fehlertoleranter Recursive-Descent-Parser
-│  │  ├─ ast/                 verlustfreier Syntaxbaum
-│  │  ├─ resolve/             Templates, Pins, Typableitung → Semantic Model
-│  │  ├─ diagnostics/         Codes, Meldungen, Vorschläge
-│  │  ├─ format/              kanonischer Formatter
-│  │  └─ edit/                TextEdit, Quick-Fixes; EditCommand → TextEdit[] (M7)
+│  │  ├─ parser/              error-tolerant recursive descent parser
+│  │  ├─ ast/                 lossless syntax tree
+│  │  ├─ resolve/             templates, pins, type inference → semantic model
+│  │  ├─ diagnostics/         codes, messages, suggestions
+│  │  ├─ format/              canonical formatter
+│  │  └─ edit/                TextEdit, quick fixes; EditCommand → TextEdit[] (M7)
 │  │
-│  ├─ themes/                 @sysarch/themes — Design-Tokens + Font-Metriken
+│  ├─ themes/                 @sysarch/themes — design tokens + font metrics
 │  │
 │  ├─ layout/                 @sysarch/layout
 │  │  ├─ rank.ts
 │  │  ├─ zones.ts
 │  │  ├─ order.ts
-│  │  ├─ shapes.ts            Innenbereich, Hülle, Kontur je Form
+│  │  ├─ shapes.ts            inner area, hull, contour per shape
 │  │  ├─ size.ts
 │  │  ├─ place.ts
 │  │  ├─ route.ts
 │  │  └─ labels.ts
 │  │
-│  ├─ render-svg/             @sysarch/render-svg — SceneGraph → SVG-String
-│  ├─ export-png/             @sysarch/export-png — Browser-Rasterisierung
-│  ├─ export-reactflow/       @sysarch/export-reactflow — JSON, ohne React-Abhängigkeit
-│  └─ editor/                 @sysarch/editor — framework-freier Editor (DOM + CodeMirror 6)
+│  ├─ render-svg/             @sysarch/render-svg — SceneGraph → SVG string
+│  ├─ export-png/             @sysarch/export-png — browser rasterising
+│  ├─ export-reactflow/       @sysarch/export-reactflow — JSON, no React dependency
+│  └─ editor/                 @sysarch/editor — framework-free editor (DOM + CodeMirror 6)
 │
 ├─ apps/
-│  ├─ web/                    Vite, statische Seite
-│  ├─ reactflow-test/         Test-App für den React-Flow-Export (React, nur hier)
-│  ├─ obsidian/               Obsidian-Plugin (esbuild)
-│  ├─ docs/                   Nutzerdokumentation (VitePress, GitHub Pages)
-│  └─ cli/                    Node-CLI
+│  ├─ web/                    Vite, static site
+│  ├─ reactflow-test/         test app for the React Flow export (React, only here)
+│  ├─ obsidian/               Obsidian plugin (esbuild)
+│  ├─ docs/                   user documentation (VitePress, GitHub Pages)
+│  └─ cli/                    Node CLI
 │
 └─ tests/
-   └─ golden/                 erwartete SceneGraph-JSON und SVGs zu examples/
+   └─ golden/                 expected scene graph JSON and SVGs for examples/
 ```
 
-## Abhängigkeitsregeln
+## Dependency rules
 
 ```
 core  ←  layout  ←  render-svg  ←  export-png
   ↑        ↑            ↑
-themes ────┴────────────┤ (render-svg: Schriftkonturen für das Subset)
+themes ────┴────────────┤ (render-svg: font outlines for the subset)
   ↑                     │
-export-reactflow ───────┘ (nur Typen aus core/layout)
+export-reactflow ───────┘ (types from core/layout only)
 
 editor  → core, layout, themes, render-svg, export-*  (+ CodeMirror 6)
-apps/*  → beliebige packages
+apps/*  → any package
 ```
 
-| Paket | Laufzeit-Abhängigkeiten | Umgebung |
+| Package | Runtime dependencies | Environment |
 |-------|-------------------------|----------|
-| `core`, `themes`, `layout`, `render-svg`, `export-reactflow` | **keine** | überall (kein DOM, kein Node-API) |
-| `export-png` | keine | Browser (DOM, Canvas) |
-| `editor` | CodeMirror 6 | Browser |
-| `apps/web` | Vite (nur Build) | Browser |
-| `apps/reactflow-test` | React, `@xyflow/react` | Browser (nur Test-App, nicht ausgeliefert) |
-| `apps/obsidian` | `obsidian` (API-Typen) | Obsidian |
-| `apps/cli` | `@resvg/resvg-js` (ab M5, PNG) | Node |
-| `apps/docs` | VitePress, markdown-it (nur Build) | statische Seite |
+| `core`, `themes`, `layout`, `render-svg`, `export-reactflow` | **none** | anywhere (no DOM, no Node API) |
+| `export-png` | none | browser (DOM, canvas) |
+| `editor` | CodeMirror 6 | browser |
+| `apps/web` | Vite (build only) | browser |
+| `apps/reactflow-test` | React, `@xyflow/react` | browser (test app only, not shipped) |
+| `apps/obsidian` | `obsidian` (API types) | Obsidian |
+| `apps/cli` | `@resvg/resvg-js` (from M5, PNG) | Node |
+| `apps/docs` | VitePress, markdown-it (build only) | static site |
 
-Verboten im gesamten Repo: Mermaid, Graphviz, Dagre, ELK.js, Konva, Fabric.js,
-JointJS, GoJS, React Flow als Laufzeitabhängigkeit eines Pakets (die Test-App
-`apps/reactflow-test` ist davon ausgenommen — sie spielt die Zielanwendung).
+Forbidden across the whole repository: Mermaid, Graphviz, Dagre, ELK.js, Konva, Fabric.js,
+JointJS, GoJS, React Flow as a runtime dependency of a package (the test app
+`apps/reactflow-test` is exempt — it plays the target application).
 
-Die Regeln werden per Lint geprüft (Import-Beschränkungen je Paket), nicht nur per
-Konvention.
+The rules are enforced by lint (import restrictions per package), not by convention alone.
 
 ## Tooling
 
-| Bereich | Wahl | Begründung |
+| Area | Choice | Rationale |
 |---------|------|------------|
-| Sprache | TypeScript, `strict`, ES2022-Module | Obsidian-Plugins sind TypeScript |
-| Paketverwaltung | npm Workspaces | kein zusätzliches Werkzeug nötig |
-| Build | TypeScript Project References (auch CLI, solange sie nur im Monorepo läuft); esbuild für Obsidian und ein veröffentlichtes CLI-Bundle; Vite für Web | schnell, wenig Konfiguration |
-| Tests | Vitest | Snapshot-/Golden-File-Tests eingebaut |
-| Lint/Format | oxlint + Prettier (nur TS, nicht DSL) | schnell |
-| Laufzeit | Node ≥ 22 LTS | |
-| CI | GitHub Actions: `check`, `test`, Golden-File-Diff, Build aller Apps | |
-| Dokumentation | VitePress in `apps/docs`; Workflow `docs.yml` veröffentlicht Doku und Web-App bei jedem Push auf `main` auf GitHub Pages | Referenzteile und Diagramme werden beim Build aus dem Code erzeugt |
-| Release | Obsidian-Plugin über GitHub Release (`main.js`, `manifest.json`, `styles.css`); Workflow `obsidian-release.yml` bei Tag = Version aus `apps/obsidian/manifest.json` | Obsidian-Community-Format |
+| Language | TypeScript, `strict`, ES2022 modules | Obsidian plugins are TypeScript |
+| Package management | npm workspaces | no extra tool needed |
+| Build | TypeScript project references (including the CLI, as long as it only runs inside the monorepo); esbuild for Obsidian and for a published CLI bundle; Vite for the web | fast, little configuration |
+| Tests | Vitest | snapshot/golden file tests built in |
+| Lint/format | oxlint + Prettier (TS only, not the DSL) | fast |
+| Runtime | Node ≥ 22 LTS | |
+| CI | GitHub Actions: `check`, `test`, golden file diff, build of all apps | |
+| Documentation | VitePress in `apps/docs`; the `docs.yml` workflow publishes the docs and the web app to GitHub Pages on every push to `main` | reference parts and diagrams are generated from the code at build time |
+| Release | Obsidian plugin via GitHub release (`main.js`, `manifest.json`, `styles.css`); the `obsidian-release.yml` workflow runs on a tag matching the version in `apps/obsidian/manifest.json` | Obsidian community format |
 
-## Konventionen
+## Conventions
 
-- Öffentliche API je Paket ausschließlich über `src/index.ts`.
-- Reine Funktionen im Core; keine Klassen mit veränderlichem Zustand außerhalb von `editor`.
-- Keine `Map`/`Set`-Iteration ohne definierte Reihenfolge in Layout und Rendering.
-- Jede neue Diagnose bekommt Code, Dokumentation in `02-dsl.md` und in
-  `apps/docs/referenz/diagnosen.md` sowie einen Test.
-- Nutzerseitige Änderungen (Sprache, Bibliothek, CLI, Web-App, Obsidian) aktualisieren die
-  Dokumentation in `apps/docs` im selben Pull Request — siehe
-  `apps/docs/mitwirken/dokumentation.md`.
-- Jede Layout-Änderung aktualisiert die Golden Files im selben Commit.
-- Icon-Bereinigung (`scripts/build-icons`) läuft im Build und in der CI; ein ungültiges
-  Icon bricht den Build.
+- The public API of a package is exposed exclusively through `src/index.ts`.
+- Pure functions in the core; no classes with mutable state outside `editor`.
+- No `Map`/`Set` iteration without a defined order in layout and rendering.
+- Every new diagnostic gets a code, documentation in `02-dsl.md` and in
+  `apps/docs/reference/diagnostics.md`, plus a test.
+- User-facing changes (language, library, CLI, web app, Obsidian) update the documentation
+  in `apps/docs` in the same pull request — see
+  `apps/docs/contributing/documentation.md`.
+- Every layout change updates the golden files in the same commit.
+- Icon cleanup (`scripts/build-icons`) runs in the build and in CI; an invalid icon breaks
+  the build.

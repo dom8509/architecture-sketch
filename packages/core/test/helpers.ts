@@ -1,6 +1,6 @@
 import { compile, type Diagnostic } from "../src/index.js";
 
-/** Diagnosen ohne Hinweise (I…), kompakt als "CODE zeile:spalte". */
+/** Diagnostics without hints (I…), compactly as "CODE line:column". */
 export function problems(source: string): string[] {
   return compile(source)
     .diagnostics.filter((d) => d.severity !== "info")
@@ -15,7 +15,7 @@ export function format(d: Diagnostic): string {
   return `${d.code} ${d.span.line}:${d.span.column}`;
 }
 
-/** Umschließt Anweisungen mit einer Architektur. */
+/** Wraps statements in an architecture. */
 export function arch(body: string, prelude = ""): string {
   return `${prelude}\narchitecture "Test" {\n${body}\n}\n`;
 }

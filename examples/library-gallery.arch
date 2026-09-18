@@ -1,5 +1,5 @@
-// Bibliotheksgalerie — jede Form, jedes Icon und jedes Standard-Template einmal.
-// Icons ohne eigenes Standard-Template bekommen hier lokale Templates.
+// Library gallery — every shape, every icon and every standard template once.
+// Icons without a standard template of their own get local templates here.
 
 define current_sensor extends sensor {
     label "Current Sensor"

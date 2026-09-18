@@ -2,7 +2,7 @@ import { scopeSvg } from "./scope.js";
 
 let instances = 0;
 
-/** Vorschau: inline SVG mit Zoom (Mausrad) und Pan (Ziehen); Doppelklick passt ein. */
+/** Preview: inline SVG with zoom (mouse wheel) and pan (drag); double click fits to the area. */
 export class Preview {
   readonly element: HTMLElement;
   private readonly canvas: HTMLElement;
@@ -12,7 +12,7 @@ export class Preview {
   private x = 0;
   private y = 0;
   private fitted = true;
-  /** Obergrenze beim Einpassen; die Präsentation darf vergrößern. */
+  /** Upper bound when fitting; the presentation view may scale up. */
   maxFitScale = 1;
   private readonly resize: ResizeObserver;
 
@@ -57,7 +57,7 @@ export class Preview {
     this.resize.observe(this.element);
   }
 
-  /** Zeigt ein neues SVG; ohne SVG bleibt der letzte gültige Stand stehen und wird als veraltet markiert. */
+  /** Shows a new SVG; without one the last valid state stays and is marked as stale. */
   show(svg: string | undefined) {
     this.element.classList.toggle("sa-stale", svg === undefined && this.svg !== undefined);
     if (svg === undefined || svg === this.svg) return;
@@ -67,7 +67,7 @@ export class Preview {
     if (first || this.fitted) this.fit();
   }
 
-  /** Skaliert das Diagramm auf die Fläche (höchstens `maxFitScale`) und zentriert es. */
+  /** Scales the diagram to the area (at most `maxFitScale`) and centers it. */
   fit() {
     const size = this.size();
     const { clientWidth: w, clientHeight: h } = this.element;

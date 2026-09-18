@@ -1,4 +1,4 @@
-/** DSL komprimiert (deflate-raw, base64url) im URL-Fragment `#src=…` — Links ohne Server. */
+/** DSL compressed (deflate-raw, base64url) in the URL fragment `#src=…` — links without a server. */
 export async function encodeSource(source: string): Promise<string> {
   const stream = new Blob([source]).stream().pipeThrough(new CompressionStream("deflate-raw"));
   const bytes = new Uint8Array(await new Response(stream).arrayBuffer());

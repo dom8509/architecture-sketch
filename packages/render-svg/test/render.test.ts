@@ -5,7 +5,7 @@ import opentype from "opentype.js";
 import { describe, expect, it } from "vitest";
 import { buildFontSubset, renderSvg } from "../src/index.js";
 
-const source = `architecture "Tür & <Fenster>" {
+const source = `architecture "Door & <Window>" {
   component mcu: microcontroller { label "S32K3" pin pwm PWM }
   component driver: half_bridge { label "Door Motor Driver" }
   component motor: motor
@@ -16,62 +16,62 @@ const source = `architecture "Tür & <Fenster>" {
 const scene = () => layout(compile(source).value, getTheme("automotive-light"));
 
 describe("renderSvg", () => {
-  it("zeichnet Mehrfachelemente als Stapel: hintere Karten zuerst, vorne die kleinere Karte", () => {
+  it("draws multiplicity as a stack: back cards first, the smaller card in front", () => {
     const svg = renderSvg(layout(compile(`architecture "A" { component hb: half_bridge { count 3 } }`).value, getTheme("automotive-light")));
     const group = /<g class="sa-component[^"]*" data-ref="component:hb">(.*?)<\/g>/.exec(svg);
     expect(group).not.toBeNull();
     const rects = [...group![1]!.matchAll(/<rect x="([\d.]+)" y="([\d.]+)"/g)].map((m) => [Number(m[1]), Number(m[2])]);
     expect(rects).toHaveLength(3);
-    // Hinten = weiter rechts oben.
+    // Back = further up and to the right.
     expect(rects[0]![0]!).toBeGreaterThan(rects[2]![0]!);
     expect(rects[0]![1]!).toBeLessThan(rects[2]![1]!);
     expect(svg).toContain(">×3<");
   });
 
-  it("ist deterministisch", () => {
+  it("is deterministic", () => {
     expect(renderSvg(scene())).toBe(renderSvg(scene()));
   });
 
-  it("erzeugt ein eigenständiges SVG ohne externe Referenzen", () => {
+  it("produces a standalone SVG without external references", () => {
     const svg = renderSvg(scene());
     expect(svg.startsWith(`<svg xmlns="http://www.w3.org/2000/svg"`)).toBe(true);
     expect(svg).not.toMatch(/(href|src)="?(https?:|file:|\/\/)/);
     expect(svg.match(/href="([^"]*)"/g)!.every((h) => h.startsWith(`href="#sa-icon-`))).toBe(true);
   });
 
-  it("maskiert Texte und setzt den Titel", () => {
+  it("escapes text and sets the title", () => {
     const svg = renderSvg(scene());
-    expect(svg).toContain(`<title id="sa-title">Tür &amp; &lt;Fenster&gt;</title>`);
+    expect(svg).toContain(`<title id="sa-title">Door &amp; &lt;Window&gt;</title>`);
   });
 
-  it("bettet nur verwendete Icons genau einmal ein", () => {
+  it("embeds only the icons in use, exactly once each", () => {
     const svg = renderSvg(scene());
     const symbols = [...svg.matchAll(/<symbol id="sa-icon-(\w+)"/g)].map((m) => m[1]);
     expect(symbols).toEqual(["bridge", "chip", "motor"]);
   });
 
-  it("rundet Zahlen auf zwei Nachkommastellen", () => {
+  it("rounds numbers to two decimal places", () => {
     const svg = renderSvg(scene(), { embedFont: false });
     const numbers = [...svg.matchAll(/="(-?\d+\.\d+)"/g)].map((m) => m[1]!);
     expect(numbers.every((n) => n.split(".")[1]!.length <= 2)).toBe(true);
   });
 
-  it("trägt stabile Klassen und data-ref für Hit-Testing", () => {
+  it("carries stable classes and data-ref for hit testing", () => {
     const svg = renderSvg(scene());
     expect(svg).toContain(`data-ref="pin:mcu.PWM"`);
     expect(svg).toContain(`class="sa-component sa-shape-circle sa-cat-actuator sa-importance-secondary" data-ref="component:motor"`);
     expect(svg).toContain(`data-ref="connection:mcu.PWM-&gt;driver.IN#1"`);
   });
 
-  it("bettet die Schrift je Schnitt als @font-face ein", () => {
+  it("embeds the font per weight as @font-face", () => {
     const svg = renderSvg(scene());
     expect(svg.match(/@font-face/g)!.length).toBeGreaterThanOrEqual(2);
     expect(renderSvg(scene(), { embedFont: false })).not.toContain("@font-face");
   });
 });
 
-describe("Brücken", () => {
-  it("zeichnet an jeder Brücke einen Halbkreis nach oben", () => {
+describe("bridges", () => {
+  it("draws an upward semicircle at every bridge", () => {
     const scene = {
       width: 100, height: 100, background: "#FFFFFF", title: "", icons: [],
       items: [{
@@ -83,11 +83,11 @@ describe("Brücken", () => {
   });
 });
 
-describe("Schrift-Subset", () => {
+describe("font subset", () => {
   const parse = (bytes: Uint8Array) =>
     opentype.parse(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer);
 
-  it("ist eine gültige TrueType-Datei mit genau den verwendeten Zeichen", () => {
+  it("is a valid TrueType file with exactly the characters in use", () => {
     const font = parse(buildFontSubset(INTER_GLYPHS, INTER_METRICS, 500, "Motor AV"));
     expect(font.unitsPerEm).toBe(INTER_METRICS.unitsPerEm);
     expect(font.glyphs.length).toBe(1 + new Set("Motor AV").size);
@@ -96,14 +96,14 @@ describe("Schrift-Subset", () => {
     expect(font.charToGlyph("x").index).toBe(0);
   });
 
-  it("überträgt Kerning und Konturen", () => {
+  it("carries over kerning and contours", () => {
     const font = parse(buildFontSubset(INTER_GLYPHS, INTER_METRICS, 400, "AV"));
     expect(font.getKerningValue(font.charToGlyph("A"), font.charToGlyph("V"))).toBe(INTER_METRICS.faces[0]!.kerning["AV"]);
     const box = font.charToGlyph("A").getBoundingBox();
     expect(box.x2 - box.x1).toBeGreaterThan(1000);
   });
 
-  it("ist deterministisch", () => {
+  it("is deterministic", () => {
     expect(buildFontSubset(INTER_GLYPHS, INTER_METRICS, 600, "abc")).toEqual(buildFontSubset(INTER_GLYPHS, INTER_METRICS, 600, "cba"));
   });
 });

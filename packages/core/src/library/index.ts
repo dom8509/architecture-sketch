@@ -4,12 +4,12 @@ import { AUTOMOTIVE_ARCHLIB, ICONS } from "./generated.js";
 
 let standard: ParseResult<Library> | undefined;
 
-/** Standardbibliothek (`library/automotive.archlib` + `library/icons/`), zur Build-Zeit eingebettet. */
+/** Standard library (`library/automotive.archlib` + `library/icons/`), embedded at build time. */
 export function standardLibrary(): Library {
   return loadStandardLibrary().value;
 }
 
-/** Wie `standardLibrary()`, aber mit den Diagnosen der Bibliothek selbst. */
+/** Like `standardLibrary()`, but with the diagnostics of the library itself. */
 export function loadStandardLibrary(): ParseResult<Library> {
   standard ??= loadLibrary(AUTOMOTIVE_ARCHLIB, ICONS);
   return standard;
