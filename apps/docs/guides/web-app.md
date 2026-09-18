@@ -40,6 +40,13 @@ With the divider focused, ← and → resize it, Enter hides and shows the edito
 The current state is also kept as a **draft** in the browser and restored the next time you
 open the app.
 
+## Choosing a view
+
+As soon as the source declares [views](./views), a **View** selector appears next to the
+theme. It switches preview and exports to one level of abstraction; **everything** shows the
+whole architecture. The selected view ends up in the file name of an export
+(`architecture-overview.svg`).
+
 ## Choosing a theme
 
 The **Theme** selector overrides the theme for preview and export without changing the source

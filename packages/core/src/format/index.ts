@@ -1,8 +1,8 @@
 import type {
   ArchitectureNode, CategoryStmt, ComponentNode, ConnectionNode, DefineNode, DirectionStmt, PinsStmt, StackStmt,
   EndpointNode, CountStmt, GridNode, GridRow, HintStmt, IconStmt, ImportanceStmt, LabelStmt, LayoutStmt,
-  MetaBlock, MetaEntry, ModeStmt, PinSpacingStmt, PinStmt, ShapeStmt, SideBlock, SizeStmt, StringLit, SyntaxNode,
-  SyntaxTree, ThemeStmt, Trivia, TypeStmt, ZoneNode,
+  MetaBlock, MetaEntry, ModeStmt, PinSpacingStmt, PinStmt, ShapeStmt, ShowStmt, SideBlock, SizeStmt, StringLit, SyntaxNode,
+  SyntaxTree, ThemeStmt, Trivia, TypeStmt, ViewNode, ZoneNode,
 } from "../ast/index.js";
 import { hasErrors, type ParseResult } from "../diagnostics/index.js";
 import { lex } from "../lexer/index.js";
@@ -17,7 +17,7 @@ type Statement = Exclude<SyntaxNode, SyntaxTree>;
 const INLINE_KINDS = new Set(["Document", "Ident", "String", "Endpoint", "GridCell"]);
 
 /** Properties that allow a component to be written on a single line. */
-const COMPONENT_ONE_LINER_KINDS = new Set(["Label", "Size", "Importance", "Category", "Hint", "Count"]);
+const COMPONENT_ONE_LINER_KINDS = new Set(["Label", "Size", "Importance", "Category", "Hint", "Count", "Show"]);
 
 /** Side blocks with at most this many unlabelled pins fit on one line … */
 const MAX_INLINE_PINS = 3;
@@ -29,12 +29,12 @@ const ALIGNED_KINDS = new Set(["Connection", "SideBlock"]);
 
 /** Order of the statements in `architecture` (02-dsl.md §6). */
 const ORDER: Readonly<Record<string, number>> = {
-  Theme: 0, Direction: 1, Pins: 2, Stack: 3, Layout: 4, Zone: 5, System: 5, Component: 5, Connection: 6,
+  Theme: 0, Direction: 1, Pins: 2, Stack: 3, View: 4, Layout: 5, Zone: 6, System: 6, Component: 6, Connection: 7,
 };
 
 /** Sections in `architecture`, separated by a blank line. */
 const SECTION: Readonly<Record<string, number>> = {
-  Theme: 0, Direction: 0, Pins: 0, Stack: 0, Layout: 1, Zone: 2, System: 2, Component: 2, Connection: 3,
+  Theme: 0, Direction: 0, Pins: 0, Stack: 0, View: 1, Layout: 2, Zone: 3, System: 3, Component: 3, Connection: 4,
 };
 
 interface Entry {
@@ -197,6 +197,11 @@ export function format(source: string): ParseResult<string> {
       case "Icon": return { head: `icon ${(n as IconStmt).value.name}` };
       case "Type": return { head: `type ${(n as TypeStmt).value.name}` };
       case "Count": return { head: `count ${(n as CountStmt).value}` };
+      case "Show": return { head: `show in ${(n as ShowStmt).views.map((v) => v.name).join(", ")}` };
+      case "View": {
+        const v = n as ViewNode;
+        return inline(`view ${v.id.name}`, v.body, v.body.length === 1);
+      }
       case "Hint": {
         const h = n as HintStmt;
         return { head: `hint ${h.axis} ${h.value}` };
@@ -207,11 +212,12 @@ export function format(source: string): ParseResult<string> {
       }
       case "Pin": {
         const p = n as PinStmt;
-        return { head: `pin ${p.signal.name} ${p.name.name}${p.label ? " " + str(p.label) : ""}` };
+        const head = `pin ${p.signal.name} ${p.name.name}${p.label ? " " + str(p.label) : ""}`;
+        return inline(head, p.body, (p.body?.length ?? 0) <= 1);
       }
       case "SideBlock": {
         const s = n as SideBlock;
-        const fits = s.pins.length <= MAX_INLINE_PINS && s.pins.every((p) => !p.label);
+        const fits = s.pins.length <= MAX_INLINE_PINS && s.pins.every((p) => !p.label && !p.body);
         const form = inline(s.side, s.pins, fits, "   ");
         const tooLong = form?.body !== undefined && INDENT.length * depth + form.head.length + form.body.length + 1 > MAX_WIDTH;
         return tooLong ? undefined : form;
@@ -245,6 +251,11 @@ export function format(source: string): ParseResult<string> {
         return { head: `${n.kind.toLowerCase()} ${g.id.name}`, items: g.body };
       }
       case "Layout": return { head: "layout", items: (n as LayoutStmt).body };
+      case "View": return { head: `view ${(n as ViewNode).id.name}`, items: (n as ViewNode).body };
+      case "Pin": {
+        const p = n as PinStmt;
+        return { head: `pin ${p.signal.name} ${p.name.name}${p.label ? " " + str(p.label) : ""}`, items: p.body ?? [] };
+      }
       case "Meta": return { head: "meta", items: (n as MetaBlock).entries };
       case "SideBlock": return { head: (n as SideBlock).side, items: (n as SideBlock).pins };
       case "Component": return { head: componentHead(n as ComponentNode), items: (n as ComponentNode).body ?? [] };

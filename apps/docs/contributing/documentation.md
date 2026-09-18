@@ -31,6 +31,8 @@ start and build. None of it is checked in.
   silently when the language changes.
 - Snippets without `architecture` are only highlighted.
 - `sysarch code-only` is neither rendered nor checked — for deliberately broken examples.
+- `sysarch view=<id>` renders only that [view](/guides/views) of the block; the same source
+  can therefore appear several times with different diagrams.
 - Highlighting uses the same lexer as the editor.
 
 ## What the tests check

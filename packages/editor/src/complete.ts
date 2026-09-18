@@ -60,6 +60,17 @@ export function sysarchCompletion(current: () => Analysis | undefined) {
       };
     }
 
+    // `show in overview, det…` — the views of the document.
+    if (/\bshow\s+in\s+([A-Za-z_][A-Za-z0-9_]*\s*,\s*)*$/.test(before)) {
+      const views = analysis?.model.views ?? [];
+      if (views.length === 0) return null;
+      return {
+        from,
+        options: views.map((v) => ({ label: v.id, type: "enum", ...(v.label !== v.id && { detail: v.label }) })),
+        validFor: /^[A-Za-z0-9_]*$/,
+      };
+    }
+
     const keyword = /\b([a-z]+)\s+$/.exec(before);
     const options = keyword && AFTER_KEYWORD[keyword[1]!];
     if (options) return { from, options, validFor: /^[A-Za-z0-9_-]*$/ };

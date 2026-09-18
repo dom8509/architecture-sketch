@@ -23,6 +23,8 @@ export interface EditorOptions {
   source?: string;
   /** Overrides the theme of the source without modifying it. */
   theme?: string;
+  /** Renders only this view of the source (`view <id>`). */
+  view?: string;
   /** Delay between keystroke and recomputation (default 150 ms). */
   debounce?: number;
   /** Additional CodeMirror extensions, e.g. a dark editor theme. */
@@ -37,6 +39,7 @@ export class SysarchEditor {
   readonly preview: Preview;
   private analysis: Analysis;
   private theme: string | undefined;
+  private viewId: string | undefined;
   private timer: ReturnType<typeof setTimeout> | undefined;
   private readonly listeners: Listener[] = [];
   private readonly diagnosticsElement: HTMLElement | undefined;
@@ -44,8 +47,9 @@ export class SysarchEditor {
 
   constructor(options: EditorOptions) {
     this.theme = options.theme;
+    this.viewId = options.view;
     this.diagnosticsElement = options.diagnostics;
-    this.analysis = analyze(options.source ?? "", this.theme);
+    this.analysis = analyze(options.source ?? "", this.theme, this.viewId);
     this.preview = new Preview(options.preview);
     const debounce = options.debounce ?? 150;
 
@@ -107,6 +111,12 @@ export class SysarchEditor {
     this.refresh();
   }
 
+  /** Renders a single view; `undefined` shows the whole architecture again. */
+  setView(view: string | undefined) {
+    this.viewId = view;
+    this.refresh();
+  }
+
   onUpdate(listener: Listener) {
     this.listeners.push(listener);
   }
@@ -126,7 +136,7 @@ export class SysarchEditor {
   /** Recompute without debounce. */
   refresh() {
     clearTimeout(this.timer);
-    this.analysis = analyze(this.source, this.theme);
+    this.analysis = analyze(this.source, this.theme, this.viewId);
     this.publish();
   }
 

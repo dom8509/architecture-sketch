@@ -1,12 +1,13 @@
-# 02 — DSL v0.1
+# 02 — DSL
 
-The DSL is deliberately small. v0.1 knows exactly these constructs:
+The DSL is deliberately small. It knows exactly these constructs:
 
 `architecture` · `theme` · `direction` · `pins` · `stack` · `component` · `pin` · `zone` · `system` ·
-connections · `layout` · `define` (including `shape` and `icon`)
+connections · `layout` · `define` (including `shape` and `icon`) · `view` · `show in`
 
-Everything else (views, `use`, metadata inheritance, consistency rules) is reserved for
-later versions — see [Roadmap](08-roadmap.md).
+`view` and `show in` came with v0.2; everything else is v0.1. The rest (`use`, metadata
+inheritance, consistency rules) is reserved for later versions — see
+[Roadmap](08-roadmap.md).
 
 File extensions: `.arch` for architectures, `.archlib` for libraries.
 Obsidian code block language: `sysarch`.
@@ -71,7 +72,7 @@ architecture "Body Control Module" {
 | Identifiers | `[A-Za-z_][A-Za-z0-9_]*`, plus `-` when a letter follows directly (`automotive-light`). Case-sensitive. |
 | Strings | `"…"` with the escapes `\"`, `\\`, `\n` (line break inside the label) |
 | Integers | `[0-9]+` (only for `hint`) |
-| Operators | `->` `<-` `<->` `--` `.` `:` `\|` `{` `}` |
+| Operators | `->` `<-` `<->` `--` `.` `:` `,` `\|` `{` `}` |
 | Line breaks | insignificant — except inside `grid { }`, where they separate rows |
 
 Keywords are **context-sensitive**: `power` is a signal kind after `pin`, but may still be
@@ -88,20 +89,23 @@ The rule for `-` in identifiers makes `a--b` unambiguous (`a`, `--`, `b`), and l
 document      = { define } architecture ;
 
 architecture  = "architecture" STRING "{" { arch_stmt } "}" ;
-arch_stmt     = theme | direction | pins | stack | layout | zone | system | component | connection ;
+arch_stmt     = theme | direction | pins | stack | view | layout | zone | system | component | connection ;
 
 theme         = "theme" IDENT ;
 direction     = "direction" ( "LR" | "TB" ) ;
 pins          = "pins" ( "all" | "connected" | "none" ) ;
 stack         = "stack" ( "none" | "identical" ) ;
 
-zone          = "zone" IDENT "{" { label | system | component } "}" ;
-system        = "system" IDENT "{" { label | system | component } "}" ;
+view          = "view" IDENT [ "{" { label } "}" ] ;
+show          = "show" "in" IDENT { "," IDENT } ;
+
+zone          = "zone" IDENT "{" { label | show | system | component } "}" ;
+system        = "system" IDENT "{" { label | show | system | component } "}" ;
 
 component     = "component" IDENT [ ":" IDENT ] [ "{" { comp_stmt } "}" ] ;
-comp_stmt     = label | size | importance | category | pin | side_block | hint | count | meta ;
+comp_stmt     = label | size | importance | category | pin | side_block | hint | count | meta | show ;
 
-pin           = "pin" IDENT IDENT [ STRING ] ;          (* kind, name, optional label *)
+pin           = "pin" IDENT IDENT [ STRING ] [ "{" { show } "}" ] ;  (* kind, name, label *)
 side_block    = ( "left" | "right" | "top" | "bottom" ) "{" { pin } "}" ;
 
 label         = "label" STRING ;
@@ -112,7 +116,7 @@ hint          = "hint" ( "row" | "column" ) INT ;
 count         = "count" INT ;                            (* ≥ 1 *)
 meta          = "meta" "{" { IDENT STRING } "}" ;
 
-connection    = endpoint arrow endpoint [ "{" { label | conn_type } "}" ] ;
+connection    = endpoint arrow endpoint [ "{" { label | conn_type | show } "}" ] ;
 endpoint      = IDENT [ "." IDENT ] ;
 arrow         = "->" | "<-" | "<->" | "--" ;
 conn_type     = "type" IDENT ;
@@ -142,7 +146,7 @@ component <id>[: <template>] { … }
 
 - `id` is unique across the whole document — across zones and systems too.
 - Without a template the type is `block` (rounded rectangle, category `generic`, no icon).
-- **Shape and icon** come from the template only (see 4.6). An instance cannot set them;
+- **Shape and icon** come from the template only (see 4.7). An instance cannot set them;
   if a component needs a different appearance, derive a local template
   (`define window_motor extends motor { icon window }`).
 - **Label precedence:** instance `label` › template `label` › `id`.
@@ -256,7 +260,48 @@ Both group components, but they serve different purposes:
 - A component belongs to the innermost block it is defined in. There are no references to
   components defined elsewhere in v0.1.
 
-### 4.5 Layout control
+### 4.5 Views
+
+```sysarch
+architecture "Body Control Module" {
+    view overview { label "Overview" }
+    view detailed
+
+    component mcu: microcontroller {
+        pin digital CAN_TX { show in detailed }
+    }
+    component trx: can_transceiver { show in detailed }
+
+    mcu.CAN_TX -> trx.TXD { show in detailed }
+}
+```
+
+A `view` is a level of abstraction of the **same** source: one model, several diagrams.
+
+- `view <id>` declares a view; `label` gives it a display name, otherwise the ID is used.
+  View IDs have their own namespace — a view may be called like a component.
+- Views are ordered as declared. The order decides the order of the rendered files and of
+  the entries in the selectors of the web app and the Obsidian plugin.
+- `show in <view>[, <view>]` restricts an element to the listed views. It is allowed on
+  `zone`, `system`, `component`, `pin` and connections — not in `define`: a template
+  describes a building block, not where it is shown.
+- An element **without** `show in` is shown in every view its surroundings are shown in.
+  Without any `view` in the document, nothing changes: there is exactly one diagram.
+- `show in` only ever **narrows**, it never widens: a pin is never visible without its
+  component, a component never without its zone. If the two do not overlap, nothing is
+  shown and the element reports `W204`.
+- A connection appears where **both** of its components appear; `show in` narrows that
+  further. If the pin of an endpoint is hidden in a view, the connection docks on the body
+  of the component, exactly as with `pins none`.
+- Zones and systems without visible content disappear in that view, and so do empty rows
+  and columns of a `grid`.
+- A view that shows no component reports `W205`.
+
+The semantic model always stays complete: `check` sees every component, no matter which
+view shows it. Views are a matter of rendering, `render` produces one file per view
+(`architecture-overview.svg`, `architecture-detailed.svg`).
+
+### 4.6 Layout control
 
 ```sysarch
 layout {
@@ -305,7 +350,7 @@ layout {
   two connections ever share an attachment point. `size` therefore stays a minimum, not a
   cap.
 
-### 4.6 Templates (`define`)
+### 4.7 Templates (`define`)
 
 ```sysarch
 define half_bridge {
@@ -359,9 +404,9 @@ define window_motor extends motor {
 - Document-local `define`s go before `architecture` and override library names with a
   warning.
 
-### 4.7 Reserved constructs (the parser reports "available from v0.x")
+### 4.8 Reserved constructs (the parser reports "available from v0.x")
 
-`use "file.archlib"` · `view <id>` · `show in <view>` · `interface` · `rule`
+`use "file.archlib"` · `interface` · `rule`
 
 ---
 
@@ -384,9 +429,12 @@ Codes are stable and documented so that CI filters and tests can build on them.
 | `E109` | error | unknown signal kind, category or theme |
 | `E110` | error | construct reserved for a later version |
 | `E111` | error | unknown shape or icon — with a Levenshtein suggestion |
+| `E112` | error | unknown view in `show in` — with a Levenshtein suggestion |
 | `W201` | warning | connection between pins of incompatible groups (e.g. `power` → `can`) |
 | `W202` | warning | `hint` in `mode strict` |
 | `W203` | warning | local `define` overrides a library template |
+| `W204` | warning | `show in` does not overlap with the views of the surroundings — the element is shown nowhere |
+| `W205` | warning | a view shows no component |
 | `I301` | info | pin without a connection |
 
 **Error tolerance:** after an error the parser synchronizes on the next `}` or the next
@@ -402,16 +450,18 @@ the text it inserts.
 
 - **Indentation** 4 spaces, one space between tokens, `\n` as the line ending, exactly one
   line break at the end of the file.
-- **Order inside `architecture`:** `theme` › `direction` › `pins` › `stack` › `layout` ›
-  zones/systems/components › connections. Within those groups and in every other block the
+- **Order inside `architecture`:** `theme` › `direction` › `pins` › `stack` › views ›
+  `layout` › zones/systems/components › connections. Within those groups and in every other block the
   source order is kept — it carries meaning (pin and zone order).
 - **Blank lines:** at most one in a row, none at the start or end of a block. Between the
-  sections (`theme`/`direction`/`pins`/`stack`, `layout`, structure, connections) and between
-  `define`s there is always one.
+  sections (`theme`/`direction`/`pins`/`stack`, views, `layout`, structure, connections) and
+  between `define`s there is always one.
 - **Single-line** `head { … }`, as long as the block contains no comments:
   - connections with at most two properties: `a.X -> b { label "x" type can }`
   - components with exactly one property (`label`, `size`, `importance`, `category`,
-    `hint`, `count`): `component kl30: battery { label "KL30" }`
+    `hint`, `count`, `show`): `component kl30: battery { label "KL30" }`
+  - views and pins with at most one property: `view overview { label "Overview" }`,
+    `pin can CAN_TX { show in detailed }`
   - side blocks with at most three pins without a display label, separated by three spaces,
     as long as the line stays within 80 characters: `left { pin power VS   pin digital IN }`
   - empty blocks are dropped on components and connections; otherwise `zone z {}`.

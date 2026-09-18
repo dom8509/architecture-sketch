@@ -13,6 +13,8 @@ export interface Diagram {
   svg: string;
   /** Theme used for rendering; `undefined` = from the source. */
   theme: string | undefined;
+  /** The rendered view (`view <id>`), if the source declares views. */
+  view?: string;
   /** The note or `.arch` file the diagram belongs to. */
   sourcePath: string;
 }
@@ -49,7 +51,8 @@ export function addExportItems(menu: Menu, plugin: SysarchPlugin, diagram: () =>
 
 async function saved(plugin: SysarchPlugin, d: Diagram, extension: string, data: string | ArrayBuffer) {
   const noteName = d.sourcePath.slice(d.sourcePath.lastIndexOf("/") + 1).replace(/\.[^.]*$/, "");
-  const path = await writeExport(plugin, d.sourcePath, exportBaseName(d.model.title, noteName) + extension, data);
+  const base = exportBaseName(d.model.title, noteName) + (d.view ? `-${d.view}` : "");
+  const path = await writeExport(plugin, d.sourcePath, base + extension, data);
   new Notice(`Exported: ${path}`);
 }
 

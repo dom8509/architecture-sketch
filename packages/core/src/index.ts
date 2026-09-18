@@ -8,8 +8,9 @@ export { applyEdits, codeActions, type CodeAction, type TextEdit } from "./edit/
 export {
   resolve,
   type ArchitectureModel, type Component, type ComponentId, type Connection, type Endpoint,
-  type GridSpec, type Group, type GroupId, type Pin, type PinAddress,
+  type GridSpec, type Group, type GroupId, type Pin, type PinAddress, type View,
 } from "./resolve/index.js";
+export { projectView, Visibility } from "./resolve/views.js";
 export { labelStem, stackIdentical } from "./resolve/stack.js";
 export { loadLibrary, resolveDefines, type IconDef, type Library, type TemplateDef, type TemplatePin } from "./resolve/library.js";
 export { convertIcon, IconError } from "./library/icons.js";

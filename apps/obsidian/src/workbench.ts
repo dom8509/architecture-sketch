@@ -1,6 +1,6 @@
 import { Compartment } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
-import { SplitPane, SysarchEditor } from "@sysarch/editor";
+import { SplitPane, SysarchEditor, ViewSelect } from "@sysarch/editor";
 import type { EventRef } from "obsidian";
 import type { Diagram } from "./exports.js";
 import { effectiveTheme } from "./logic.js";
@@ -16,6 +16,7 @@ export class Workbench {
   readonly editor: SysarchEditor;
   readonly split: SplitPane;
   private readonly appearance = new Compartment();
+  private readonly viewSelect: ViewSelect;
   private theme: string | undefined;
   private readonly cssChange: EventRef;
   private saveTimer: ReturnType<typeof setTimeout> | undefined;
@@ -42,7 +43,12 @@ export class Workbench {
         this.saveTimer = setTimeout(() => void plugin.savePaneState(), 300);
       },
     });
-    this.editor.onUpdate(({ source }) => this.syncTheme(source));
+    this.viewSelect = new ViewSelect(preview.createDiv({ cls: "sysarch-view-bar" }), (view) => this.editor.setView(view));
+    this.viewSelect.sync(this.editor.current.model.views);
+    this.editor.onUpdate(({ source, model }) => {
+      this.syncTheme(source);
+      this.viewSelect.sync(model.views);
+    });
     this.cssChange = plugin.app.workspace.on("css-change", () => this.refresh());
   }
 
@@ -59,8 +65,8 @@ export class Workbench {
 
   /** The current state to export; `undefined` while the source contains errors. */
   diagram(sourcePath: string): Diagram | undefined {
-    const { model, svg } = this.editor.current;
-    return svg === undefined ? undefined : { model, svg, theme: this.theme, sourcePath };
+    const { rendered, svg, view } = this.editor.current;
+    return svg === undefined ? undefined : { model: rendered, svg, theme: this.theme, ...(view && { view }), sourcePath };
   }
 
   destroy() {

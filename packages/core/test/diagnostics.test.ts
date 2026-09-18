@@ -18,7 +18,8 @@ const cases: Record<DiagnosticCode, Case[]> = {
     { name: "count less than 1", source: arch(" component a { count 0 }"), at: "3:22" },
     { name: "hint less than 1", source: arch(" layout { mode assisted }\n component a { hint row 0 }"), at: "4:25" },
     { name: "define after architecture", source: 'architecture "A" {}\ndefine x {}', at: "2:8" },
-    { name: "unexpected character", source: arch(" component a,"), message: "unexpected character `,`" },
+    { name: "unexpected character", source: arch(" component a;"), message: "unexpected character `;`" },
+    { name: "show in a define", source: arch("", "define t { pin can TX { show in overview } }"), message: "not in `define`" },
     { name: "missing architecture", source: "define x {}" },
   ],
   E101: [
@@ -79,14 +80,16 @@ const cases: Record<DiagnosticCode, Case[]> = {
   ],
   E110: [
     { name: "use", source: 'use "nxp.archlib"\narchitecture "A" {}', at: "1:1", message: "v0.2" },
-    { name: "view", source: arch(" view overview\n component a"), at: "3:2" },
-    { name: "show in", source: arch(" component a { show in overview, detailed }"), at: "3:16" },
     { name: "interface in define", source: arch("", "define s extends microcontroller { interface can CAN0 }"), message: "v0.3" },
     { name: "rule", source: 'rule no_direct_can { }\narchitecture "A" {}', at: "1:1" },
   ],
   E111: [
     { name: "unknown shape", source: arch("", "define t { shape hexagn }"), at: "1:18", suggestion: "hexagon" },
     { name: "unknown icon", source: arch(" component m: t", "define t extends motor { icon moter }"), at: "1:31", suggestion: "motor" },
+  ],
+  E112: [
+    { name: "unknown view", source: arch(" view overview\n component a { show in overviw }"), at: "4:24", suggestion: "overview" },
+    { name: "show in without any view", source: arch(" component a { show in overview }"), at: "3:24", message: "declares no `view`" },
   ],
   W201: [
     { name: "power → can", source: arch(" component a { pin power P }\n component b { pin can C }\n a.P -> b.C"), at: "5:2" },
@@ -96,6 +99,21 @@ const cases: Record<DiagnosticCode, Case[]> = {
   ],
   W203: [
     { name: "local define overrides the library", source: arch(" component m: motor", "define motor extends motor { icon window }"), at: "1:8" },
+  ],
+  W204: [
+    {
+      name: "pin outside the views of its component",
+      source: arch(" view overview\n view detailed\n component a { show in overview\n pin can TX { show in detailed } }"),
+      at: "6:15",
+    },
+    {
+      name: "component outside the views of its zone",
+      source: arch(" view overview\n view detailed\n zone z { show in overview\n component a { show in detailed } }"),
+      at: "6:16",
+    },
+  ],
+  W205: [
+    { name: "view without a component", source: arch(" view overview\n view detailed\n component a { show in overview }"), at: "4:2" },
   ],
   I301: [
     { name: "pin without a connection", source: arch(" component a { pin power VDD }"), at: "3:16" },

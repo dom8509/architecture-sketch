@@ -1,0 +1,1666 @@
+{
+  "width": 1280,
+  "height": 464,
+  "background": "#FFFFFF",
+  "title": "Window lifter",
+  "icons": [
+    {
+      "name": "battery",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M3.5 7h14a1.5 1.5 0 0 1 1.5 1.5v7a1.5 1.5 0 0 1 -1.5 1.5h-14a1.5 1.5 0 0 1 -1.5 -1.5v-7a1.5 1.5 0 0 1 1.5 -1.5Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M22 10v4",
+          "mode": "stroke"
+        },
+        {
+          "d": "M6 12h4M8 10v4",
+          "mode": "stroke"
+        },
+        {
+          "d": "M13 12h3",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "bridge",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M5 3v18M19 3v18",
+          "mode": "stroke"
+        },
+        {
+          "d": "M5 12h14",
+          "mode": "stroke"
+        },
+        {
+          "d": "M10 9l3 3-3 3",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "can",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M2 9h20M2 15h20",
+          "mode": "stroke"
+        },
+        {
+          "d": "M7 9v6M17 9v6",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "chip",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M7 6h10a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1v-10a1 1 0 0 1 1 -1Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "motor",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M8 16V8l4 5 4-5v8",
+          "mode": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "regulator",
+      "viewBox": "0 0 24 24",
+      "elements": [
+        {
+          "d": "M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2Z",
+          "mode": "stroke"
+        },
+        {
+          "d": "M7 12c1.5-3 3-3 4.5 0s3 3 4.5 0",
+          "mode": "stroke"
+        }
+      ]
+    }
+  ],
+  "items": [
+    {
+      "type": "rect",
+      "ref": "zone:supply",
+      "className": "sa-zone",
+      "x": 32,
+      "y": 80,
+      "width": 416,
+      "height": 352,
+      "radius": 0,
+      "fill": "#F6F7F9",
+      "stroke": "#E3E6EB",
+      "strokeWidth": 1
+    },
+    {
+      "type": "rect",
+      "ref": "zone:control",
+      "className": "sa-zone",
+      "x": 448,
+      "y": 80,
+      "width": 624,
+      "height": 352,
+      "radius": 0,
+      "fill": "#F6F7F9",
+      "stroke": "#E3E6EB",
+      "strokeWidth": 1
+    },
+    {
+      "type": "rect",
+      "ref": "zone:actuation",
+      "className": "sa-zone",
+      "x": 1072,
+      "y": 80,
+      "width": 176,
+      "height": 352,
+      "radius": 0,
+      "fill": "#F6F7F9",
+      "stroke": "#E3E6EB",
+      "strokeWidth": 1
+    },
+    {
+      "type": "rect",
+      "ref": "system:ecu",
+      "className": "sa-system",
+      "x": 496,
+      "y": 112,
+      "width": 512,
+      "height": 304,
+      "radius": 10,
+      "fill": "none",
+      "stroke": "#8A94A6",
+      "strokeWidth": 1,
+      "dash": [
+        5,
+        3
+      ]
+    },
+    {
+      "type": "path",
+      "ref": "connection:battery->regulator.VIN#1",
+      "className": "sa-connection sa-group-supply sa-kind-power",
+      "points": [
+        {
+          "x": 144,
+          "y": 128
+        },
+        {
+          "x": 240,
+          "y": 128
+        },
+        {
+          "x": 240,
+          "y": 160
+        },
+        {
+          "x": 256,
+          "y": 160
+        }
+      ],
+      "stroke": "#8A6100",
+      "strokeWidth": 2.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:battery->regulator.VIN#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 252,
+      "y": 160,
+      "angle": 0,
+      "size": 8,
+      "fill": "#8A6100",
+      "stroke": "#8A6100",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:battery->mcu#1",
+      "className": "sa-connection sa-group-single sa-kind-signal",
+      "points": [
+        {
+          "x": 144,
+          "y": 144
+        },
+        {
+          "x": 224,
+          "y": 144
+        },
+        {
+          "x": 224,
+          "y": 256
+        },
+        {
+          "x": 464,
+          "y": 256
+        },
+        {
+          "x": 464,
+          "y": 192
+        },
+        {
+          "x": 512,
+          "y": 192
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5,
+      "hops": [
+        {
+          "x": 480,
+          "y": 192
+        }
+      ],
+      "hopRadius": 5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:battery->mcu#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 512,
+      "y": 192,
+      "angle": 0,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:regulator.VOUT->mcu.VDD#1",
+      "className": "sa-connection sa-group-supply sa-kind-power",
+      "points": [
+        {
+          "x": 416,
+          "y": 176
+        },
+        {
+          "x": 480,
+          "y": 176
+        },
+        {
+          "x": 480,
+          "y": 208
+        },
+        {
+          "x": 512,
+          "y": 208
+        }
+      ],
+      "stroke": "#8A6100",
+      "strokeWidth": 2.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:regulator.VOUT->mcu.VDD#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 508,
+      "y": 208,
+      "angle": 0,
+      "size": 8,
+      "fill": "#8A6100",
+      "stroke": "#8A6100",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:mcu.HB_PWM->hb.IN#1",
+      "className": "sa-connection sa-group-single sa-kind-pwm",
+      "points": [
+        {
+          "x": 720,
+          "y": 208
+        },
+        {
+          "x": 832,
+          "y": 208
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:mcu.HB_PWM->hb.IN#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 828,
+      "y": 208,
+      "angle": 0,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:hb.IS->mcu.IS#1",
+      "className": "sa-connection sa-group-single sa-kind-analog",
+      "points": [
+        {
+          "x": 896,
+          "y": 256
+        },
+        {
+          "x": 896,
+          "y": 272
+        },
+        {
+          "x": 752,
+          "y": 272
+        },
+        {
+          "x": 752,
+          "y": 224
+        },
+        {
+          "x": 720,
+          "y": 224
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:hb.IS->mcu.IS#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 724,
+      "y": 224,
+      "angle": 180,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:hb.OUT->motor#1",
+      "className": "sa-connection sa-group-supply sa-kind-power",
+      "points": [
+        {
+          "x": 992,
+          "y": 208
+        },
+        {
+          "x": 1120,
+          "y": 208
+        },
+        {
+          "x": 1120,
+          "y": 160
+        },
+        {
+          "x": 1136,
+          "y": 160
+        }
+      ],
+      "stroke": "#8A6100",
+      "strokeWidth": 2.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:hb.OUT->motor#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 1136,
+      "y": 160,
+      "angle": 0,
+      "size": 8,
+      "fill": "#8A6100",
+      "stroke": "#8A6100",
+      "strokeWidth": 2
+    },
+    {
+      "type": "path",
+      "ref": "connection:mcu->motor#1",
+      "className": "sa-connection sa-group-single sa-kind-signal",
+      "points": [
+        {
+          "x": 720,
+          "y": 192
+        },
+        {
+          "x": 800,
+          "y": 192
+        },
+        {
+          "x": 800,
+          "y": 128
+        },
+        {
+          "x": 1120,
+          "y": 128
+        },
+        {
+          "x": 1120,
+          "y": 144
+        },
+        {
+          "x": 1136,
+          "y": 144
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:mcu->motor#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 1136,
+      "y": 144,
+      "angle": 0,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "path",
+      "ref": "connection:mcu.CAN_TX->trx.TXD#1",
+      "className": "sa-connection sa-group-single sa-kind-digital",
+      "points": [
+        {
+          "x": 720,
+          "y": 240
+        },
+        {
+          "x": 736,
+          "y": 240
+        },
+        {
+          "x": 736,
+          "y": 336
+        },
+        {
+          "x": 832,
+          "y": 336
+        }
+      ],
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "marker",
+      "ref": "connection:mcu.CAN_TX->trx.TXD#1",
+      "className": "sa-marker sa-marker-arrow",
+      "shape": "arrow",
+      "x": 828,
+      "y": 336,
+      "angle": 0,
+      "size": 8,
+      "fill": "#334155",
+      "stroke": "#334155",
+      "strokeWidth": 1.5
+    },
+    {
+      "type": "shape",
+      "ref": "component:battery",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 48,
+      "y": 112,
+      "width": 96,
+      "height": 64,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:regulator",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 256,
+      "y": 112,
+      "width": 160,
+      "height": 112,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:mcu",
+      "className": "sa-component sa-shape-rounded sa-cat-controller sa-importance-secondary",
+      "shape": "rounded",
+      "x": 512,
+      "y": 144,
+      "width": 208,
+      "height": 112,
+      "radius": 8,
+      "fill": "#EAF2FF",
+      "stroke": "#316BD6",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:hb",
+      "className": "sa-component sa-shape-rounded sa-cat-power sa-importance-secondary",
+      "shape": "rounded",
+      "x": 832,
+      "y": 144,
+      "width": 160,
+      "height": 112,
+      "radius": 8,
+      "fill": "#FFF4D6",
+      "stroke": "#D69E00",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:trx",
+      "className": "sa-component sa-shape-rounded sa-cat-communication sa-importance-secondary",
+      "shape": "rounded",
+      "x": 832,
+      "y": 288,
+      "width": 160,
+      "height": 112,
+      "radius": 8,
+      "fill": "#E7F7EF",
+      "stroke": "#23875B",
+      "strokeWidth": 1
+    },
+    {
+      "type": "shape",
+      "ref": "component:motor",
+      "className": "sa-component sa-shape-circle sa-cat-actuator sa-importance-secondary",
+      "shape": "circle",
+      "x": 1136,
+      "y": 112,
+      "width": 96,
+      "height": 96,
+      "radius": 0,
+      "fill": "#FFEDE5",
+      "stroke": "#D2602A",
+      "strokeWidth": 1
+    },
+    {
+      "type": "icon",
+      "ref": "component:battery",
+      "className": "sa-icon",
+      "name": "battery",
+      "x": 88,
+      "y": 123.875,
+      "size": 16,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:regulator",
+      "className": "sa-icon",
+      "name": "regulator",
+      "x": 279.140625,
+      "y": 120,
+      "size": 20,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:mcu",
+      "className": "sa-icon",
+      "name": "chip",
+      "x": 585.0322265625,
+      "y": 152,
+      "size": 24,
+      "color": "#0F2A5C",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:hb",
+      "className": "sa-icon",
+      "name": "bridge",
+      "x": 863.29736328125,
+      "y": 152,
+      "size": 20,
+      "color": "#3D2E00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:trx",
+      "className": "sa-icon",
+      "name": "can",
+      "x": 845.5048828125,
+      "y": 296,
+      "size": 20,
+      "color": "#0D3B26",
+      "strokeWidth": 2
+    },
+    {
+      "type": "icon",
+      "ref": "component:motor",
+      "className": "sa-icon",
+      "name": "motor",
+      "x": 1176,
+      "y": 131.75,
+      "size": 16,
+      "color": "#4A1B06",
+      "strokeWidth": 2
+    },
+    {
+      "type": "marker",
+      "ref": "pin:regulator.VIN",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 256,
+      "y": 160,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:regulator.EN",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 256,
+      "y": 176,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:regulator.VOUT",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 416,
+      "y": 176,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:regulator.GND",
+      "className": "sa-pin sa-group-supply sa-kind-ground",
+      "shape": "pin",
+      "x": 336,
+      "y": 224,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:mcu.VDD",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 512,
+      "y": 208,
+      "angle": 180,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:mcu.GND",
+      "className": "sa-pin sa-group-supply sa-kind-ground",
+      "shape": "pin",
+      "x": 512,
+      "y": 224,
+      "angle": 180,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:mcu.HB_PWM",
+      "className": "sa-pin sa-group-single sa-kind-pwm",
+      "shape": "pin",
+      "x": 720,
+      "y": 208,
+      "angle": 0,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:mcu.IS",
+      "className": "sa-pin sa-group-single sa-kind-analog",
+      "shape": "pin",
+      "x": 720,
+      "y": 224,
+      "angle": 0,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:mcu.CAN_TX",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 720,
+      "y": 240,
+      "angle": 0,
+      "size": 6,
+      "fill": "#316BD6",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb.VS",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 832,
+      "y": 192,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb.IN",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 832,
+      "y": 208,
+      "angle": 180,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb.OUT",
+      "className": "sa-pin sa-group-supply sa-kind-power",
+      "shape": "pin",
+      "x": 992,
+      "y": 208,
+      "angle": 0,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb.IS",
+      "className": "sa-pin sa-group-single sa-kind-analog",
+      "shape": "pin",
+      "x": 896,
+      "y": 256,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:hb.GND",
+      "className": "sa-pin sa-group-supply sa-kind-ground",
+      "shape": "pin",
+      "x": 944,
+      "y": 256,
+      "angle": 90,
+      "size": 6,
+      "fill": "#D69E00",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:trx.TXD",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 832,
+      "y": 336,
+      "angle": 180,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:trx.RXD",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 832,
+      "y": 352,
+      "angle": 180,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:trx.STB",
+      "className": "sa-pin sa-group-single sa-kind-digital",
+      "shape": "pin",
+      "x": 832,
+      "y": 368,
+      "angle": 180,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:trx.CANH",
+      "className": "sa-pin sa-group-bus sa-kind-can",
+      "shape": "pin",
+      "x": 992,
+      "y": 352,
+      "angle": 0,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "marker",
+      "ref": "pin:trx.CANL",
+      "className": "sa-pin sa-group-bus sa-kind-can",
+      "shape": "pin",
+      "x": 992,
+      "y": 368,
+      "angle": 0,
+      "size": 6,
+      "fill": "#23875B",
+      "stroke": "#FFFFFF",
+      "strokeWidth": 1
+    },
+    {
+      "type": "text",
+      "ref": "zone:supply",
+      "className": "sa-label sa-zone-label",
+      "x": 48,
+      "y": 88,
+      "anchor": "start",
+      "baseline": "top",
+      "lines": [
+        "Power"
+      ],
+      "style": {
+        "size": 12,
+        "weight": 600,
+        "color": "#4B5563",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 15,
+      "ascent": 11.865234375,
+      "width": 36.52734375
+    },
+    {
+      "type": "text",
+      "ref": "zone:control",
+      "className": "sa-label sa-zone-label",
+      "x": 464,
+      "y": 88,
+      "anchor": "start",
+      "baseline": "top",
+      "lines": [
+        "Door ECU"
+      ],
+      "style": {
+        "size": 12,
+        "weight": 600,
+        "color": "#4B5563",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 15,
+      "ascent": 11.865234375,
+      "width": 56.00390625
+    },
+    {
+      "type": "text",
+      "ref": "zone:actuation",
+      "className": "sa-label sa-zone-label",
+      "x": 1088,
+      "y": 88,
+      "anchor": "start",
+      "baseline": "top",
+      "lines": [
+        "Actuation"
+      ],
+      "style": {
+        "size": 12,
+        "weight": 600,
+        "color": "#4B5563",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 15,
+      "ascent": 11.865234375,
+      "width": 56.0390625
+    },
+    {
+      "type": "text",
+      "ref": "system:ecu",
+      "className": "sa-label sa-system-label",
+      "x": 504,
+      "y": 116,
+      "anchor": "start",
+      "baseline": "top",
+      "lines": [
+        "Door ECU"
+      ],
+      "style": {
+        "size": 12,
+        "weight": 600,
+        "color": "#4B5563",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 15,
+      "ascent": 11.865234375,
+      "width": 56.00390625
+    },
+    {
+      "type": "text",
+      "ref": "component:battery",
+      "className": "sa-label sa-component-label",
+      "x": 96,
+      "y": 147.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "KL30"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 32.830078125
+    },
+    {
+      "type": "text",
+      "ref": "component:regulator",
+      "className": "sa-label sa-component-label",
+      "x": 350,
+      "y": 121.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Power Supply"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 85.71875
+    },
+    {
+      "type": "text",
+      "ref": "pin:regulator.VIN",
+      "className": "sa-label sa-pin-label",
+      "x": 264,
+      "y": 160,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "VIN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 18.8310546875
+    },
+    {
+      "type": "text",
+      "ref": "pin:regulator.EN",
+      "className": "sa-label sa-pin-label",
+      "x": 264,
+      "y": 176,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "EN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 14.8994140625
+    },
+    {
+      "type": "text",
+      "ref": "pin:regulator.VOUT",
+      "className": "sa-label sa-pin-label",
+      "x": 408,
+      "y": 176,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "VOUT"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 30.916015625
+    },
+    {
+      "type": "text",
+      "ref": "pin:regulator.GND",
+      "className": "sa-label sa-pin-label",
+      "x": 336,
+      "y": 216,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 24.43310546875
+    },
+    {
+      "type": "text",
+      "ref": "component:mcu",
+      "className": "sa-label sa-component-label",
+      "x": 632,
+      "y": 155.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "BCM"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 29.935546875
+    },
+    {
+      "type": "text",
+      "ref": "pin:mcu.VDD",
+      "className": "sa-label sa-pin-label",
+      "x": 520,
+      "y": 208,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "VDD"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 23.46630859375
+    },
+    {
+      "type": "text",
+      "ref": "pin:mcu.GND",
+      "className": "sa-label sa-pin-label",
+      "x": 520,
+      "y": 224,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 24.43310546875
+    },
+    {
+      "type": "text",
+      "ref": "pin:mcu.HB_PWM",
+      "className": "sa-label sa-pin-label",
+      "x": 712,
+      "y": 208,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "HB_PWM"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 48.56005859375
+    },
+    {
+      "type": "text",
+      "ref": "pin:mcu.IS",
+      "className": "sa-label sa-pin-label",
+      "x": 712,
+      "y": 224,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "IS"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 10.01171875
+    },
+    {
+      "type": "text",
+      "ref": "pin:mcu.CAN_TX",
+      "className": "sa-label sa-pin-label",
+      "x": 712,
+      "y": 240,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "CAN_TX"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0F2A5C",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 42.69482421875
+    },
+    {
+      "type": "text",
+      "ref": "component:hb",
+      "className": "sa-label sa-component-label",
+      "x": 926,
+      "y": 153.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Half Bridge"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 69.4052734375
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb.VS",
+      "className": "sa-label sa-pin-label",
+      "x": 840,
+      "y": 192,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "VS"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 14.64697265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb.IN",
+      "className": "sa-label sa-pin-label",
+      "x": 840,
+      "y": 208,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "IN"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 11.24169921875
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb.OUT",
+      "className": "sa-label sa-pin-label",
+      "x": 984,
+      "y": 208,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "OUT"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 23.697265625
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb.IS",
+      "className": "sa-label sa-pin-label",
+      "x": 896,
+      "y": 248,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "IS"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 10.01171875
+    },
+    {
+      "type": "text",
+      "ref": "pin:hb.GND",
+      "className": "sa-label sa-pin-label",
+      "x": 944,
+      "y": 248,
+      "anchor": "middle",
+      "baseline": "bottom",
+      "lines": [
+        "GND"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#3D2E00",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 24.43310546875
+    },
+    {
+      "type": "text",
+      "ref": "component:trx",
+      "className": "sa-label sa-component-label",
+      "x": 926,
+      "y": 297.875,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "CAN Transceiver"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 104.990234375
+    },
+    {
+      "type": "text",
+      "ref": "pin:trx.TXD",
+      "className": "sa-label sa-pin-label",
+      "x": 840,
+      "y": 336,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "TXD"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 22.54248046875
+    },
+    {
+      "type": "text",
+      "ref": "pin:trx.RXD",
+      "className": "sa-label sa-pin-label",
+      "x": 840,
+      "y": 352,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "RXD"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 22.52099609375
+    },
+    {
+      "type": "text",
+      "ref": "pin:trx.STB",
+      "className": "sa-label sa-pin-label",
+      "x": 840,
+      "y": 368,
+      "anchor": "start",
+      "baseline": "middle",
+      "lines": [
+        "STB"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 21.3017578125
+    },
+    {
+      "type": "text",
+      "ref": "pin:trx.CANH",
+      "className": "sa-label sa-pin-label",
+      "x": 984,
+      "y": 352,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "CANH"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 31.8720703125
+    },
+    {
+      "type": "text",
+      "ref": "pin:trx.CANL",
+      "className": "sa-label sa-pin-label",
+      "x": 984,
+      "y": 368,
+      "anchor": "end",
+      "baseline": "middle",
+      "lines": [
+        "CANL"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 400,
+        "color": "#0D3B26",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 29.9169921875
+    },
+    {
+      "type": "text",
+      "ref": "component:motor",
+      "className": "sa-label sa-component-label",
+      "x": 1184,
+      "y": 155.75,
+      "anchor": "middle",
+      "baseline": "top",
+      "lines": [
+        "Window",
+        "motor"
+      ],
+      "style": {
+        "size": 13,
+        "weight": 500,
+        "color": "#4A1B06",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 16.25,
+      "ascent": 12.85400390625,
+      "width": 50.58447265625
+    },
+    {
+      "type": "text",
+      "ref": "connection:battery->regulator.VIN#1",
+      "className": "sa-label sa-connection-label",
+      "x": 192,
+      "y": 128,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "KL30"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 27.779296875
+    },
+    {
+      "type": "text",
+      "ref": "connection:battery->mcu#1",
+      "className": "sa-label sa-connection-label",
+      "x": 344,
+      "y": 256,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "12 V"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 22.0751953125
+    },
+    {
+      "type": "text",
+      "ref": "connection:regulator.VOUT->mcu.VDD#1",
+      "className": "sa-label sa-connection-label",
+      "x": 448,
+      "y": 176,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "5 V"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 17.36474609375
+    },
+    {
+      "type": "text",
+      "ref": "connection:mcu.HB_PWM->hb.IN#1",
+      "className": "sa-label sa-connection-label",
+      "x": 776,
+      "y": 208,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "PWM"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 28.12841796875
+    },
+    {
+      "type": "text",
+      "ref": "connection:hb.IS->mcu.IS#1",
+      "className": "sa-label sa-connection-label",
+      "x": 824,
+      "y": 272,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "Current"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 39.94482421875
+    },
+    {
+      "type": "text",
+      "ref": "connection:hb.OUT->motor#1",
+      "className": "sa-label sa-connection-label",
+      "x": 1056,
+      "y": 208,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "Motor output"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 68.31494140625
+    },
+    {
+      "type": "text",
+      "ref": "connection:mcu->motor#1",
+      "className": "sa-label sa-connection-label",
+      "x": 960,
+      "y": 128,
+      "anchor": "middle",
+      "baseline": "middle",
+      "lines": [
+        "Window up/down"
+      ],
+      "style": {
+        "size": 11,
+        "weight": 500,
+        "color": "#374151",
+        "fontFamily": "Inter"
+      },
+      "halo": "#FFFFFF",
+      "lineHeight": 13.75,
+      "ascent": 10.87646484375,
+      "width": 92.21630859375
+    },
+    {
+      "type": "text",
+      "className": "sa-title",
+      "x": 32,
+      "y": 32,
+      "anchor": "start",
+      "baseline": "top",
+      "lines": [
+        "Window lifter"
+      ],
+      "style": {
+        "size": 18,
+        "weight": 600,
+        "color": "#111827",
+        "fontFamily": "Inter"
+      },
+      "lineHeight": 22.5,
+      "ascent": 17.7978515625,
+      "width": 115.3564453125
+    }
+  ]
+}

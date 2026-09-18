@@ -21,15 +21,25 @@ describe("preview SVG == CLI SVG", () => {
     const path = join(root, "examples", file);
     const source = readFileSync(path, "utf8");
 
+    // With views the CLI renders one file per view, so stdout needs `--view`.
+    const views = analyze(source).model.views.map((v) => v.id);
+
     it(basename(file, ".arch"), () => {
       const { svg } = analyze(source);
-      expect(svg).toBe(cli("render", path, "--out", "-"));
       expect(svg).toBe(readFileSync(join(root, "tests", "golden", basename(file, ".arch") + ".svg"), "utf8"));
+      if (views.length === 0) expect(svg).toBe(cli("render", path, "--out", "-"));
+      for (const view of views) {
+        expect(analyze(source, undefined, view).svg).toBe(cli("render", path, "--out", "-", "--view", view));
+      }
     });
 
     it(`${basename(file, ".arch")} with overridden theme`, () => {
       for (const theme of THEMES) {
-        expect(analyze(source, theme).svg).toBe(cli("render", path, "--out", "-", "--theme", theme));
+        const argv = ["render", path, "--out", "-", "--theme", theme];
+        if (views.length === 0) expect(analyze(source, theme).svg).toBe(cli(...argv));
+        for (const view of views) {
+          expect(analyze(source, theme, view).svg).toBe(cli(...argv, "--view", view));
+        }
       }
     });
   }

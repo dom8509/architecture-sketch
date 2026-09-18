@@ -30,6 +30,13 @@ If the code block sets no `theme`, the diagram follows the Obsidian mode
 (`automotive-light` or `automotive-dark`) and switches along with it. A `theme` in the code
 block takes precedence. This behavior is controlled by the **Default theme** setting.
 
+### Views
+
+If the source declares [views](./views), a selector appears above the diagram — in a code
+block as well as in the `.arch` editor and in the editor window. It switches the diagram to
+one level of abstraction; **everything** shows the whole architecture. Exports follow the
+selection and carry the view in their file name (`door-ecu-overview.svg`).
+
 ### Context menu on a diagram
 
 | Entry | Effect |
@@ -41,7 +48,8 @@ block takes precedence. This behavior is controlled by the **Default theme** set
 | **Copy SVG** | SVG source into the clipboard |
 | **Export React Flow JSON** | `.reactflow.json` in the export folder |
 
-The file name comes from the title (`"Door ECU"` → `door-ecu.svg`). Exporting again overwrites
+The file name comes from the title (`"Door ECU"` → `door-ecu.svg`), plus the selected view
+(`door-ecu-overview.svg`). Exporting again overwrites
 the file, so that embedded images (`![[door-ecu.svg]]`) stay up to date.
 
 ::: tip Code block changed in the meantime?

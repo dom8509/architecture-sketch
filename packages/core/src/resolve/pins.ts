@@ -1,4 +1,4 @@
-import type { PinStmt } from "../ast/index.js";
+import type { PinStmt, ShowStmt } from "../ast/index.js";
 import { diagnostic, withSuggestion, type Diagnostic } from "../diagnostics/index.js";
 import { SIGNAL_KINDS, isOneOf, type Side, type SignalKind, type Span } from "../types.js";
 
@@ -8,6 +8,8 @@ export interface PinDraft {
   kind: SignalKind;
   side?: Side;
   sideSource?: "explicit" | "template";
+  /** `show in …` statements of the pin; validated by the resolver. */
+  views?: ShowStmt[];
   origin: Span;
   /** Declared in the block currently being processed (not inherited). */
   declaredHere: boolean;
@@ -41,6 +43,7 @@ export function declarePin(
       ...(stmt.label && { label: stmt.label.value }),
       kind,
       ...(side && { side, sideSource }),
+      ...(stmt.body?.length && { views: stmt.body }),
       origin: stmt.span,
       declaredHere: true,
     });
@@ -60,6 +63,7 @@ export function declarePin(
   }
   existing.declaredHere = true;
   existing.origin = stmt.span;
+  if (stmt.body?.length) existing.views = [...(existing.views ?? []), ...stmt.body];
   if (side) {
     existing.side = side;
     existing.sideSource = sideSource;

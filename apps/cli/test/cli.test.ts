@@ -1,6 +1,7 @@
-import { mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { compile } from "@sysarch/core";
 import { describe, expect, it } from "vitest";
 import { run } from "../src/cli.js";
 
@@ -45,10 +46,33 @@ describe("sysarch render", () => {
     const result = sysarch("render", examples, "--out", out);
     expect(result.code).toBe(0);
     const svgs = readdirSync(out).sort();
-    expect(svgs).toEqual(readdirSync(examples).filter((f) => f.endsWith(".arch")).map((f) => f.replace(/\.arch$/, ".svg")).sort());
+    // Examples with views produce one file per view, everything else one file.
+    const expected = readdirSync(examples).filter((f) => f.endsWith(".arch")).flatMap((file) => {
+      const base = file.replace(/\.arch$/, "");
+      const { views } = compile(readFileSync(join(examples, file), "utf8")).value;
+      return views.length === 0 ? [`${base}.svg`] : views.map((v) => `${base}-${v.id}.svg`);
+    }).sort();
+    expect(svgs).toEqual(expected);
     for (const svg of svgs) {
-      expect(readFileSync(join(out, svg), "utf8"), svg).toBe(readFileSync(join(root, "tests", "golden", svg), "utf8"));
+      const golden = join(root, "tests", "golden", svg);
+      if (!existsSync(golden)) continue; // per-view renders are covered by the preview test
+      expect(readFileSync(join(out, svg), "utf8"), svg).toBe(readFileSync(golden, "utf8"));
     }
+  });
+
+  it("selects a single view with --view", () => {
+    const input = join(examples, "window-lifter.arch");
+    const out = tempDir();
+    expect(sysarch("render", input, "--view", "overview", "--out", out).code).toBe(0);
+    expect(readdirSync(out)).toEqual(["window-lifter-overview.svg"]);
+    expect(sysarch("render", input, "--view", "overview", "--out", "-").stdout)
+      .toBe(readFileSync(join(out, "window-lifter-overview.svg"), "utf8"));
+
+    // Without --view several views cannot share one target.
+    expect(sysarch("render", input, "--out", "-")).toMatchObject({ code: 2, stderr: expect.stringContaining("--view") });
+    expect(sysarch("render", input, "--view", "overviw")).toMatchObject({ code: 2, stderr: expect.stringContaining("available: overview") });
+    expect(sysarch("render", join(examples, "zonal-ecu.arch"), "--view", "overview"))
+      .toMatchObject({ code: 2, stderr: expect.stringContaining("declares no views") });
   });
 
   it("writes to stdout with --out - and to exactly one file with --out file.svg", () => {
@@ -124,7 +148,7 @@ describe("sysarch check", () => {
   it("accepts the examples and the library", () => {
     const result = sysarch("check", examples, library, "--max-warnings", "0");
     expect(result).toMatchObject({ code: 0, stdout: "" });
-    expect(result.stderr).toMatch(/^7 files checked: 0 errors, 0 warnings, \d+ infos\n$/);
+    expect(result.stderr).toMatch(/^\d+ files checked: 0 errors, 0 warnings, \d+ infos\n$/);
   });
 
   it("prints infos only with --verbose", () => {

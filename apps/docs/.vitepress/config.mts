@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import type MarkdownIt from "markdown-it";
 import { defineConfig } from "vitepress";
-import { BASE, blockKey } from "./blocks.mjs";
+import { BASE, blockKey, viewFlag } from "./blocks.mjs";
 
 const REPO = "https://github.com/dom8509/sysarch";
 const MANIFEST = fileURLToPath(new URL("../_generated/blocks.json", import.meta.url));
@@ -26,7 +26,7 @@ function sysarchBlocks(md: MarkdownIt) {
     if (lang !== "sysarch") return fallback(tokens, idx, options, env, self);
     // read again on every call: `npm run generate` while `vitepress dev` is running
     const manifest: Record<string, Block> = existsSync(MANIFEST) ? JSON.parse(readFileSync(MANIFEST, "utf8")) : {};
-    const block = manifest[blockKey(token.content)];
+    const block = manifest[blockKey(token.content, viewFlag(flags))];
     if (!block) {
       const message = `sysarch block not generated (${env.relativePath}) — run \`npm run generate -w @sysarch/docs\``;
       if (building) throw new Error(message);
@@ -86,6 +86,7 @@ export default defineConfig({
           { text: "Zones and systems", link: "/guides/zones-and-systems" },
           { text: "Controlling the layout", link: "/guides/layout" },
           { text: "Presentation views", link: "/guides/presentation" },
+          { text: "Views", link: "/guides/views" },
           { text: "Custom templates", link: "/guides/templates" },
           { text: "Web app", link: "/guides/web-app" },
           { text: "Obsidian", link: "/guides/obsidian" },

@@ -1,5 +1,5 @@
 import type {
-  ComponentNode, ConnectionNode, EndpointNode, GridNode, GroupStmt, HintStmt, SyntaxTree,
+  ComponentNode, ConnectionNode, EndpointNode, GridNode, GroupStmt, HintStmt, ShowStmt, SyntaxTree,
 } from "../ast/index.js";
 import { diagnostic, withSuggestion, type Diagnostic, type ParseResult } from "../diagnostics/index.js";
 import {
@@ -9,6 +9,7 @@ import {
 } from "../types.js";
 import { resolveDefines, type Library, type TemplateDef } from "./library.js";
 import { declarePin, signalKind, type PinDraft } from "./pins.js";
+import { Visibility } from "./views.js";
 
 export type ComponentId = string;
 export type GroupId = string;
@@ -34,6 +35,15 @@ export interface ArchitectureModel {
   root: Group;
   /** All zones and systems by ID. */
   groups: Map<GroupId, Group>;
+  /** Declaration order; empty when the document knows no views. */
+  views: View[];
+}
+
+/** A level of abstraction: `projectView` reduces the model to the elements it shows. */
+export interface View {
+  id: string;
+  label: string;
+  origin: Span;
 }
 
 export interface Component {
@@ -54,6 +64,8 @@ export interface Component {
   meta: Record<string, string>;
   /** E.g. ["processing", "ecu"]. */
   groupPath: GroupId[];
+  /** `show in …`; missing = every view. */
+  views?: string[];
   origin: Span;
 }
 
@@ -63,6 +75,8 @@ export interface Pin {
   kind: SignalKind;
   side: Side;
   sideSource: "explicit" | "template" | "inferred";
+  /** `show in …`; missing = every view in which the component is shown. */
+  views?: string[];
   origin: Span;
 }
 
@@ -81,6 +95,8 @@ export interface Connection {
   kind: SignalKind;
   kindSource: "explicit" | "inferred";
   label?: string;
+  /** `show in …`; missing = every view in which both endpoints are shown. */
+  views?: string[];
   origin: Span;
 }
 
@@ -89,6 +105,8 @@ export interface Group {
   type: "root" | "zone" | "system";
   label?: string;
   children: (GroupId | ComponentId)[];
+  /** `show in …`; missing = every view in which the parent is shown. */
+  views?: string[];
   origin: Span;
 }
 
@@ -127,6 +145,7 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
     stack: "none",
     components: new Map(),
     connections: [],
+    views: [],
     root: { id: "root", type: "root", children: [], origin: arch?.span ?? tree.span },
     groups: new Map(),
   };
@@ -138,9 +157,22 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
 
   // ── Document settings ────────────────────────────────────────
 
+  const viewIds = new Map<string, Span>();
   let gridNode: GridNode | undefined;
   for (const stmt of arch.body) {
     switch (stmt.kind) {
+      case "View": {
+        const id = stmt.id.name;
+        if (viewIds.has(id)) {
+          diagnostics.push(diagnostic("E101", `View ID \`${id}\` is already in use`, stmt.id.span));
+          break;
+        }
+        viewIds.set(id, stmt.id.span);
+        let label = id;
+        for (const item of stmt.body) label = item.value.value;
+        model.views.push({ id, label, origin: stmt.span });
+        break;
+      }
       case "Theme":
         if (THEMES.includes(stmt.name.name)) model.theme = stmt.name.name;
         else diagnostics.push(withSuggestion("E109", `Unknown theme \`${stmt.name.name}\``, stmt.name.name, stmt.name.span, THEMES));
@@ -163,6 +195,30 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
         break;
     }
   }
+
+  // ── Views ────────────────────────────────────────────────────
+
+  /** Spans of the `show in` statements, for `W204`. */
+  const showSpans = new Map<string, Span>();
+
+  /** Validated view list of a `show in`; unknown names are dropped and reported. */
+  const viewList = (stmts: readonly ShowStmt[], key: string): string[] | undefined => {
+    if (stmts.length === 0) return undefined;
+    const names: string[] = [];
+    for (const stmt of stmts) {
+      showSpans.set(key, showSpans.get(key) ?? stmt.span);
+      for (const view of stmt.views) {
+        if (!viewIds.has(view.name)) {
+          diagnostics.push(model.views.length === 0
+            ? diagnostic("E112", `Unknown view \`${view.name}\` — the architecture declares no \`view\``, view.span)
+            : withSuggestion("E112", `Unknown view \`${view.name}\``, view.name, view.span, viewIds.keys()));
+          continue;
+        }
+        if (!names.includes(view.name)) names.push(view.name);
+      }
+    }
+    return names;
+  };
 
   // ── Group tree and components ────────────────────────────────
 
@@ -218,6 +274,7 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
       origin: node.span,
     };
 
+    const shows: ShowStmt[] = [];
     const pins: PinDraft[] = template.pins.map((p) => ({
       ...p,
       ...(p.side && { sideSource: "template" as const }),
@@ -256,15 +313,21 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
         case "Meta":
           for (const entry of stmt.entries) component.meta[entry.key.name] = entry.value.value;
           break;
+        case "Show":
+          shows.push(stmt);
+          break;
       }
     }
 
+    const views = viewList(shows, component.id);
+    if (views) component.views = views;
     component.pins = pins.map((p) => ({
       name: p.name,
       label: p.label ?? p.name,
       kind: p.kind,
       side: p.side ?? "left",
       sideSource: p.side ? p.sideSource ?? "explicit" : "inferred",
+      ...(p.views && { views: viewList(p.views, `${component.id}.${p.name}`) ?? [] }),
       origin: p.origin,
     }));
     hintSpans.set(component.id, hints);
@@ -286,6 +349,11 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
         case "Label":
           group.label = stmt.value.value;
           break;
+        case "Show": {
+          const views = viewList([stmt], group.id);
+          group.views = [...new Set([...(group.views ?? []), ...(views ?? [])])];
+          break;
+        }
         case "System": {
           if (!claimId(stmt.id.name, stmt.id.span, "System")) break;
           const system: Group = { id: stmt.id.name, type: "system", children: [], origin: stmt.span };
@@ -367,9 +435,12 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
     let label: string | undefined;
     let explicitKind: SignalKind | undefined;
     let invalidKind = false;
+    const shows: ShowStmt[] = [];
     for (const stmt of node.body ?? []) {
       if (stmt.kind === "Label") {
         label = stmt.value.value;
+      } else if (stmt.kind === "Show") {
+        shows.push(stmt);
       } else {
         const before = diagnostics.length;
         const kind = signalKind(stmt.value.name, stmt.value.span, diagnostics);
@@ -397,15 +468,18 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
     const key = `${address(source.endpoint)}->${address(target.endpoint)}`;
     const n = (connectionCount.get(key) ?? 0) + 1;
     connectionCount.set(key, n);
+    const id = `${key}#${n}`;
+    const views = viewList(shows, id);
 
     model.connections.push({
-      id: `${key}#${n}`,
+      id,
       source: source.endpoint,
       target: target.endpoint,
       direction,
       kind,
       kindSource: explicitKind ? "explicit" : "inferred",
       ...(label !== undefined && { label }),
+      ...(views && { views }),
       origin: node.span,
     });
 
@@ -431,6 +505,38 @@ export function resolve(tree: SyntaxTree, library: Library): ParseResult<Archite
       // With `pins connected|none` unconnected pins are not drawn — no hint needed.
       if (!connected.has(pinAddress) && model.pins === "all") {
         diagnostics.push(diagnostic("I301", `Pin \`${pinAddress}\` is not connected`, pin.origin));
+      }
+    }
+  }
+
+  // ── Views: nothing shown anywhere? ───────────────────────────
+
+  if (model.views.length > 0) {
+    const visibility = new Visibility(model);
+    const used = new Set<string>();
+    const check = (key: string, declared: readonly string[] | undefined, views: readonly string[], what: string) => {
+      const span = showSpans.get(key);
+      if (declared === undefined || views.length > 0 || span === undefined) return;
+      diagnostics.push(diagnostic("W204", `${what} is not shown in any view — its \`show in\` does not overlap with the views of its surroundings`, span));
+    };
+
+    for (const group of model.groups.values()) {
+      check(group.id, group.views, visibility.group(group.id), `${group.type === "zone" ? "Zone" : "System"} \`${group.id}\``);
+    }
+    for (const component of model.components.values()) {
+      const componentViews = visibility.component(component);
+      for (const view of componentViews) used.add(view);
+      check(component.id, component.views, componentViews, `Component \`${component.id}\``);
+      for (const pin of component.pins) {
+        check(`${component.id}.${pin.name}`, pin.views, visibility.pin(component, pin), `Pin \`${component.id}.${pin.name}\``);
+      }
+    }
+    for (const connection of model.connections) {
+      check(connection.id, connection.views, visibility.connection(connection), `Connection \`${connection.id}\``);
+    }
+    for (const view of model.views) {
+      if (!used.has(view.id)) {
+        diagnostics.push(diagnostic("W205", `View \`${view.id}\` shows no component`, view.origin));
       }
     }
   }

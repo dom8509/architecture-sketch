@@ -5,7 +5,7 @@ import { diagnostic, type Diagnostic } from "../diagnostics/index.js";
 export type TokenType =
   | "ident" | "string" | "int"
   | "->" | "<-" | "<->" | "--"
-  | "." | ":" | "|" | "{" | "}"
+  | "." | ":" | "," | "|" | "{" | "}"
   | "invalid" | "eof";
 
 export interface Token {
@@ -155,7 +155,7 @@ export function lex(source: string): LexResult {
     } else if (c === "<" && source[pos + 1] === "-") {
       pos += 2;
       type = "<-";
-    } else if (c === "." || c === ":" || c === "|" || c === "{" || c === "}") {
+    } else if (c === "." || c === ":" || c === "," || c === "|" || c === "{" || c === "}") {
       pos++;
       type = c;
     } else {
