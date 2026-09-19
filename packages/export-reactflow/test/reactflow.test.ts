@@ -93,6 +93,17 @@ describe("React Flow export", () => {
     expect(flow.edges).toHaveLength(1);
   });
 
+  it("marks external components in the node data", () => {
+    const flow = exportSource(`architecture "A" {
+    component a: microcontroller
+    external m: motor
+}
+`);
+    const [a, m] = flow.nodes as ComponentNode[];
+    expect("external" in a!.data).toBe(false);
+    expect(m!.data.external).toBe(true);
+  });
+
   it("exports count only for multiple elements", () => {
     const flow = exportSource(`architecture "A" {
     component a { count 3 }

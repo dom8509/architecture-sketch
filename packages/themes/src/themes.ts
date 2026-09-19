@@ -53,6 +53,8 @@ export interface Theme {
     padding: number;
     minWidth: Record<Size, number>;
     minHeight: Record<Size, number>;
+    /** Contour of an `external` component — the system boundary, visible without colour. */
+    externalDash: number[];
   };
   categories: Record<Category, CategoryColors>;
   icon: {
@@ -89,6 +91,7 @@ const automotiveLight: Theme = {
     padding: 8,
     minWidth: { small: 96, medium: 160, large: 208 },
     minHeight: { small: 48, medium: 64, large: 96 },
+    externalDash: [6, 4],
   },
   categories: {
     power: { fill: "#FFF4D6", border: "#D69E00", text: "#3D2E00" },
@@ -165,6 +168,7 @@ const presentation: Theme = {
     padding: 12,
     minWidth: { small: 144, medium: 216, large: 288 },
     minHeight: { small: 72, medium: 96, large: 144 },
+    externalDash: [9, 6],
   },
   icon: { size: { small: 22, medium: 26, large: 32 }, gap: 10, strokeWidth: 2.25 },
   lines: {

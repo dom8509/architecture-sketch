@@ -1,0 +1,49 @@
+// System context — a door ECU and everything around it. `external` marks what belongs to
+// the picture but not to the described system: the vehicle bus, the connector, the window
+// motor and the door switch. They are drawn with a dashed contour and stay at the edges.
+
+architecture "Door ECU in its context" {
+    theme automotive-light
+    direction LR
+
+    layout {
+        grid {
+            can_body    | x1 | trx | mcu | hb | window_motor
+            door_switch | .  | .   | .   | .  | .
+        }
+    }
+
+    external can_body: bus { label "Body CAN" }
+    external x1: connector { label "X1" }
+    external door_switch: sensor { label "Door switch" }
+    external window_motor: motor {
+        label "Window motor"
+        // Only the terminal that is actually wired matters here — an external component is
+        // never fully specified, so the unused one raises no `I301`.
+        left { pin power A   pin power B }
+    }
+
+    system ecu {
+        label "Door ECU"
+        component trx: can_transceiver {
+            // The bus arrives from the outside, so the CAN side faces the connector.
+            left  { pin can CANH   pin can CANL }
+            right { pin digital TXD   pin digital RXD }
+        }
+        component mcu: microcontroller {
+            label "BCM"
+            importance primary
+            left  { pin digital SW_IN   pin digital CAN_RX }
+            right { pin digital CAN_TX   pin pwm HB_PWM }
+        }
+        component hb: half_bridge
+    }
+
+    can_body -- x1           { label "CAN" type can }
+    x1 -- trx.CANH           { type can }
+    trx.RXD -> mcu.CAN_RX
+    mcu.CAN_TX -> trx.TXD
+    door_switch -> mcu.SW_IN { label "Door contact" }
+    mcu.HB_PWM -> hb.IN      { label "PWM" }
+    hb.OUT -> window_motor.A { label "Window up/down" }
+}

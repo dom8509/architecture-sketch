@@ -72,6 +72,18 @@ describe("components", () => {
     expect(m.components.get("b")!.groupPath).toEqual(["z"]);
   });
 
+  it("marks components declared with `external`, everywhere `component` is allowed", () => {
+    const m = model(arch(" zone z { system ecu { component mcu: microcontroller }\n external x1: connector }"));
+    expect(m.components.get("x1")).toMatchObject({ external: true, template: "connector", groupPath: ["z"] });
+    expect(m.components.get("mcu")!.external).toBe(false);
+  });
+
+  it("reports no unconnected pins on an external component", () => {
+    const { diagnostics } = compile(arch(" component a: half_bridge\n external m: motor { left { pin power A   pin power B } }\n a.OUT -> m.A"));
+    expect(diagnostics.filter((d) => d.code === "I301").map((d) => d.message)).not.toContain("Pin `m.B` is not connected");
+    expect(diagnostics.filter((d) => d.code === "I301").length).toBeGreaterThan(0);
+  });
+
   it("reads the pin spacing from `layout`, in grid units", () => {
     expect(model(arch(" layout { pin spacing 3 }\n component a")).pinSpacing).toBe(3);
     expect(model(arch(" component a")).pinSpacing).toBeUndefined();

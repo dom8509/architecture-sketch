@@ -19,6 +19,7 @@ header { display: flex; gap: 12px; align-items: center; padding: 8px 12px; borde
 .sa-node-shape { position: absolute; inset: 0; overflow: visible; }
 .sa-node-shape path { fill: var(--fill); stroke: var(--border); stroke-width: 1.5; }
 .sa-importance-primary .sa-node-shape path { stroke-width: 3; }
+.sa-external .sa-node-shape path { stroke-dasharray: 6 4; }
 .sa-node-body { position: absolute; inset: 8px 0 auto; display: flex; justify-content: center; align-items: center; gap: 6px; font-weight: 500; }
 .sa-node-icon { width: 20px; height: 20px; }
 .sa-node-icon .sa-stroke { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }

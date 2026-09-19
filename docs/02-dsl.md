@@ -2,10 +2,11 @@
 
 The DSL is deliberately small. It knows exactly these constructs:
 
-`architecture` · `theme` · `direction` · `pins` · `stack` · `component` · `pin` · `zone` · `system` ·
-connections · `layout` · `define` (including `shape` and `icon`) · `view` · `show in`
+`architecture` · `theme` · `direction` · `pins` · `stack` · `component` · `external` · `pin` ·
+`zone` · `system` · connections · `layout` · `define` (including `shape` and `icon`) · `view` ·
+`show in`
 
-`view` and `show in` came with v0.2; everything else is v0.1. The rest (`use`, metadata
+`view`, `show in` and `external` came with v0.2; everything else is v0.1. The rest (`use`, metadata
 inheritance, consistency rules) is reserved for later versions — see
 [Roadmap](08-roadmap.md).
 
@@ -90,6 +91,7 @@ document      = { define } architecture ;
 
 architecture  = "architecture" STRING "{" { arch_stmt } "}" ;
 arch_stmt     = theme | direction | pins | stack | view | layout | zone | system | component | connection ;
+                             (* `component` covers `external` — see below *)
 
 theme         = "theme" IDENT ;
 direction     = "direction" ( "LR" | "TB" ) ;
@@ -102,7 +104,7 @@ show          = "show" "in" IDENT { "," IDENT } ;
 zone          = "zone" IDENT "{" { label | show | system | component } "}" ;
 system        = "system" IDENT "{" { label | show | system | component } "}" ;
 
-component     = "component" IDENT [ ":" IDENT ] [ "{" { comp_stmt } "}" ] ;
+component     = ( "component" | "external" ) IDENT [ ":" IDENT ] [ "{" { comp_stmt } "}" ] ;
 comp_stmt     = label | size | importance | category | pin | side_block | hint | count | meta | show ;
 
 pin           = "pin" IDENT IDENT [ STRING ] [ "{" { show } "}" ] ;  (* kind, name, label *)
@@ -146,7 +148,7 @@ component <id>[: <template>] { … }
 
 - `id` is unique across the whole document — across zones and systems too.
 - Without a template the type is `block` (rounded rectangle, category `generic`, no icon).
-- **Shape and icon** come from the template only (see 4.7). An instance cannot set them;
+- **Shape and icon** come from the template only (see 4.8). An instance cannot set them;
   if a component needs a different appearance, derive a local template
   (`define window_motor extends motor { icon window }`).
 - **Label precedence:** instance `label` › template `label` › `id`.
@@ -166,6 +168,7 @@ component <id>[: <template>] { … }
     most two digits or a single letter after a separator; "Temperature" and "Current" always
     stay apart, "S32K344" stays whole.
   - the same template, the same group (zone/system), the same pins, properties and `meta`,
+    and the same side of the system boundary (`external` never merges with `component`),
   - the same connections: same pins, signal kind, direction and label towards peers that are
     themselves wired identically. Chains therefore merge as well (`hb1 → m1` … `hb4 → m4`
     gives "Half Bridge ×4 → Motor ×4").
@@ -178,7 +181,47 @@ component <id>[: <template>] { … }
   it is exported (React Flow `data.meta`). Metadata sits in a block of its own on purpose,
   so that a typo like `lable "x"` stays an error instead of silently passing as metadata.
 
-### 4.2 Pins
+### 4.2 External components
+
+```sysarch
+external <id>[: <template>] { … }
+```
+
+An architecture does not end at the circuit board: motors, valves, connectors, vehicle
+buses, test equipment belong to the picture, but they are **not part of the system being
+described**. `external` says exactly that — otherwise they would look like scope of their
+own.
+
+```sysarch code-only
+external window_motor: motor { label "Window motor" }
+external can_body: bus       { label "Body CAN" }
+external x1: connector
+
+hb.OUT -> window_motor.A
+```
+
+- `external` is a **keyword in place of `component`**, not a category and not a shape: being
+  outside the system is a property of the element, not a way of drawing it. Everything a
+  `component` can do, an `external` can do too — template, pins, `meta`, `count`, `show in`,
+  grid cells and hints — and it is allowed wherever a `component` is allowed. A vehicle bus
+  is therefore external *and* a bus at the same time (`external can_body: bus`).
+- `define` knows no `external`: a template describes a building block, not which side of the
+  system boundary it ends up on. The same motor template serves an in-house motor and a
+  supplied one.
+- **Appearance:** the contour is dashed (`component.externalDash` in the theme), everything
+  else — shape, icon, category colour — stays as it is. The system boundary is therefore
+  visible without colour, in `technical` too.
+- **Never fully specified:** an external component has no inner structure, and a pin it does
+  not use is normal, not an omission. `I301` ("pin without a connection") therefore does not
+  apply to it, and later plausibility rules must not expect a complete set of interfaces
+  there either.
+- **Position:** externals belong at the edge of the diagram. The layout does not enforce
+  that in v0.2 — place them with `grid` or `hint` (see 4.7).
+- If the document uses zones, an external component sits in a zone like any other
+  (`E106`); a context band of its own at the start or the end of the flow direction is the
+  usual pattern.
+
+### 4.3 Pins
 
 ```sysarch
 pin <kind> <NAME> ["Display Label"]
@@ -222,7 +265,7 @@ handle. `I301` does not apply with `connected` and `none`.
 The group determines the line style (see [05 Rendering](05-rendering-export.md#line-styles)),
 the concrete kind determines label defaults and, later, consistency rules.
 
-### 4.3 Connections
+### 4.4 Connections
 
 | Syntax | Meaning | Semantic model |
 |--------|-----------|----------------|
@@ -243,7 +286,7 @@ the concrete kind determines label defaults and, later, consistency rules.
 - In v0.1, connections only exist at `architecture` level.
 - Several connections between the same endpoints are allowed and are routed in parallel.
 
-### 4.4 Zones and systems
+### 4.5 Zones and systems
 
 Both group components, but they serve different purposes:
 
@@ -260,7 +303,7 @@ Both group components, but they serve different purposes:
 - A component belongs to the innermost block it is defined in. There are no references to
   components defined elsewhere in v0.1.
 
-### 4.5 Views
+### 4.6 Views
 
 ```sysarch
 architecture "Body Control Module" {
@@ -301,7 +344,7 @@ The semantic model always stays complete: `check` sees every component, no matte
 view shows it. Views are a matter of rendering, `render` produces one file per view
 (`architecture-overview.svg`, `architecture-detailed.svg`).
 
-### 4.6 Layout control
+### 4.7 Layout control
 
 ```sysarch
 layout {
@@ -350,7 +393,7 @@ layout {
   two connections ever share an attachment point. `size` therefore stays a minimum, not a
   cap.
 
-### 4.7 Templates (`define`)
+### 4.8 Templates (`define`)
 
 ```sysarch
 define half_bridge {
@@ -404,7 +447,7 @@ define window_motor extends motor {
 - Document-local `define`s go before `architecture` and override library names with a
   warning.
 
-### 4.8 Reserved constructs (the parser reports "available from v0.x")
+### 4.9 Reserved constructs (the parser reports "available from v0.x")
 
 `use "file.archlib"` · `interface` · `rule`
 
@@ -435,7 +478,7 @@ Codes are stable and documented so that CI filters and tests can build on them.
 | `W203` | warning | local `define` overrides a library template |
 | `W204` | warning | `show in` does not overlap with the views of the surroundings — the element is shown nowhere |
 | `W205` | warning | a view shows no component |
-| `I301` | info | pin without a connection |
+| `I301` | info | pin without a connection — not on `external` components (4.2) |
 
 **Error tolerance:** after an error the parser synchronizes on the next `}` or the next
 statement keyword and returns a partial AST. The preview shows the last error-free state

@@ -69,6 +69,16 @@ describe("stack identical", () => {
     expect(m.grid!.rows).toEqual([["a1", null, "b1"]]);
   });
 
+  it("never merges an external component with an identically wired internal one", () => {
+    const m = stacked(` stack identical
+ component mcu: microcontroller
+ component m1: motor { label "Motor 1" }
+ external m2: motor { label "Motor 2" }
+ mcu -> m1
+ mcu -> m2`);
+    expect(summary(m)).toEqual(["mcu:MCU\u00d71", "m1:Motor 1\u00d71", "m2:Motor 2\u00d71"]);
+  });
+
   it("sums up existing counts", () => {
     const m = stacked(` stack identical
  component a1 { label "Load 1" count 2 }

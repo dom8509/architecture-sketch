@@ -12,7 +12,7 @@ import {
   type Arrow, type Direction, type Importance, type LayoutMode, type PinDisplay, type StackMode, type Side, type Size, type Span,
 } from "../types.js";
 
-/** Constructs from later versions (02-dsl.md §4.7) with the version that introduces them. */
+/** Constructs from later versions (02-dsl.md §4.9) with the version that introduces them. */
 const RESERVED: Readonly<Record<string, string>> = {
   use: "v0.2",
   interface: "v0.3",
@@ -21,8 +21,8 @@ const RESERVED: Readonly<Record<string, string>> = {
 
 const ARROWS: readonly TokenType[] = ["->", "<-", "<->", "--"];
 
-const ARCH_KEYWORDS = ["theme", "direction", "pins", "stack", "view", "layout", "zone", "system", "component"];
-const GROUP_KEYWORDS = ["label", "show", "system", "component"];
+const ARCH_KEYWORDS = ["theme", "direction", "pins", "stack", "view", "layout", "zone", "system", "component", "external"];
+const GROUP_KEYWORDS = ["label", "show", "system", "component", "external"];
 const COMPONENT_KEYWORDS = ["label", "size", "importance", "category", "pin", ...SIDES, "hint", "count", "meta", "show"];
 const DEFINE_KEYWORDS = ["label", "size", "category", "shape", "icon", "pin", ...SIDES];
 const CONNECTION_KEYWORDS = ["label", "type", "show"];
@@ -318,8 +318,10 @@ export function parse(source: string): ParseResult<SyntaxTree> {
     return unknownStatement(COMPONENT_KEYWORDS, "a component");
   };
 
+  /** `component id` and `external id` differ only in the keyword. */
   const component = (): ComponentNode => {
     const start = next();
+    const external = start.text === "external";
     const statementKeywords = [...ARCH_KEYWORDS, ...GROUP_KEYWORDS];
     const id = operand(statementKeywords);
     let template: Ident | undefined;
@@ -327,7 +329,7 @@ export function parse(source: string): ParseResult<SyntaxTree> {
       next();
       template = operand(statementKeywords);
     }
-    const n = node<ComponentNode>(start, { kind: "Component", id, ...(template && { template }) });
+    const n = node<ComponentNode>(start, { kind: "Component", id, ...(external && { external: true as const }), ...(template && { template }) });
     if (!at("{")) return n;
     next();
     const { items, closingTrivia } = block(componentStmt, COMPONENT_KEYWORDS);
@@ -341,7 +343,7 @@ export function parse(source: string): ParseResult<SyntaxTree> {
     if (atWord("label")) return label();
     if (atWord("show")) return show();
     if (atWord("system")) return system();
-    if (atWord("component")) return component();
+    if (atWord("component") || atWord("external")) return component();
     if (atWord("zone")) {
       report(diagnostic("E001", "Zones are only allowed at the top level of the architecture", peek().span));
       throw BAIL;
@@ -515,7 +517,7 @@ export function parse(source: string): ParseResult<SyntaxTree> {
         case "layout": return layout();
         case "zone": return zone();
         case "system": return system();
-        case "component": return component();
+        case "component": case "external": return component();
         case "define":
           report(diagnostic("E001", "`define` must come before `architecture`", t.span));
           throw BAIL;

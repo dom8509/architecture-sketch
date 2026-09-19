@@ -230,6 +230,11 @@ define motor extends actuator {
     icon motor
 }
 
+define valve extends actuator {
+    label "Valve"
+    icon valve
+}
+
 // ── Sensing ──────────────────────────────────────────────────
 
 define sensor {

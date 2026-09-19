@@ -175,13 +175,14 @@ export function layout(
     componentItems.push({
       type: "shape",
       ref: `component:${c.id}`,
-      className: `sa-component sa-shape-${c.shape} sa-cat-${c.category} sa-importance-${c.importance}`,
+      className: `sa-component sa-shape-${c.shape} sa-cat-${c.category} sa-importance-${c.importance}${c.external ? " sa-external" : ""}`,
       shape: c.shape,
       ...rect,
       radius: c.shape === "rounded" ? theme.component.radius : c.shape === "cylinder" ? grid / 2 : 0,
       fill: colors.fill,
       stroke: colors.border,
       strokeWidth: theme.component.borderWidth[c.importance],
+      ...(c.external && { dash: theme.component.externalDash }),
       ...(n.box.stack && { stack: n.box.stack }),
     });
 

@@ -10,6 +10,7 @@ Each guide solves one task from start to finish. The basics are covered by the
 |-----------|-------------|
 | [Pins and connections](./pins-and-connections) | declaring pins, placing them on sides, choosing signal kinds and arrow directions |
 | [Zones and systems](./zones-and-systems) | splitting diagrams into bands and framing ECUs |
+| [External components](./external) | marking motors, connectors and vehicle buses as context with `external` |
 | [Controlling the layout](./layout) | flow direction, grid, spanning cells and hints |
 | [Presentation views](./presentation) | hiding pins, stacking repeated elements, projector theme |
 | [Views](./views) | several levels of abstraction from one source with `view` and `show in` |

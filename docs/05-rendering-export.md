@@ -89,6 +89,14 @@ its template: shape, icon, category (colour), label and pins.
          IS   GND
 ```
 
+### The system boundary
+
+An `external` component is drawn with the **same** shape, icon and category colour as any
+other, but with a **dashed contour** (`component.externalDash` per theme). That way the
+boundary between the described system and its context is readable without colour — in
+`technical` too — and no shape is spent on it. In the SVG the element additionally carries
+the class `sa-external`, in the React Flow export the flag `data.external`.
+
 ### Shapes
 
 `rounded` · `rect` · `circle` · `hexagon` · `cylinder` — geometry and pin attachment in

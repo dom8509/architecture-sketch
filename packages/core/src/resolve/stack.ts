@@ -95,7 +95,7 @@ export function stackIdentical(model: ArchitectureModel): ArchitectureModel {
 /** Everything except the running number in the label and layout hints must match. */
 function localKey(c: Component): string {
   return JSON.stringify([
-    labelStem(c.label), c.template, c.groupPath, c.shape, c.icon ?? "", c.category, c.size, c.importance, c.count,
+    labelStem(c.label), c.external, c.template, c.groupPath, c.shape, c.icon ?? "", c.category, c.size, c.importance, c.count,
     c.pins.map((p) => [p.name, p.kind, p.side, p.label]),
     Object.entries(c.meta).sort(([a], [b]) => a.localeCompare(b)),
   ]);

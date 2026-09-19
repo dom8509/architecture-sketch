@@ -26,6 +26,7 @@ architecture "Title" {
     zone <id> { … }              // label, system, component
     system <id> { … }            // label, system, component
     component <id>[: <template>] { … }
+    external <id>[: <template>] { … }   // context, not part of the system
 
     <a>[.<PIN>] -> <b>[.<PIN>] { label "…" type <kind> show in <view> }
 }
@@ -65,6 +66,28 @@ component <id>[: <template>] {
 - `size` and `importance` are the only knobs for size and emphasis.
 - `meta` is not drawn, but it is exported to React Flow (`data.meta`).
 - Shape and icon only come from the template — see [Custom templates](/guides/templates).
+
+## External components
+
+```sysarch code-only
+external window_motor: motor { label "Window motor" }
+external can_body: bus       { label "Body CAN" }
+external x1: connector
+```
+
+`external` replaces `component` and marks everything that belongs to the picture but not to
+the system being described — motors, valves, connectors, vehicle buses, test equipment.
+
+- Everything a `component` offers works here too: template, pins, `meta`, `count`,
+  `show in`, grid cells and hints. A vehicle bus is external *and* a bus.
+- It is drawn with a **dashed contour**; shape, icon and category stay as they are, so the
+  system boundary is visible even without colour.
+- An external component is never fully specified: an unconnected pin on it does **not**
+  report [I301](./diagnostics#i301).
+- `define` knows no `external` — the same template serves an in-house part and a supplied
+  one.
+
+See [External components](/guides/external).
 
 ## Pins and signal kinds
 

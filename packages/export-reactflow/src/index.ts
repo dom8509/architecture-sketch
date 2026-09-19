@@ -42,6 +42,8 @@ export interface ComponentNode {
 
 export interface ComponentData {
   label: string;
+  /** `true` for `external` components — context, not part of the described system. */
+  external?: true;
   category: Category;
   importance: Importance;
   size: Size;
@@ -147,6 +149,7 @@ export function toReactFlow(source: ArchitectureModel, scene: SceneGraph): React
         height: round(hull.height),
         data: {
           label: component.label,
+          ...(component.external && { external: true as const }),
           category: component.category,
           importance: component.importance,
           size: component.size,
